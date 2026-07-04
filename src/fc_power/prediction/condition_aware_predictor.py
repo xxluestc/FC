@@ -1,6 +1,23 @@
-"""Compact state-aware multi-output random-forest speed predictor."""
-from sklearn.ensemble import RandomForestRegressor
+"""State-aware tree ensembles for speed, power, and physics residuals."""
 
-def build_model(seed=2026):
-    return RandomForestRegressor(n_estimators=80,max_depth=22,min_samples_leaf=3,max_features=.8,max_samples=.7,n_jobs=-1,random_state=seed)
+from sklearn.ensemble import ExtraTreesRegressor
 
+
+def build_model(seed: int = 2026) -> ExtraTreesRegressor:
+    """Build a deterministic multi-output estimator.
+
+    ExtraTrees is used because it handles nonlinear operating-state boundaries,
+    needs no feature scaling, and is substantially faster than training one
+    neural network per horizon on this data size.
+    """
+
+    return ExtraTreesRegressor(
+        n_estimators=50,
+        max_depth=24,
+        min_samples_leaf=2,
+        max_features=0.85,
+        bootstrap=True,
+        max_samples=0.65,
+        n_jobs=-1,
+        random_state=seed,
+    )

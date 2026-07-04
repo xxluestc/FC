@@ -1,0 +1,11 @@
+{
+  "n": 3600,
+  "clipped_points": 63,
+  "clipped_share_pct": 1.7500000000000002,
+  "absolute_clipped_energy_kwh": 0.2687943497689717,
+  "signed_clipped_energy_kwh": -0.18003951966158385,
+  "maximum_clipped_power_kw": 57.5582158,
+  "raw_absolute_energy_kwh": 15.121106897217592,
+  "feasible_absolute_energy_kwh": 14.852312547448621,
+  "interpretation": "If clipping is material, allocation results apply only inside the FC+battery feasible domain."
+}
