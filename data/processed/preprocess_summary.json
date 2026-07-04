@@ -1,0 +1,14 @@
+{
+  "input_files": 7,
+  "raw_rows": 106162,
+  "duplicate_timestamps": 278,
+  "unique_rows": 105884,
+  "processed_rows": 211630,
+  "segments": 46,
+  "target_dt_s": 1.0,
+  "gap_threshold_s": 10.0,
+  "start": "2025-05-17 08:10:14",
+  "end": "2025-05-27 09:55:30",
+  "speed_nonmissing": 211630,
+  "speed_nonzero": 107568
+}

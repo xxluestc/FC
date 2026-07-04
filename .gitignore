@@ -1,0 +1,29 @@
+# Local/private inputs
+configs/paths.local.yaml
+.env
+*.token
+data/raw/
+data/external/
+*.mat
+*.xlsx
+*.xls
+*.doc
+*.docx
+*.pdf
+
+# Generated/large results
+data/processed/*.csv
+!data/processed/current_point_degradation_h2.csv
+data/results/*.csv
+!data/results/prediction_metrics.csv
+data/results/**/allocation_trajectory.csv
+data/results/**/test_demand.csv
+output/
+cache/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/

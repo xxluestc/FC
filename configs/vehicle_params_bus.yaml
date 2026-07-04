@@ -1,0 +1,19 @@
+# Values will be populated only after tracing them to Han's thesis/code.
+vehicle:
+  # Han datain.m first parameter block; alternative motor-sizing block uses
+  # mass=17600 kg and Cd=0.32 and is retained as a sensitivity case.
+  mass_kg: 16400
+  drag_coefficient: 0.62
+  frontal_area_m2: 7.6
+  rolling_resistance: 0.015
+  rotational_mass_factor: 1.08
+  auxiliary_power_kw: null
+  air_density_kg_m3: 1.225
+  road_grade_rad: 0.0
+  source: "Han datain.m lines 17-22"
+alternative_motor_sizing_case:
+  mass_kg: 17600
+  drag_coefficient: 0.32
+  frontal_area_m2: 7.6
+  rolling_resistance: 0.015
+  source: "Han datain.m lines 31-36"

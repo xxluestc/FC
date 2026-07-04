@@ -1,0 +1,9 @@
+sampling:
+  target_dt_s: 1.0
+prediction:
+  history_s: [10, 20, 30]
+  horizon_s: [5, 10, 15]
+  train_fraction: 0.70
+  validation_fraction: 0.15
+random_seed: 2026
+

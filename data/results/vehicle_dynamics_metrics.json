@@ -1,0 +1,46 @@
+{
+  "split": "first 70% calibration, final 30% test",
+  "models": {
+    "traction": {
+      "intercept_kw": -7.318672156704925e-08,
+      "slope": 0.7542161382228342,
+      "train_n": 119874
+    },
+    "braking": {
+      "intercept_kw": -3.043578410252313,
+      "slope": 0.6107518143789722,
+      "train_n": 28267
+    }
+  },
+  "test_all": {
+    "n": 63489,
+    "mae_kw": 8.552571360775422,
+    "rmse_kw": 17.846753100079916,
+    "r2": 0.8769753760185686,
+    "energy_bias_kwh": -5.01340450481541
+  },
+  "test_traction": {
+    "n": 49030,
+    "mae_kw": 6.662871190577978,
+    "rmse_kw": 15.41513634554687,
+    "r2": 0.8817736639974316,
+    "energy_bias_kwh": -4.791537886325934
+  },
+  "test_braking": {
+    "n": 14459,
+    "mae_kw": 14.960483342570896,
+    "rmse_kw": 24.34684006783359,
+    "r2": 0.6560930708263126,
+    "energy_bias_kwh": -0.22186661848947703
+  },
+  "vehicle_params": {
+    "mass_kg": 16400.0,
+    "drag_coefficient": 0.62,
+    "frontal_area_m2": 7.6,
+    "rolling_resistance": 0.015,
+    "rotational_mass_factor": 1.08,
+    "air_density_kg_m3": 1.225,
+    "gravity_mps2": 9.80665,
+    "road_grade_rad": 0.0
+  }
+}

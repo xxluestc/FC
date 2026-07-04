@@ -1,0 +1,11 @@
+horizon_s: 10
+soc_target: 0.70
+soc_terminal_band: 0.02
+minimum_dwell_s: 15
+weights:
+  hydrogen: 0.45
+  fc_degradation: 1.0
+  battery_use: 1.5
+  soc: 3.0
+  fc_ramp: 0.005
+

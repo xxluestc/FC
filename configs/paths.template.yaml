@@ -1,0 +1,6 @@
+# Copy to paths.local.yaml and edit locally. Never commit local absolute paths.
+han_project: "<path-to-Han-project>"
+liu_project: "<path-to-Liu-project>"
+li_project: "<path-to-Li-project>"
+literature_root: "<path-to-literature>"
+
