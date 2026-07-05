@@ -47,37 +47,33 @@ ax.legend(frameon=False, ncol=2)
 ax.grid(alpha=0.18)
 save(fig, "vehicle_dynamics_fit")
 m = pd.read_csv("data/results/prediction_metrics.csv")
-methods = ["speed_only_dynamics", "state_direct_power", "hybrid_physics_corrected"]
-labels = ["Speed-only dynamics", "State direct power", "Physics + residual"]
-colors = ["#0072B2", "#009E73", "#D55E00"]
+m = m[m.split.eq("test")]
+methods = ["extratrees", "hist_gradient_boosting", "xgboost", "brake_aware_extratrees"]
+labels = ["ExtraTrees", "HistGradientBoosting", "XGBoost", "Brake-aware ExtraTrees"]
+colors = ["#0072B2", "#E69F00", "#009E73", "#D55E00"]
 fig, axs = plt.subplots(1, 2, figsize=(7.2, 3))
 for ax, metric, ylabel in [
-    (axs[0], "speed_rmse_mps", "Speed RMSE (m/s)"),
-    (axs[1], "nrmse_range_pct", "Mean-power NRMSE (% full scale)"),
+    (axs[0], "point_nrmse_range_pct", "Point NRMSE (% full scale)"),
+    (axs[1], "window_energy_mae_kwh", "Window energy MAE (kWh)"),
 ]:
     for name, label, c in zip(methods, labels, colors):
-        q = m[m.method.eq(name)]
+        q = m[m.model_family.eq(name)]
         ax.plot(q.horizon_s, q[metric], marker="o", ms=3, label=label, c=c)
-    ax.set(xlabel="Prediction horizon (s)", ylabel=ylabel, xticks=[1, 3, 5, 10, 15])
+    ax.set(xlabel="Prediction horizon (s)", ylabel=ylabel, xticks=[1, 3, 5, 10])
     ax.grid(alpha=0.18)
 axs[0].legend(frameon=False, fontsize=7)
 save(fig, "prediction_horizon_errors")
 pr = pd.read_csv("data/processed/prediction_results.csv")
-origin = int(pr.origin_index.quantile(0.4))
-q = pr[(pr.origin_index == origin) & (pr.method == "state_direct_power")]
-fig, axs = plt.subplots(2, 1, figsize=(6.8, 4.5), sharex=True)
-axs[0].plot(
-    q.horizon_s, q.speed_actual_mps * 3.6, c=C["Measured"], marker="o", label="Actual"
+origin = int(pr[pr.forecast_horizon_s.eq(10)].origin_index.quantile(0.4))
+q = pr[(pr.origin_index == origin) & pr.forecast_horizon_s.eq(10)]
+fig, ax = plt.subplots(figsize=(6.8, 3.2))
+ax.plot(q.step_ahead_s, q.power_actual_kw, c=C["Measured"], marker="o", label="Actual")
+ax.plot(
+    q.step_ahead_s, q.power_pred_kw, c=C["Predicted"], marker="s", label="Predicted"
 )
-axs[0].plot(
-    q.horizon_s, q.speed_pred_mps * 3.6, c=C["Predicted"], marker="s", label="Predicted"
-)
-axs[0].set_ylabel("Speed (km/h)")
-axs[0].legend(frameon=False)
-axs[1].plot(q.horizon_s, q.power_actual_kw, c=C["Measured"], marker="o")
-axs[1].plot(q.horizon_s, q.power_pred_kw, c=C["Predicted"], marker="s")
-axs[1].set(xlabel="Horizon (s)", ylabel="Demand power (kW)")
-[a.grid(alpha=0.18) for a in axs]
+ax.set(xlabel="Step ahead (s)", ylabel="Demand power (kW)")
+ax.legend(frameon=False)
+ax.grid(alpha=0.18)
 save(fig, "pred_speed_power_compare")
 tr = pd.read_csv("data/results/allocation/allocation_trajectory.csv")
 fig, axs = plt.subplots(2, 1, figsize=(7.2, 5), sharex=True)

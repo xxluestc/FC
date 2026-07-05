@@ -27,6 +27,7 @@ def run_strategy(
     hydrogen,
     degradation_proxy,
     weights,
+    confidence_decay=0.0,
 ):
     soc = 0.70
     previous_tier = 0
@@ -46,7 +47,11 @@ def run_strategy(
             preview = np.r_[
                 current_demand,
                 [
-                    prediction_map.get((source_index, offset), current_demand)
+                    np.exp(-confidence_decay * offset)
+                    * prediction_map.get(
+                        (horizon, source_index, offset), current_demand
+                    )
+                    + (1 - np.exp(-confidence_decay * offset)) * current_demand
                     for offset in range(1, available_horizon)
                 ],
             ]
@@ -79,6 +84,17 @@ def run_strategy(
                 "tier": tier,
                 "h2_g": hydrogen[tier],
                 "degradation_proxy": degradation_proxy[tier],
+                "weighted_h2_cost": weights["hydrogen"]
+                * hydrogen[tier]
+                / max(hydrogen.max(), 1e-9),
+                "weighted_proxy_cost": weights["degradation_proxy"]
+                * degradation_proxy[tier],
+                "weighted_switch_cost": weights["switch"] * (tier != previous_tier),
+                "weighted_smooth_cost": weights["smooth"]
+                * abs(fuel_cell_power - actions[previous_tier])
+                / max(np.diff(actions).max(), 1),
+                "is_braking": current_demand < -5,
+                "confidence_decay": confidence_decay,
             }
         )
         dwell = min(15, dwell + 1) if tier == previous_tier else 1
@@ -101,6 +117,127 @@ def run_strategy(
         "runtime_s": time.perf_counter() - started,
     }
     return trajectory, metrics
+
+
+def search_weights(
+    demand,
+    source_indices,
+    prediction_map,
+    actions,
+    hydrogen,
+    degradation_proxy,
+):
+    """Deterministic compact grid around w_deg=2 on a calibration prefix."""
+
+    anchors = [
+        (0.45, 2.0, 0.10, 3.0, 0.10, 0.08),
+        (0.45, 2.0, 0.05, 3.0, 0.05, 0.00),
+        (0.45, 2.0, 0.20, 3.0, 0.20, 0.16),
+    ]
+    rng = np.random.default_rng(2026)
+    choices = [
+        (0.30, 0.45, 0.60),
+        (1.5, 2.0, 2.5),
+        (0.05, 0.10, 0.20),
+        (2.0, 3.0, 5.0),
+        (0.05, 0.10, 0.20),
+        (0.00, 0.08, 0.16),
+    ]
+    while len(anchors) < 24:
+        candidate = tuple(float(rng.choice(values)) for values in choices)
+        if candidate not in anchors:
+            anchors.append(candidate)
+    length = min(1200, len(demand))
+    reference_weights = DEFAULT_WEIGHTS.copy()
+    reference_weights.update({"degradation_proxy": 2.0, "smooth": 0.1, "switch": 0.1})
+    _, reference = run_strategy(
+        "constant",
+        5,
+        demand[:length],
+        source_indices[:length],
+        prediction_map,
+        actions,
+        hydrogen,
+        degradation_proxy,
+        reference_weights,
+    )
+    rows = []
+    for hydrogen_w, deg_w, smooth_w, soc_w, switch_w, decay in anchors:
+        weights = DEFAULT_WEIGHTS.copy()
+        weights.update(
+            {
+                "hydrogen": hydrogen_w,
+                "degradation_proxy": deg_w,
+                "smooth": smooth_w,
+                "soc": soc_w,
+                "switch": switch_w,
+            }
+        )
+        _, result = run_strategy(
+            "predicted",
+            5,
+            demand[:length],
+            source_indices[:length],
+            prediction_map,
+            actions,
+            hydrogen,
+            degradation_proxy,
+            weights,
+            confidence_decay=decay,
+        )
+        _, instant_result = run_strategy(
+            "instant",
+            1,
+            demand[:length],
+            source_indices[:length],
+            prediction_map,
+            actions,
+            hydrogen,
+            degradation_proxy,
+            weights,
+        )
+        score = (
+            result["h2_kg"] / max(reference["h2_kg"], 1e-9)
+            + result["degradation_proxy_sum"]
+            / max(reference["degradation_proxy_sum"], 1e-9)
+            + 0.3
+            * result["battery_throughput_kwh"]
+            / max(reference["battery_throughput_kwh"], 1e-9)
+            + 0.2
+            * result["fc_total_variation_kw"]
+            / max(reference["fc_total_variation_kw"], 1e-9)
+            + 30 * abs(result["soc_error"])
+        )
+        # A weight set is not eligible if the H=1 baseline cannot sustain SOC;
+        # otherwise comparisons would mix controller and feasibility effects.
+        if abs(result["soc_error"]) > 0.02 or abs(instant_result["soc_error"]) > 0.02:
+            score += 100
+        rows.append(
+            {
+                **result,
+                "w_h2": hydrogen_w,
+                "w_deg": deg_w,
+                "w_smooth": smooth_w,
+                "w_soc": soc_w,
+                "w_switch": switch_w,
+                "confidence_decay": decay,
+                "selection_score": score,
+                "instant_soc_error": instant_result["soc_error"],
+            }
+        )
+    frame = pd.DataFrame(rows).sort_values("selection_score")
+    best = frame.iloc[0]
+    best_weights = DEFAULT_WEIGHTS.copy()
+    best_weights.update(
+        {
+            "hydrogen": best.w_h2,
+            "degradation_proxy": best.w_deg,
+            "smooth": best.w_smooth,
+            "soc": best.w_soc,
+            "switch": best.w_switch,
+        }
+    )
+    return frame, best_weights, float(best.confidence_decay)
 
 
 def consecutive_test_sequence(origins, maximum_length=3600):
@@ -169,7 +306,8 @@ def main():
     predictions = pd.read_csv(args.predictions)
     stack_map = pd.read_csv(args.stack_map)
     causal = predictions[predictions["method"].eq("state_direct_power")]
-    sequence = consecutive_test_sequence(causal["origin_index"].unique())
+    horizon_10 = causal[causal["forecast_horizon_s"].eq(10)]
+    sequence = consecutive_test_sequence(horizon_10["origin_index"].unique())
 
     raw_demand = vehicle.loc[sequence, "p_dem_measured_kw"].to_numpy()
     lower_bound = -75.0
@@ -179,15 +317,27 @@ def main():
     clipped = np.abs(clipping_delta) > 1e-12
 
     prediction_map = {
-        (int(row.origin_index), int(row.horizon_s)): float(
-            np.clip(row.power_pred_kw, lower_bound, upper_bound)
-        )
+        (
+            int(row.forecast_horizon_s),
+            int(row.origin_index),
+            int(row.step_ahead_s),
+        ): float(np.clip(row.power_pred_kw, lower_bound, upper_bound))
         for row in causal.itertuples()
     }
     actions = stack_map["stack_power_kw"].to_numpy()
     hydrogen = stack_map["faraday_h2_g_s"].to_numpy()
     degradation_proxy = stack_map["performance_loss_cost_normalized"].to_numpy()
     args.out_dir.mkdir(parents=True, exist_ok=True)
+
+    search, optimized_weights, optimized_decay = search_weights(
+        feasible_demand,
+        sequence,
+        prediction_map,
+        actions,
+        hydrogen,
+        degradation_proxy,
+    )
+    search.to_csv(args.out_dir / "mpc_weight_search.csv", index=False)
 
     trajectories = []
     metrics = []
@@ -206,7 +356,8 @@ def main():
             actions,
             hydrogen,
             degradation_proxy,
-            DEFAULT_WEIGHTS.copy(),
+            optimized_weights,
+            optimized_decay if strategy == "predicted" else 0.0,
         )
         trajectory["raw_demand_kw"] = raw_demand
         trajectory["was_clipped"] = clipped
@@ -261,12 +412,58 @@ def main():
         args.out_dir / "clipping_strategy_impact.csv", index=False
     )
 
+    occupancy = trajectory_frame.groupby(
+        ["strategy", "horizon_s", "tier"], as_index=False
+    ).agg(count=("tier", "size"), p_fc_kw=("p_fc_kw", "first"))
+    occupancy["share_pct"] = (
+        100
+        * occupancy["count"]
+        / occupancy.groupby(["strategy", "horizon_s"])["count"].transform("sum")
+    )
+    occupancy.to_csv(args.out_dir / "strategy_tier_occupancy.csv", index=False)
+    proxy_by_tier = trajectory_frame.groupby(
+        ["strategy", "horizon_s", "tier"], as_index=False
+    ).agg(
+        count=("tier", "size"),
+        proxy_sum=("degradation_proxy", "sum"),
+        weighted_proxy_sum=("weighted_proxy_cost", "sum"),
+    )
+    proxy_by_tier.to_csv(args.out_dir / "tier_proxy_contribution.csv", index=False)
+    brake_rows = []
+    for keys, group in trajectory_frame.groupby(
+        ["strategy", "horizon_s", "is_braking"]
+    ):
+        brake_rows.append(
+            {
+                "strategy": keys[0],
+                "horizon_s": keys[1],
+                "subset": "braking" if keys[2] else "non_braking",
+                "n": len(group),
+                "mean_demand_kw": group["demand_kw"].mean(),
+                "mean_fc_kw": group["p_fc_kw"].mean(),
+                "mean_battery_kw": group["p_bat_kw"].mean(),
+                "battery_throughput_kwh": group["p_bat_kw"].abs().sum() / 3600,
+                "proxy_sum": group["degradation_proxy"].sum(),
+            }
+        )
+    pd.DataFrame(brake_rows).to_csv(
+        args.out_dir / "braking_allocation_diagnostics.csv", index=False
+    )
+    paired = trajectory_frame[
+        trajectory_frame["strategy"].isin(["predicted", "perfect"])
+    ].pivot_table(index=["step", "horizon_s"], columns="strategy", values="tier")
+    paired = paired.dropna().reset_index()
+    paired["action_difference_tiers"] = paired["predicted"] - paired["perfect"]
+    paired["actions_differ"] = paired["action_difference_tiers"].ne(0)
+    paired.to_csv(args.out_dir / "predicted_vs_perfect_actions.csv", index=False)
+
     sensitivity_rows = []
     sensitivity_grid = {
-        "hydrogen": (0.25, 0.45, 0.75),
-        "degradation_proxy": (0.5, 1.0, 2.0),
-        "smooth": (0.002, 0.005, 0.02),
+        "hydrogen": (0.30, 0.45, 0.60),
+        "degradation_proxy": (1.5, 2.0, 2.5),
+        "smooth": (0.05, 0.10, 0.20),
         "soc": (1.5, 3.0, 6.0),
+        "switch": (0.05, 0.10, 0.20),
     }
     sensitivity_length = min(1800, len(sequence))
     for parameter, values in sensitivity_grid.items():
@@ -283,6 +480,7 @@ def main():
                 hydrogen,
                 degradation_proxy,
                 weights,
+                optimized_decay,
             )
             result.update(
                 {

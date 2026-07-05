@@ -1,0 +1,5 @@
+Run 1: 24-point deterministic structured grid centered on w_deg=2.
+Parameters: w_H2, w_deg, w_smooth in {0.05,0.10,0.20}, w_SOC, w_switch, confidence_decay.
+Calibration: first 1,200 seconds of the contiguous controller test sequence; final comparisons use the full 3,600 seconds.
+Constraint: candidate receives a large penalty when Predicted H5 or Instant H1 calibration SOC error exceeds 0.02.
+Confidence: predicted future power is blended toward current demand with exp(-decay*h).

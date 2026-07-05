@@ -1,0 +1,6 @@
+Run 1: horizon-specific ExtraTrees/HistGradientBoosting/XGBoost/brake-aware ExtraTrees.
+Data split: chronological 70/15/15 with horizon purge; at most 40,000 deterministic train rows.
+Features added: stop_duration, log1p(time_since_last_stop), log1p(distance_since_last_stop).
+Failed attempt: parallel MultiOutput HistGradientBoosting spawned excessive Windows joblib workers; changed to sequential heads and 70 iterations.
+Selection: validation-only score = range-NRMSE + 2*(1-high-power F1) + 2*(1-braking F1).
+Outcome: XGBoost selected for H=1/3/5/10. Brake-aware branch was retained in comparison but did not improve validation score.

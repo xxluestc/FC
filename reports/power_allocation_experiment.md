@@ -1,25 +1,35 @@
-# 公平功率分配对比
+# 预测 MPC 与退化代理功率分配复验
 
-四种策略使用同一3600秒片段、同一电流档位、同一目标权重和约束。Instant为H=1；Constant、Perfect、Predicted分别测试H=3/5/10。Perfect使用真实未来，仅作非因果上界。
+## 搜索设置
 
-## Predicted MPC结果
+采用离散档位 beam-search MPC。权重在连续测试段前 1,200 s 上做 24 点确定性结构网格搜索，中心为 `w_deg=2`，同时搜索氢耗、SOC、`w_switch`、`w_smooth={0.05,0.1,0.2}` 和预测置信衰减。候选若令 Predicted H5 或 Instant H1 的末端 SOC 偏差超过 ±0.02，会受到不可行惩罚。
 
-| H/s | 氢耗/kg | degradation proxy | SOC误差 | 电池吞吐/kWh | 切换 | FC总变差/kW |
-|---:|---:|---:|---:|---:|---:|---:|
-| 3 | 0.30392 | 198.09 | -0.00178 | 16.134 | 96 | 531.14 |
-| 5 | 0.30396 | 199.02 | -0.00186 | 16.142 | 94 | 514.49 |
-| 10 | 0.30373 | 197.43 | -0.00181 | 16.065 | 90 | 501.53 |
+最优校准参数为：`w_H2=0.45, w_deg=2.5, w_smooth=0.10, w_SOC=3.0, w_switch=0.10`，预测衰减 `alpha(h)=exp(-0.08h)`。完整搜索见 `data/results/allocation/mpc_weight_search.csv`。
 
-## 相对基线
+## 完整 3,600 s 结果
 
-Predicted H=10相对Constant H=10：氢耗改善4.33%、degradation proxy改善13.83%、切换改善7.22%、FC总变差改善7.13%。
+| 策略 | H | 氢耗 (kg) | proxy 累计 | SOC末值 | 电池吞吐 (kWh) | 切换 | FC总变差 (kW) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Instant | 1 | 0.30113 | 162.07 | 0.69877 | 16.354 | 53 | 281.2 |
+| Constant | 5 | 0.30208 | 182.50 | 0.69811 | 16.218 | 95 | 481.1 |
+| Perfect | 5 | 0.30115 | 177.35 | 0.69810 | 16.057 | 78 | 409.4 |
+| Predicted | 5 | 0.30080 | 174.54 | 0.69812 | 16.050 | 84 | 425.3 |
+| Constant | 10 | 0.30984 | 206.76 | 0.70090 | 16.034 | 93 | 479.9 |
+| Perfect | 10 | 0.30145 | 180.51 | 0.69809 | 16.039 | 70 | 351.5 |
+| Predicted | 10 | 0.30086 | 175.58 | 0.69807 | 16.016 | 88 | 439.9 |
 
-Predicted H=10相对Instant：氢耗增加0.25%、degradation proxy增加4.72%，但切换减少7.22%、FC总变差减少1.06%。因此预测策略改善平滑性和相对Constant的综合表现，却没有全面支配Instant。
+Predicted H5 相对 Constant H5：氢耗降低 0.423%，proxy 降低 4.365%，电池吞吐降低 1.034%，切换降低 11.579%，FC 总变差降低 11.610%。相对 Instant，Predicted H5 的氢耗降低 0.109%、电池吞吐降低 1.856%，但 proxy 高 7.692%、切换高 58.49%；因此不能声称全面优于 Instant。
 
-Perfect H=10仍优于Predicted，说明未来信息有控制价值；但由于H=10预测NRMSE未达5%，当前推荐默认H=5，并把H=10保留为研究扩展。
+Predicted 与 Perfect 的档位不同率为 H3 12.86%、H5 22.28%、H10 26.53%，随预测域增长而扩大，和 H10 预测误差恶化一致。
 
-## 权重敏感性
+## 诊断文件
 
-对 `w_H2={0.25,0.45,0.75}`、`w_deg={0.5,1,2}`、`w_smooth={0.002,0.005,0.02}`、`w_soc={1.5,3,6}` 进行单因素扫描。`w_deg=2`在1800秒敏感性片段上将proxy从198.80降至180.91，同时氢耗也略降；`w_smooth`三个值产生相同离散动作，说明其范围不足以跨越档位决策边界；`w_soc`增大使末端SOC更接近目标，但提高氢耗与proxy。完整表见 `allocation_weight_sensitivity.csv`。
+- `strategy_tier_occupancy.csv`：每种策略和 H 的档位数量/占比。
+- `tier_proxy_contribution.csv`：各档位原始及加权 proxy 贡献。
+- `braking_allocation_diagnostics.csv`：制动/非制动段 FC、电池、吞吐和 proxy。
+- `predicted_vs_perfect_actions.csv`：逐秒动作档位差。
+- `allocation_trajectory.csv`：逐秒氢耗、proxy、切换、平滑成本明细。
 
-所有“退化”字段均命名为degradation proxy，不代表真实退化系数。
+## 解释边界
+
+这里的 degradation proxy 来自刘占伟老化参数/性能损失表，不是真实动作退化系数；其 `x_est` 与 21UBE0022 半月 CSV 尚未确认同车同堆。MPC 结果只能证明该代理进入目标函数后会改变档位决策，不能证明材料退化率已被准确辨识。

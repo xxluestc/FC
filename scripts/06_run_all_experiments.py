@@ -25,9 +25,12 @@ def main() -> None:
         Path("data/results/prediction_metrics.csv"): {
             "method",
             "horizon_s",
-            "nmae_range_pct",
-            "nrmse_range_pct",
-            "ramp_risk_mae_kw",
+            "model_family",
+            "point_nmae_range_pct",
+            "point_nrmse_range_pct",
+            "window_energy_mae_kwh",
+            "high_power_f1",
+            "braking_f1",
         },
         Path("data/results/allocation/allocation_metrics.csv"): {
             "strategy",
@@ -51,9 +54,9 @@ def main() -> None:
                 },
                 Path("data/processed/prediction_results.csv"): {
                     "method",
-                    "horizon_s",
+                    "forecast_horizon_s",
+                    "step_ahead_s",
                     "power_pred_kw",
-                    "window_mean_power_pred_kw",
                 },
             }
         )
@@ -68,15 +71,17 @@ def main() -> None:
             require_columns(path, columns)
 
     prediction_metrics = pd.read_csv("data/results/prediction_metrics.csv")
-    expected_methods = {
-        "speed_only_dynamics",
-        "state_direct_power",
-        "hybrid_physics_corrected",
-    }
-    if set(prediction_metrics["method"]) != expected_methods:
-        raise RuntimeError("Prediction methods do not match the documented split.")
-    if set(prediction_metrics["horizon_s"]) != {1, 3, 5, 10, 15}:
+    if set(prediction_metrics["method"]) != {"state_direct_power"}:
+        raise RuntimeError("Prediction metrics contain an unexpected semantic head.")
+    if set(prediction_metrics["horizon_s"]) != {1, 3, 5, 10}:
         raise RuntimeError("Prediction horizons are incomplete.")
+    if set(prediction_metrics["model_family"]) != {
+        "extratrees",
+        "hist_gradient_boosting",
+        "xgboost",
+        "brake_aware_extratrees",
+    }:
+        raise RuntimeError("Horizon model-family comparison is incomplete.")
 
     allocation = pd.read_csv("data/results/allocation/allocation_metrics.csv")
     if not (allocation["soc_error"].abs() <= 0.02).all():

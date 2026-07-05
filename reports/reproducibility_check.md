@@ -2,50 +2,30 @@
 
 检查日期：2026-07-05。
 
-## 代码格式
+## 执行结果
 
-全部 `src/**/*.py` 和 `scripts/*.py` 已运行Black格式化；不再保留压缩成单行的实现。检查命令：
-
-```powershell
-python -m black --check src scripts
-```
-
-## 编译检查
+以下命令均已实际通过：
 
 ```powershell
-python -m compileall -q -f src scripts
-```
-
-结果：通过，无SyntaxError或ImportError。
-
-## 主入口检查
-
-```powershell
+python -m black src scripts
+python -m compileall src scripts
+python scripts/04_train_or_run_predictors.py ...
+python scripts/05_run_power_allocation.py ...
+python scripts/plot_results.py
 python scripts/06_run_all_experiments.py
-```
-
-默认入口只检查Git提交的小型结果、关键schema、三类预测方法、H=1/3/5/10/15完整性，以及全部策略末端SOC是否位于±0.02带内，因此新克隆仓库不依赖私有原始数据即可运行。结果：通过。
-
-本机完整中间数据检查使用：
-
-```powershell
 python scripts/06_run_all_experiments.py --full-local
 ```
 
-结果：通过。
+预测全流程约250秒；MPC权重搜索、四策略和诊断约196秒。生成结果通过schema、四模型族、H=1/3/5/10完整性和全部策略末端SOC ±0.02检查；本次最大绝对末端SOC偏差为0.00193。
 
-## 实验脚本实际运行
+## 关键复现约束
 
-- 预测脚本：约147秒（其中向量化特征构建约1.6秒、共享树拟合约17秒，其余为窗口模型、推理、指标和CSV写入）；
-- 功率分配与敏感性脚本：约131秒；
-- 所有大型原始/处理中间CSV由 `.gitignore` 排除，需通过编号脚本由本地原始数据生成；
-- 提交仓库包含小型指标表、配置模板、代码、报告和图，不包含token、原始MAT/CSV或本地路径配置。
+- 原始大文件不提交Git，需通过本地路径配置和编号脚本重建。
+- 模型按70/15/15时间顺序切分并设置H秒purge，不随机打乱。
+- 最终模型只按验证集分数选择；测试集不参与选模。
+- 权重只在控制测试序列前1200秒搜索，完整3600秒用于统一对照。
+- `degradation proxy`不是已验证的真实材料退化系数。
 
-## 已修复问题
+## 本轮修复
 
-1. 原代码大量单行语句：Black统一格式；
-2. 特征构造每个窗口重复整列转NumPy，近似O(n²)：改为滑动窗口向量化，特征阶段降至约1.6秒；
-3. 一个模型结果混称物理预测：拆为speed-only、direct-power、physics-corrected；
-4. `06`原先只检查文件存在：增加schema、方法、时域和SOC约束检查；
-5. 预测结果旧方法名导致画图失效：绘图脚本已同步新schema；
-6. 功率分配旧脚本只比较H=10且只相对Constant：增加H=3/5/10及Instant/Constant双基线。
+Windows下并行MultiOutput HistGradientBoosting曾产生过量子进程；已改为顺序多输出头、固定迭代数和确定性训练子样本。H=1回归输出的一维/二维差异也已统一，所有Python文件经Black格式化并通过compileall。
