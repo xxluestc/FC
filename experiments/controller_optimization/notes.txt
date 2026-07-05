@@ -1,0 +1,12 @@
+Plan:
+1. Split by complete chronological runs: use all earlier runs of at least 3,600 s for robust calibration and the last such run for evaluation.
+2. Search horizon, forecast trend transform, confidence form, move blocking, horizon switch budget, minimum dwell and broad MPC weights.
+3. Reject candidates outside the +/-0.02 terminal-SOC band.
+4. Select by a multi-objective normalized score and retain all non-dominated Pareto candidates.
+5. Evaluate Instant, Constant, Perfect, original Predicted and optimized Predicted only on the untouched later 3,600-second run.
+
+The search is deterministic (seed 2026). It does not alter the demand trace, remove transients, or use future demand in Predicted MPC.
+
+Run 1 used 1,200 s of one long run and did not generalize. Run 2 split that same run at 1,800 s, but the final half was all-zero demand and was rejected. Run 3 used one earlier complete run for calibration but exposed a strong SOC/distribution shift. Run 4 aggregates every earlier eligible run and requires SOC feasibility on each; the last eligible run remains untouched.
+
+Run 4 result: validation-selected candidate 12 uses H=5, window-mean trend, adaptive confidence decay, at most one within-horizon switch and 60 s minimum dwell. On the untouched later run it reduces switches 166->55 and FC variation 756.77->308.49 kW versus original Predicted, while SOC improves 0.6497->0.6896. Raw proxy increases 610.37->799.53. No Pareto candidate removes this tradeoff.

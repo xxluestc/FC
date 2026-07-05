@@ -42,6 +42,8 @@
 
 预测器额外以因果方式构造三个停车状态特征：当前连续停车时长 `stop_duration`、距最近一次停车时间 `time_since_last_stop`、距最近一次停车后的累计里程 `distance_since_last_stop`。它们在运行时计算，不重复写入大表。
 
+字段可用性审计进一步确认：当前表没有 DCDC 目标电流、明确 FC 状态、空气流量、温度、压力、空压机/水泵/氢泵/风扇/电加热器，也没有完整单体电压数组。上述变量不能在当前实验中假定存在；若后续需要，必须回到原始CSV扩充字段映射并重新生成canonical。逐字段结果见 `results/optimization/processed_feature_availability.csv`。
+
 ## 3. 处理流程
 
 ```text
@@ -66,5 +68,6 @@
 - `results/allocation/allocation_trajectory.csv`：各策略逐秒需求功率、FC/电池功率、SOC、档位及逐项成本。
 - `results/allocation/mpc_weight_search.csv`：只在校准前缀上完成的权重与置信衰减搜索。
 - `results/allocation/*diagnostics.csv`：档位占用、各档 proxy 贡献、制动分段以及 Predicted/Perfect 动作差异。
+- `results/optimization/`：字段审计、字段组消融、控制结构/权重搜索、Pareto候选和SOC等值对照。
 
 百分比误差使用测试需求功率全量程归一化；报告同时保留 kW 原值，不能只引用较小的百分数。功率分配前对超出 FC+电池约束的需求进行裁剪，裁剪审计位于 `demand_clipping_audit.json`，因此控制结论属于可行域内实验。

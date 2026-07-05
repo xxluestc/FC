@@ -58,6 +58,34 @@ def main() -> None:
                     "step_ahead_s",
                     "power_pred_kw",
                 },
+                Path("data/results/optimization/processed_feature_availability.csv"): {
+                    "feature_group",
+                    "field",
+                    "availability",
+                },
+                Path(
+                    "data/results/optimization/predictor_ablation/feature_group_metrics.csv"
+                ): {
+                    "feature_group",
+                    "horizon_s",
+                    "split",
+                    "point_nrmse_range_pct",
+                },
+                Path(
+                    "data/results/optimization/controller/optimized_strategy_metrics.csv"
+                ): {
+                    "strategy",
+                    "soc_final",
+                    "switch_count",
+                    "fc_total_variation_kw",
+                },
+                Path(
+                    "data/results/optimization/summary/final_metrics_with_soc_equivalence.csv"
+                ): {
+                    "strategy",
+                    "soc_equivalent_h2_kg",
+                    "soc_equivalent_proxy",
+                },
             }
         )
     missing_files = [str(path) for path in required if not path.exists()]
@@ -86,6 +114,22 @@ def main() -> None:
     allocation = pd.read_csv("data/results/allocation/allocation_metrics.csv")
     if not (allocation["soc_error"].abs() <= 0.02).all():
         raise RuntimeError("At least one allocation violates the terminal SOC band.")
+    if args.full_local:
+        optimized = pd.read_csv(
+            "data/results/optimization/controller/optimized_strategy_metrics.csv"
+        )
+        expected = {
+            "Instant",
+            "Constant",
+            "Perfect",
+            "Predicted_original",
+            "Predicted_optimized",
+        }
+        if set(optimized["strategy"]) != expected:
+            raise RuntimeError("Optimized five-strategy comparison is incomplete.")
+        selected = optimized[optimized.strategy.eq("Predicted_optimized")].iloc[0]
+        if abs(selected.soc_error) > 0.02:
+            raise RuntimeError("Selected optimized controller violates its SOC band.")
     mode = "full local" if args.full_local else "committed-artifact"
     print(f"Reproducibility {mode} checks passed.")
 

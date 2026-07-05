@@ -1,0 +1,116 @@
+{
+  "canonical_rows": 211630,
+  "processed_rows": 211630,
+  "canonical_columns": [
+    "timestamp",
+    "speed_kmh",
+    "soc_pct",
+    "target_power_kw",
+    "fc_voltage_v",
+    "fc_current_a",
+    "dcdc_output_voltage_v",
+    "dcdc_output_current_a",
+    "battery_voltage_v",
+    "battery_current_a",
+    "motor_voltage_v",
+    "motor_current_a",
+    "single_h2_kg",
+    "cumulative_h2_kg",
+    "loadable_power_kw",
+    "odometer_km",
+    "mean_cell_voltage_v",
+    "min_cell_voltage_v",
+    "max_cell_voltage_v",
+    "segment_id",
+    "speed_mps",
+    "acceleration_mps2",
+    "fc_input_power_kw",
+    "dcdc_output_power_kw",
+    "battery_power_kw_raw_sign",
+    "motor_power_kw_raw_sign"
+  ],
+  "processed_only_columns": [
+    "speed_smooth_mps",
+    "acceleration_smooth_mps2",
+    "f_air_n",
+    "f_roll_n",
+    "f_grade_n",
+    "f_acc_n",
+    "f_trac_n",
+    "p_wheel_kw",
+    "p_dem_dyn_calibrated_kw",
+    "p_dem_measured_kw",
+    "dynamics_residual_kw"
+  ],
+  "available_by_group": {
+    "base_motion": [
+      "timestamp",
+      "segment_id",
+      "speed_kmh",
+      "speed_mps",
+      "acceleration_mps2",
+      "speed_smooth_mps",
+      "acceleration_smooth_mps2",
+      "p_dem_measured_kw",
+      "soc_pct"
+    ],
+    "route_stop_source": [
+      "odometer_km"
+    ],
+    "control_intent": [
+      "target_power_kw",
+      "loadable_power_kw"
+    ],
+    "power_chain": [
+      "fc_voltage_v",
+      "fc_current_a",
+      "dcdc_output_voltage_v",
+      "dcdc_output_current_a",
+      "battery_voltage_v",
+      "battery_current_a",
+      "motor_voltage_v",
+      "motor_current_a",
+      "fc_input_power_kw",
+      "dcdc_output_power_kw",
+      "battery_power_kw_raw_sign",
+      "motor_power_kw_raw_sign"
+    ],
+    "aux_thermal_air": [],
+    "health_state": [
+      "mean_cell_voltage_v",
+      "min_cell_voltage_v",
+      "max_cell_voltage_v"
+    ]
+  },
+  "absent_by_group": {
+    "base_motion": [],
+    "route_stop_source": [],
+    "control_intent": [
+      "dcdc_target_current_a",
+      "fuel_cell_state"
+    ],
+    "power_chain": [],
+    "aux_thermal_air": [
+      "air_flow",
+      "air_demand_flow",
+      "air_compressor_power",
+      "water_pump_power",
+      "hydrogen_pump_power",
+      "temperature",
+      "pressure",
+      "fan_power",
+      "electric_heater_power"
+    ],
+    "health_state": [
+      "cell_voltage_deviation_v",
+      "cell_voltage_array"
+    ]
+  },
+  "derived_at_prediction_time": [
+    "stop_duration",
+    "time_since_last_stop",
+    "distance_since_last_stop",
+    "segment_elapsed_time",
+    "segment_elapsed_distance"
+  ]
+}

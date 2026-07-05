@@ -23,16 +23,24 @@ def choose(
     min_dwell=15,
     soc_ref=0.70,
     weights=None,
+    block_size=1,
+    max_horizon_switches=None,
 ):
     weights = DEFAULT_WEIGHTS if weights is None else weights
-    beam = [(0.0, soc, prev, dwell, prev)]
+    beam = [(0.0, soc, prev, dwell, prev, 0)]
     for j, pdem in enumerate(preview):
         cand = []
-        for cost, s, t, dw, first in beam:
+        for cost, s, t, dw, first, horizon_switches in beam:
+            must_hold = (
+                dw < min_dwell
+                or (j > 0 and block_size > 1 and j % block_size != 0)
+                or (
+                    max_horizon_switches is not None
+                    and horizon_switches >= max_horizon_switches
+                )
+            )
             allowed = (
-                [t]
-                if dw < min_dwell
-                else range(max(0, t - 1), min(len(actions), t + 2))
+                [t] if must_hold else range(max(0, t - 1), min(len(actions), t + 2))
             )
             for nt in allowed:
                 pfc = actions[nt]
@@ -62,7 +70,16 @@ def choose(
                     if nt == t and dw >= min_dwell
                     else dw + 1 if nt == t else 1
                 )
-                cand.append((cost + c, sn, nt, nd, nt if j == 0 else first))
+                cand.append(
+                    (
+                        cost + c,
+                        sn,
+                        nt,
+                        nd,
+                        nt if j == 0 else first,
+                        horizon_switches + int(nt != t),
+                    )
+                )
         if not cand:
             return prev
         beam = sorted(

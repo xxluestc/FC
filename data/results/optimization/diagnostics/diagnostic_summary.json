@@ -1,0 +1,23 @@
+{
+  "h5_mean_forecast_rmse_when_actions_differ_kw": 18.49774624223123,
+  "h5_mean_forecast_rmse_when_actions_match_kw": 3.82444909063103,
+  "paired_descriptive_wilcoxon_statistic": 115077.0,
+  "paired_descriptive_pvalue": 2.598319002496614e-12,
+  "autocorrelation_warning": "Adjacent origins overlap; p-value is descriptive, not an independent-sample causal test.",
+  "internal_vs_evaluation_alignment": {
+    "aligned": [
+      "hydrogen",
+      "degradation proxy",
+      "battery throughput proxy",
+      "switch",
+      "FC variation proxy",
+      "SOC"
+    ],
+    "mismatches": [
+      "internal objective normalizes and weights components, final table reports raw sums",
+      "SOC uses per-step preferred-FC tracking and a short terminal beam penalty rather than final-trip SOC equality",
+      "weight search was tuned for Predicted H5, not Perfect or Instant",
+      "beam search and adjacent-tier restriction are approximate, so Perfect is not a global optimum"
+    ]
+  }
+}

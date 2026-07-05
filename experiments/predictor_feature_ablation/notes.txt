@@ -1,0 +1,10 @@
+Plan:
+1. Compare Base, Route/stop, Intent, Power-chain and Health additions using only current/past fields.
+2. Use chronological 70/15/15 split with an H-second purge gap.
+3. Select each horizon's feature group on validation data only.
+4. Evaluate point power, window mean/energy, high-power F1, braking F1 and RampRisk on held-out test.
+5. Feed only the validation-selected prediction table into controller optimization.
+
+Aux/thermal is not run because the current canonical/processed table contains none of those fields.
+
+Failed run: the first implementation materialized seven duplicated float64 matrices and caused Windows memory paging. It was stopped before producing metrics. The corrected implementation stores shared float32 blocks and materializes one candidate group at a time; experiment semantics are unchanged.

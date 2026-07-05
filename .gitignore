@@ -18,6 +18,8 @@ data/results/*.csv
 !data/results/prediction_metrics.csv
 data/results/**/allocation_trajectory.csv
 data/results/**/test_demand.csv
+data/results/optimization/**/feature_selected_predictions.csv
+data/results/optimization/**/optimized_strategy_trajectories.csv
 output/
 cache/
 

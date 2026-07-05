@@ -46,6 +46,12 @@
 | `04_train_or_run_predictors.py` | 分预测域模型族及H=1/3/5/10轨迹、能量、事件指标 |
 | `05_run_power_allocation.py` | 四策略、权重搜索、置信衰减和档位/制动诊断 |
 | `06_run_all_experiments.py` | 已生成结果的文件、schema和SOC约束检查 |
+| `07_diagnose_current_controller.py` | 原始MPC目标、档位、proxy、切换和工况差异诊断 |
+| `08_audit_feature_availability.py` | processed/canonical实际字段可用性审计 |
+| `09_run_feature_group_ablation.py` | Base/路线/意图/功率链/健康字段组消融 |
+| `10_optimize_predictive_controller.py` | move blocking、驻留、趋势、置信度和权重联合搜索 |
+| `11_evaluate_pareto_candidates.py` | 校准段Pareto候选的晚期运行段泛化诊断 |
+| `12_summarize_optimization.py` | SOC等值指标、统计检验、诊断表和科研图 |
 | `plot_results.py` | 论文风格PNG/PDF图 |
 
 ## 当前验证结论

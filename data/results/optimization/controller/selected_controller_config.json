@@ -1,0 +1,20 @@
+{
+  "horizon": 5,
+  "forecast_mode": "window_mean",
+  "confidence_form": "adaptive",
+  "confidence_rate": 0.35,
+  "trend_weight": 0.5,
+  "trusted_steps": 5,
+  "forecast_block_size": 2,
+  "move_block_size": 1,
+  "max_horizon_switches": 1,
+  "min_dwell": 60,
+  "weights": {
+    "hydrogen": 0.3,
+    "degradation_proxy": 3.5,
+    "battery_use": 1.5,
+    "soc": 5.0,
+    "switch": 0.03,
+    "smooth": 0.3
+  }
+}
