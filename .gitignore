@@ -20,6 +20,8 @@ data/results/**/allocation_trajectory.csv
 data/results/**/test_demand.csv
 data/results/optimization/**/feature_selected_predictions.csv
 data/results/optimization/**/optimized_strategy_trajectories.csv
+data/processed/baseline_*.csv
+data/results/baseline/baseline_trajectory.csv
 output/
 cache/
 

@@ -1,0 +1,22 @@
+[
+  {
+    "horizon_s": 1,
+    "selected_family": "xgboost",
+    "validation_score": 2.765523754250989
+  },
+  {
+    "horizon_s": 3,
+    "selected_family": "xgboost",
+    "validation_score": 4.004128285387715
+  },
+  {
+    "horizon_s": 5,
+    "selected_family": "xgboost",
+    "validation_score": 5.908021005078226
+  },
+  {
+    "horizon_s": 10,
+    "selected_family": "xgboost",
+    "validation_score": 8.970802190890904
+  }
+]

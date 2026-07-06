@@ -28,10 +28,11 @@ def run_strategy(
     degradation_proxy,
     weights,
     confidence_decay=0.0,
+    min_dwell=15,
 ):
     soc = 0.70
     previous_tier = 0
-    dwell = 15
+    dwell = min_dwell
     rows = []
     started = time.perf_counter()
 
@@ -67,6 +68,7 @@ def run_strategy(
             hydrogen,
             degradation_proxy,
             weights=weights,
+            min_dwell=min_dwell,
         )
         fuel_cell_power = actions[tier]
         battery_power = current_demand - fuel_cell_power
@@ -97,7 +99,7 @@ def run_strategy(
                 "confidence_decay": confidence_decay,
             }
         )
-        dwell = min(15, dwell + 1) if tier == previous_tier else 1
+        dwell = min(min_dwell, dwell + 1) if tier == previous_tier else 1
         previous_tier = tier
         soc = next_state
 

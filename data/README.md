@@ -69,5 +69,6 @@
 - `results/allocation/mpc_weight_search.csv`：只在校准前缀上完成的权重与置信衰减搜索。
 - `results/allocation/*diagnostics.csv`：档位占用、各档 proxy 贡献、制动分段以及 Predicted/Perfect 动作差异。
 - `results/optimization/`：字段审计、字段组消融、控制结构/权重搜索、Pareto候选和SOC等值对照。
+- `results/baseline/`：冻结XGBoost与固定权重四策略的小型指标、裁剪审计和汇总；大型预测/轨迹表仅本地生成。
 
 百分比误差使用测试需求功率全量程归一化；报告同时保留 kW 原值，不能只引用较小的百分数。功率分配前对超出 FC+电池约束的需求进行裁剪，裁剪审计位于 `demand_clipping_audit.json`，因此控制结论属于可行域内实验。

@@ -2,6 +2,14 @@
 
 检查日期：2026-07-05。
 
+## 冻结baseline检查（2026-07-06）
+
+`python scripts/run_baseline.py --mode run` 已从现有canonical实际完成：动力学/需求功率、固定XGBoost H=1/3/5/10、固定权重四策略和汇总绘图。总运行约460秒，其中预测训练约112秒。该入口没有调用07--12优化脚本。
+
+`python scripts/run_baseline.py --mode check` 已通过；它只检查Git提交的小型CSV/JSON，不依赖原始CSV、MAT或本地绝对路径。`python scripts/06_run_all_experiments.py`也增加了baseline四策略和schema检查。
+
+依赖本地大数据的步骤：从原始CSV重建canonical、由canonical重建约70 MB需求表、训练预测并写入约数十MB预测表、写入逐秒分配轨迹。上述大文件被`.gitignore`排除；仓库只提交冻结配置、代码、小型指标、报告和PNG。
+
 ## 执行结果
 
 以下命令均已实际通过：

@@ -1,3 +1,8 @@
+"""由刘占伟性能损失表生成电流档位、退化代理和理论氢耗。
+
+中文名：02_构建电堆退化代理与氢耗表。输出proxy不是真实材料退化系数。
+"""
+
 from pathlib import Path
 import argparse, sys
 import pandas as pd
@@ -7,11 +12,13 @@ from fc_power.hydrogen_model import faraday_h2_g_s
 
 
 def main():
+    """优先取late健康状态，并按170节电堆计算功率和法拉第氢耗。"""
     p = argparse.ArgumentParser()
     p.add_argument("--liu-cost-table", type=Path, required=True)
     p.add_argument("--output", type=Path, required=True)
     a = p.parse_args()
     d = pd.read_csv(a.liu_cost_table)
+    # 固定late状态形成一张可调用档位表；不在baseline内搜索健康状态。
     if "health_state" in d:
         d = d[d.health_state.eq("late")].copy()
     out = pd.DataFrame(

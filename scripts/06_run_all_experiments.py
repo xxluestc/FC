@@ -22,6 +22,19 @@ def main() -> None:
     )
     args = parser.parse_args()
     required = {
+        Path("data/results/baseline/baseline_prediction_metrics.csv"): {
+            "horizon_s",
+            "point_rmse_kw",
+            "window_energy_mae_kwh",
+            "selected",
+        },
+        Path("data/results/baseline/baseline_allocation_metrics.csv"): {
+            "strategy",
+            "h2_kg",
+            "degradation_proxy_sum",
+            "soc_final",
+        },
+        Path("data/results/baseline/baseline_clipping_audit.json"): set(),
         Path("data/results/prediction_metrics.csv"): {
             "method",
             "horizon_s",
@@ -110,6 +123,15 @@ def main() -> None:
         "brake_aware_extratrees",
     }:
         raise RuntimeError("Horizon model-family comparison is incomplete.")
+
+    baseline = pd.read_csv("data/results/baseline/baseline_allocation_metrics.csv")
+    if set(baseline["strategy"]) != {
+        "instant",
+        "constant",
+        "perfect",
+        "predicted",
+    }:
+        raise RuntimeError("Baseline four-strategy comparison is incomplete.")
 
     allocation = pd.read_csv("data/results/allocation/allocation_metrics.csv")
     if not (allocation["soc_error"].abs() <= 0.02).all():

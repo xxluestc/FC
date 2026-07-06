@@ -1,5 +1,21 @@
 # FC：退化代理感知的燃料电池功率调控
 
+## 推荐先看：最小可运行Baseline
+
+当前项目的稳定主入口是：
+
+```powershell
+# 无原始大数据也能运行的轻量检查
+python scripts/run_baseline.py --mode check
+
+# 从已有canonical重跑完整baseline
+python scripts/run_baseline.py --mode run
+```
+
+冻结参数见`configs/baseline.yaml`。中文流程说明见`docs/baseline_project_overview.md`，逐步运行说明见`docs/baseline_runbook.md`，结果见`reports/baseline_pipeline_report.md`。
+
+`scripts/07--12`和`data/results/optimization/`属于优化实验，不是baseline默认流程。baseline不会执行字段消融、权重搜索、move blocking搜索或Pareto优化。
+
 本仓库维护以下可审计最小路线：
 
 ```text

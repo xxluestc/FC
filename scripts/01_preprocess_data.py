@@ -1,3 +1,8 @@
+"""将刘占伟21UBE0022原始日CSV转换成1秒canonical整车表。
+
+中文名：01_预处理原始整车数据。只在本地读取原始数据，不提交原始路径或文件。
+"""
+
 from pathlib import Path
 import argparse, json, sys
 
@@ -6,11 +11,13 @@ from fc_power.data.preprocess import canonicalize
 
 
 def main():
+    """解析参数，筛除故障目录文件，生成canonical和处理摘要。"""
     p = argparse.ArgumentParser()
     p.add_argument("--input-dir", type=Path, required=True)
     p.add_argument("--output", type=Path, required=True)
     p.add_argument("--summary", type=Path, required=True)
     a = p.parse_args()
+    # 故障数据不进入当前正常运行baseline；不按列号读取，字段映射在preprocess.py。
     files = sorted(
         f
         for f in a.input_dir.glob("*.csv")

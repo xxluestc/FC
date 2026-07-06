@@ -1,3 +1,8 @@
+"""构建实测需求功率，并生成独立车辆动力学基线。
+
+中文名：03_构建需求功率与车辆动力学。动力学只提供物理趋势对照。
+"""
+
 from pathlib import Path
 import argparse, json, sys
 import numpy as np, pandas as pd
@@ -10,6 +15,7 @@ from fc_power.vehicle_dynamics import VehicleParams, force_power
 
 
 def main():
+    """片段内平滑车速/求加速度，分牵引制动校准动力学功率。"""
     p = argparse.ArgumentParser()
     p.add_argument("--input", type=Path, required=True)
     p.add_argument("--output", type=Path, required=True)
@@ -20,6 +26,7 @@ def main():
     acc = np.empty(len(d))
     sm[:] = np.nan
     acc[:] = np.nan
+    # 每个segment独立处理，禁止跨停车、跨夜或数据断点做平滑/差分。
     for _, ix in d.groupby("segment_id").groups.items():
         ix = np.asarray(list(ix))
         v = d.loc[ix, "speed_mps"].interpolate().to_numpy()
@@ -32,6 +39,7 @@ def main():
     comp = force_power(sm, acc, VehicleParams())
     for k, v in comp.items():
         d[k] = v
+    # 当前实测需求定义为电机V×I/1000，保留原传感器充放电符号。
     y = d.motor_power_kw_raw_sign.to_numpy()
     x = d.p_wheel_kw.to_numpy()
     valid = np.isfinite(x) & np.isfinite(y) & (abs(y) < 300) & (abs(acc) < 4)

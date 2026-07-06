@@ -170,6 +170,27 @@ def main() -> None:
         type=Path,
         default=Path("data/results/horizon_model_comparison.csv"),
     )
+    parser.add_argument(
+        "--families",
+        nargs="+",
+        choices=FAMILIES,
+        default=list(FAMILIES),
+        help="Baseline传xgboost；多模型同时运行属于优化实验。",
+    )
+    parser.add_argument(
+        "--horizons",
+        nargs="+",
+        type=int,
+        choices=HORIZONS,
+        default=list(HORIZONS),
+        help="需要运行的预测时域（秒）。",
+    )
+    parser.add_argument(
+        "--selection",
+        type=Path,
+        default=Path("data/results/horizon_model_selection.json"),
+        help="验证集选定模型/固定单模型的记录文件。",
+    )
     args = parser.parse_args()
 
     started = time.perf_counter()
@@ -182,11 +203,11 @@ def main() -> None:
     selected_rows = []
     selections = []
 
-    for horizon in HORIZONS:
+    for horizon in args.horizons:
         train, validation, test = split_positions(indices, len(data), horizon)
         y = targets[:, :horizon]
         candidates = {}
-        for family_index, family in enumerate(FAMILIES):
+        for family_index, family in enumerate(args.families):
             model = (
                 BrakeAwareExtraTrees(2100 + horizon)
                 if family == "brake_aware_extratrees"
@@ -266,14 +287,12 @@ def main() -> None:
     metrics = comparison.merge(selection, on="horizon_s", how="left")
     metrics["selected"] = metrics["model_family"].eq(metrics["selected_family"])
     predictions = pd.DataFrame(selected_rows)
-    for path in (args.output, args.metrics, args.comparison):
+    for path in (args.output, args.metrics, args.comparison, args.selection):
         path.parent.mkdir(parents=True, exist_ok=True)
     predictions.to_csv(args.output, index=False)
     metrics.to_csv(args.metrics, index=False)
     comparison.to_csv(args.comparison, index=False)
-    Path("data/results/horizon_model_selection.json").write_text(
-        json.dumps(selections, indent=2), encoding="utf-8"
-    )
+    args.selection.write_text(json.dumps(selections, indent=2), encoding="utf-8")
     print(selection.to_string(index=False))
     print(f"total_runtime_s={time.perf_counter() - started:.1f}", flush=True)
 
