@@ -1,0 +1,61 @@
+{
+  "source_mat": "论文代码\\电堆数据\\老化参数拟合\\滤波算法\\UKF-PF老化参数区间比较\\all_data_UKF_PF.mat",
+  "source_variable": "data_UKF_PF",
+  "source_shape": [
+    6104,
+    15
+  ],
+  "source_dtype": "float64",
+  "source_nan_count_per_column": [
+    0,
+    0,
+    0,
+    0,
+    6104,
+    0,
+    0,
+    0,
+    6104,
+    0,
+    0,
+    0,
+    6104,
+    0,
+    0
+  ],
+  "point_estimate_matlab_columns": [
+    2,
+    6,
+    10
+  ],
+  "raw_theta_shape": [
+    6104,
+    3
+  ],
+  "raw_columns": [
+    "i0_stored_scale_1e7",
+    "ih_A_per_cm2",
+    "R_ohm_cm2"
+  ],
+  "physical_columns": [
+    "i0_A_per_cm2",
+    "ih_A_per_cm2",
+    "R_ohm_cm2"
+  ],
+  "unit_guess": {
+    "i0_stored": "scaled by 1e7 relative to A/cm^2",
+    "ih": "A/cm^2",
+    "R_ohm": "ohm*cm^2"
+  },
+  "unit_conversion": {
+    "i0": "stored_value * 1e-7 A/cm^2",
+    "ih": "no conversion; A/cm^2 per thesis",
+    "R_ohm": "no conversion; ohm*cm^2 per thesis"
+  },
+  "raw_values_preserved_in": "theta_ukfpf_raw_stored.* and all_data_UKF_PF_raw.*",
+  "transposed": false,
+  "rows_deleted": "none; source already has 6104 UKF-PF events",
+  "nan_count": 0,
+  "inf_count": 0,
+  "source_sha256": "4ea3df5bfeb50511375183b888e110de11b6af3d852a1ce5c37b9eca2608ece5"
+}

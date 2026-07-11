@@ -1,0 +1,12 @@
+{
+  "T_ref_C": 58.88708333333334,
+  "a_ref": 1.1026842574415214,
+  "b_ref": 0.19478201132151415,
+  "B": 0.012356427043707334,
+  "i_lim_A_cm2": 1.2015784940009275,
+  "active_area_cm2": 406.0,
+  "stack_cells": 170,
+  "energy_reference_step_s": 1.0,
+  "theta0": "mean of first 50 events",
+  "R_adapter": "R_reported / 406; medium-confidence Stage-6 inference"
+}
