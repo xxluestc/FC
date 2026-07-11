@@ -25,6 +25,9 @@ data/results/baseline/baseline_trajectory.csv
 output/
 cache/
 
+# Large generated audit tables; regenerate from local raw Excel when needed.
+experiments/**/*_processed.csv
+
 # Python
 __pycache__/
 *.py[cod]
