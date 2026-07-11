@@ -65,6 +65,30 @@ class MultiStackAllocatorTest(unittest.TestCase):
         self.assertIn(result.action.current_a[0], self.model.config.allowed_currents_a)
         self.assertIn(result.action.current_a[1], self.model.config.allowed_currents_a)
 
+    def test_instant_uses_audited_dwell_override_for_battery_safety(self):
+        from fc_power.health.gamma_process import GammaHealthState
+        from fc_power.world_model import MultiStackState, StackControlState
+
+        stack = StackControlState(
+            GammaHealthState(current_a=90.0, is_on=True), dwell_s=14.0
+        )
+        state = MultiStackState(soc=0.70, stacks=(stack, stack))
+        result = choose_instant(self.model, state, demand_power_kw=-73.0)
+        self.assertTrue(result.step.constraints.feasible)
+        self.assertTrue(result.step.constraints.safety_overrides)
+
+    def test_beam_uses_override_only_when_hard_safety_needs_it(self):
+        from fc_power.health.gamma_process import GammaHealthState
+        from fc_power.world_model import MultiStackState, StackControlState
+
+        stack = StackControlState(
+            GammaHealthState(current_a=90.0, is_on=True), dwell_s=14.0
+        )
+        state = MultiStackState(soc=0.70, stacks=(stack, stack))
+        result = choose_beam(self.model, state, [-73.0], beam_width=4)
+        self.assertTrue(result.step.constraints.feasible)
+        self.assertTrue(result.step.constraints.safety_overrides)
+
 
 if __name__ == "__main__":
     unittest.main()

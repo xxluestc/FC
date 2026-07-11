@@ -43,6 +43,7 @@ def enumerate_actions(
     state: MultiStackState,
     *,
     include_energized_idle: bool = True,
+    respect_dwell: bool = True,
 ):
     """Yield the discrete Cartesian action grid allowed by dwell memory.
 
@@ -54,7 +55,7 @@ def enumerate_actions(
         raise ValueError("state stack count does not match model")
     per_stack = []
     for stack in state.stacks:
-        if stack.dwell_s + 1e-12 < model.config.min_dwell_s:
+        if respect_dwell and stack.dwell_s + 1e-12 < model.config.min_dwell_s:
             per_stack.append(((stack.health.current_a, stack.health.is_on),))
             continue
         candidates = [(0.0, False)]
@@ -78,21 +79,34 @@ def choose_instant(
     model: MechanisticMultiStackWorldModel,
     state: MultiStackState,
     demand_power_kw: float,
+    *,
+    allow_dwell_override: bool = True,
 ) -> PlanningResult:
     """Choose the minimum-cost feasible one-step action."""
 
     best = None
     expanded = 0
     feasible = 0
-    for action in enumerate_actions(model, state):
-        expanded += 1
-        step = model.step(state, action, demand_power_kw)
-        if not step.constraints.feasible:
-            continue
-        feasible += 1
-        key = (step.cost.total, _action_tiebreak(action))
-        if best is None or key < best[0]:
-            best = (key, action, step)
+    passes = [(True, False)]
+    if allow_dwell_override:
+        passes.append((False, True))
+    for respect_dwell, override in passes:
+        for action in enumerate_actions(model, state, respect_dwell=respect_dwell):
+            expanded += 1
+            step = model.step(
+                state,
+                action,
+                demand_power_kw,
+                allow_dwell_override=override,
+            )
+            if not step.constraints.feasible:
+                continue
+            feasible += 1
+            key = (step.cost.total, _action_tiebreak(action))
+            if best is None or key < best[0]:
+                best = (key, action, step)
+        if best is not None:
+            break
     if best is None:
         raise RuntimeError("no feasible multi-stack action for the requested demand")
     return PlanningResult(best[1], best[2], best[0][0], expanded, feasible)
@@ -105,6 +119,8 @@ def choose_beam(
     *,
     beam_width: int = 16,
     terminal_soc_weight: float = 3.0,
+    allow_dwell_override: bool = True,
+    dwell_override_penalty: float = 1.0,
 ) -> PlanningResult:
     """Plan over a deterministic demand preview and execute its first action."""
 
@@ -115,27 +131,49 @@ def choose_beam(
         raise ValueError("beam_width must be positive")
     if not np.isfinite(terminal_soc_weight) or terminal_soc_weight < 0:
         raise ValueError("terminal_soc_weight must be finite and non-negative")
+    if not np.isfinite(dwell_override_penalty) or dwell_override_penalty < 0:
+        raise ValueError("dwell_override_penalty must be finite and non-negative")
 
     beam: list[_BeamNode | None] = [None]
     expanded = 0
     feasible_count = 0
     for horizon_index, demand in enumerate(preview):
         candidates: list[_BeamNode] = []
-        for node in beam:
-            node_state = state if node is None else node.state
-            base_objective = 0.0 if node is None else node.objective
-            for action in enumerate_actions(model, node_state):
-                expanded += 1
-                step = model.step(node_state, action, float(demand))
-                if not step.constraints.feasible:
-                    continue
-                feasible_count += 1
-                first_action = action if node is None else node.first_action
-                first_step = step if node is None else node.first_step
-                objective = base_objective + step.cost.total
-                candidates.append(
-                    _BeamNode(objective, step.next_state, first_action, first_step)
-                )
+        passes = [(True, False)]
+        if allow_dwell_override:
+            passes.append((False, True))
+        for respect_dwell, override in passes:
+            for node in beam:
+                node_state = state if node is None else node.state
+                base_objective = 0.0 if node is None else node.objective
+                for action in enumerate_actions(
+                    model, node_state, respect_dwell=respect_dwell
+                ):
+                    expanded += 1
+                    step = model.step(
+                        node_state,
+                        action,
+                        float(demand),
+                        allow_dwell_override=override,
+                    )
+                    if not step.constraints.feasible:
+                        continue
+                    feasible_count += 1
+                    first_action = action if node is None else node.first_action
+                    first_step = step if node is None else node.first_step
+                    objective = (
+                        base_objective
+                        + step.cost.total
+                        + dwell_override_penalty
+                        * len(step.constraints.safety_overrides)
+                    )
+                    candidates.append(
+                        _BeamNode(
+                            objective, step.next_state, first_action, first_step
+                        )
+                    )
+            if candidates:
+                break
         if not candidates:
             raise RuntimeError(
                 f"no feasible multi-stack beam node at preview index {horizon_index}"
@@ -178,6 +216,7 @@ def project_to_feasible(
     demand_power_kw: float,
     *,
     on_mismatch_penalty: float = 1.0,
+    allow_dwell_override: bool = True,
 ) -> PlanningResult:
     """Project an arbitrary policy output to the nearest feasible grid action."""
 
@@ -189,24 +228,35 @@ def project_to_feasible(
     best = None
     expanded = 0
     feasible = 0
-    for action in enumerate_actions(model, state):
-        expanded += 1
-        step = model.step(state, action, demand_power_kw)
-        if not step.constraints.feasible:
-            continue
-        feasible += 1
-        current_distance = sum(
-            ((actual - requested) / current_scale) ** 2
-            for actual, requested in zip(action.current_a, requested_action.current_a)
-        )
-        on_distance = on_mismatch_penalty * sum(
-            actual != requested
-            for actual, requested in zip(action.is_on, requested_action.is_on)
-        )
-        distance = float(current_distance + on_distance)
-        key = (distance, step.cost.total, _action_tiebreak(action))
-        if best is None or key < best[0]:
-            best = (key, action, step)
+    passes = [(True, False)]
+    if allow_dwell_override:
+        passes.append((False, True))
+    for respect_dwell, override in passes:
+        for action in enumerate_actions(model, state, respect_dwell=respect_dwell):
+            expanded += 1
+            step = model.step(
+                state,
+                action,
+                demand_power_kw,
+                allow_dwell_override=override,
+            )
+            if not step.constraints.feasible:
+                continue
+            feasible += 1
+            current_distance = sum(
+                ((actual - requested) / current_scale) ** 2
+                for actual, requested in zip(action.current_a, requested_action.current_a)
+            )
+            on_distance = on_mismatch_penalty * sum(
+                actual != requested
+                for actual, requested in zip(action.is_on, requested_action.is_on)
+            )
+            distance = float(current_distance + on_distance)
+            key = (distance, step.cost.total, _action_tiebreak(action))
+            if best is None or key < best[0]:
+                best = (key, action, step)
+        if best is not None:
+            break
     if best is None:
         raise RuntimeError("no feasible action exists for safety projection")
     return PlanningResult(best[1], best[2], best[0][0], expanded, feasible)

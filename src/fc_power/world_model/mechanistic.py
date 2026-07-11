@@ -106,6 +106,7 @@ class WorldModelConfig:
     min_dwell_s: float = 15.0
     max_ramp_a_per_s: float | None = None
     soc_reference: float = 0.70
+    soc_feedback_kw_per_soc: float = 1200.0
     power_balance_tolerance_kw: float = 1e-9
     current_match_tolerance_a: float = 1e-9
     weights: WorldCostWeights = field(default_factory=WorldCostWeights)
@@ -128,6 +129,11 @@ class WorldModelConfig:
             raise ValueError("max_ramp_a_per_s must be finite and positive")
         if not self.battery.soc_min <= self.soc_reference <= self.battery.soc_max:
             raise ValueError("soc_reference must be within battery SOC limits")
+        if (
+            not np.isfinite(self.soc_feedback_kw_per_soc)
+            or self.soc_feedback_kw_per_soc < 0
+        ):
+            raise ValueError("soc feedback gain must be finite and non-negative")
         if self.power_balance_tolerance_kw < 0:
             raise ValueError("power balance tolerance must be non-negative")
         if self.current_match_tolerance_a < 0:
@@ -174,6 +180,7 @@ class ConstraintInfo:
     battery_power_kw: float
     power_balance_error_kw: float
     next_soc: float
+    safety_overrides: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -242,6 +249,7 @@ class MechanisticMultiStackWorldModel:
         *,
         stochastic_health: bool = False,
         rng: np.random.Generator | None = None,
+        allow_dwell_override: bool = False,
     ) -> WorldStep:
         """Advance all stacks and the battery by one control interval."""
 
@@ -255,6 +263,7 @@ class MechanisticMultiStackWorldModel:
             raise ValueError("demand_power_kw must be finite")
 
         violations: list[str] = []
+        safety_overrides: list[str] = []
         stack_steps: list[StackStep] = []
         next_stack_states: list[StackControlState] = []
         allowed = np.asarray(self.config.allowed_currents_a)
@@ -277,7 +286,11 @@ class MechanisticMultiStackWorldModel:
                 rtol=0,
             )
             if changed and stack_state.dwell_s + 1e-12 < self.config.min_dwell_s:
-                violations.append(f"stack_{index}:minimum_dwell")
+                event = f"stack_{index}:minimum_dwell"
+                if allow_dwell_override:
+                    safety_overrides.append(event)
+                else:
+                    violations.append(event)
             ramp = abs(requested_current - previous.current_a)
             if (
                 self.config.max_ramp_a_per_s is not None
@@ -371,6 +384,7 @@ class MechanisticMultiStackWorldModel:
             battery_power_kw=battery_power,
             power_balance_error_kw=float(balance_error),
             next_soc=next_battery_soc,
+            safety_overrides=tuple(safety_overrides),
         )
         return WorldStep(next_state, tuple(stack_steps), cost, constraints)
 
@@ -408,6 +422,9 @@ class MechanisticMultiStackWorldModel:
             abs(item.current_a - previous.health.current_a)
             for item, previous in zip(stack_steps, state.stacks)
         ) / (n * max_current)
+        desired_battery_power = self.config.soc_feedback_kw_per_soc * (
+            state.soc - self.config.soc_reference
+        )
         components = {
             "hydrogen": hydrogen_raw / max(max_h2, 1e-12),
             "degradation_increment": degradation_raw
@@ -416,7 +433,8 @@ class MechanisticMultiStackWorldModel:
                 item.normalized_performance_loss for item in stack_steps
             )
             / n,
-            "battery_use": abs(battery_power_kw) / battery_power_reference,
+            "battery_use": abs(battery_power_kw - desired_battery_power)
+            / battery_power_reference,
             "soc": abs(next_state.soc - self.config.soc_reference) / soc_range,
             "switch": switches,
             "ramp": ramp,

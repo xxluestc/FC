@@ -92,6 +92,29 @@ class MultiStackWorldModelTest(unittest.TestCase):
         self.assertFalse(result.constraints.feasible)
         self.assertIn("stack_0:minimum_dwell", result.constraints.violations)
 
+    def test_safety_override_relaxes_dwell_but_is_audited(self):
+        stack = StackControlState(
+            GammaHealthState(current_a=90.0, is_on=True), dwell_s=14.0
+        )
+        state = MultiStackState(soc=0.70, stacks=(stack, stack))
+        result = self.model.step(
+            state,
+            MultiStackAction.from_currents([0, 0]),
+            demand_power_kw=-73.0,
+            allow_dwell_override=True,
+        )
+        self.assertTrue(result.constraints.feasible)
+        self.assertIn("stack_0:minimum_dwell", result.constraints.safety_overrides)
+
+    def test_soc_feedback_prefers_discharge_when_soc_is_high(self):
+        high_soc = self.model.initial_state(soc=0.72)
+        reference_soc = self.model.initial_state(soc=0.70)
+        action = MultiStackAction.from_currents([25, 25])
+        demand = 20.0
+        high = self.model.step(high_soc, action, demand)
+        reference = self.model.step(reference_soc, action, demand)
+        self.assertLess(high.cost.battery_use, reference.cost.battery_use)
+
 
 if __name__ == "__main__":
     unittest.main()

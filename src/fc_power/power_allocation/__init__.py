@@ -8,11 +8,17 @@ from fc_power.power_allocation.multistack_allocator import (
     power_balance,
     project_to_feasible,
 )
+from fc_power.power_allocation.multistack_baselines import (
+    choose_average,
+    choose_rotating,
+)
 
 __all__ = [
     "PlanningResult",
     "choose_beam",
+    "choose_average",
     "choose_instant",
+    "choose_rotating",
     "enumerate_actions",
     "power_balance",
     "project_to_feasible",
