@@ -1,0 +1,84 @@
+{
+  "interpretation": "Literature coefficients define relative mean action exposure; LZW theta calibrates the monotone state mapping. This is not an independent causal identification of material degradation rates.",
+  "n_events": 6104,
+  "coefficients_source": "Ghaderi 2023 Table 4, citing Pei 2008",
+  "coefficients_percent_units": {
+    "start_stop_pct_per_cycle": 0.00196,
+    "high_load_pct_per_hour": 0.00147,
+    "low_load_pct_per_hour": 0.00126,
+    "natural_on_pct_per_hour": 0.002,
+    "load_shift_pct_per_cycle": 5.93e-05
+  },
+  "terminal_total_damage_pct": 9.353028530555555,
+  "terminal_continuous_damage_pct": 6.5196955305555555,
+  "terminal_discrete_damage_pct": 2.8333329999999997,
+  "terminal_contributions_pct": {
+    "start_stop_damage_pct": 2.53624,
+    "high_load_damage_pct": 0.034688325,
+    "low_load_damage_pct": 0.07368165,
+    "natural_on_damage_pct": 6.411325555555555,
+    "load_shift_damage_pct": 0.297093
+  },
+  "terminal_contribution_fraction": {
+    "start_stop_damage_pct": 0.2711677818274923,
+    "high_load_damage_pct": 0.003708779983582448,
+    "low_load_damage_pct": 0.007877838687146978,
+    "natural_on_damage_pct": 0.6854812357954747,
+    "load_shift_damage_pct": 0.0317643637063035
+  },
+  "theta_power_law_map": {
+    "damage_reference_pct": 9.353028530555555,
+    "theta_start": [
+      1.9069999999999998e-07,
+      0.002,
+      0.0406
+    ],
+    "theta_end": [
+      1.8041612e-07,
+      0.0036604000000000003,
+      0.06342080000000001
+    ],
+    "exponents": [
+      2.0492841055036046,
+      0.7407589460816796,
+      1.6039142370027748
+    ],
+    "active_area_cm2": 406.0
+  },
+  "theta_fit_metrics": {
+    "i0_A_per_cm2": {
+      "exponent": 2.0492841055036046,
+      "rmse": 3.9386982889581363e-10,
+      "mae": 3.0704254607469856e-10,
+      "max_abs_error": 7.78616213080078e-10,
+      "r2": 0.9824979969341607
+    },
+    "ih_A_per_cm2": {
+      "exponent": 0.7407589460816796,
+      "rmse": 0.00013237926971074697,
+      "mae": 0.00010347887771755218,
+      "max_abs_error": 0.0002586205421277435,
+      "r2": 0.9406737608640221
+    },
+    "R_ohm_reported_ohm_cm2": {
+      "exponent": 1.6039142370027748,
+      "rmse": 0.000997042834884744,
+      "mae": 0.0008042645623655167,
+      "max_abs_error": 0.0022332069214660716,
+      "r2": 0.9782174318686581
+    }
+  },
+  "gamma_terminal_cv_assumption": 0.1,
+  "gamma_scale_pct": 0.13417673000740873,
+  "gamma_scale_sensitivity": {
+    "cv_05_pct": 0.033544182501852184,
+    "cv_10_pct": 0.13417673000740873,
+    "cv_20_pct": 0.5367069200296349
+  },
+  "monte_carlo_samples": 512,
+  "random_seed": 2026,
+  "terminal_mc_damage_mean_pct": 9.282029817767802,
+  "terminal_mc_damage_p05_pct": 7.930627823277381,
+  "terminal_mc_damage_p50_pct": 9.243562741894639,
+  "terminal_mc_damage_p95_pct": 10.845370887130539
+}

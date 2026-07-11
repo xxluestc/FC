@@ -20,6 +20,8 @@ def model(**overrides):
         "natural_rate_per_hour": 0.1,
         "off_rate_per_hour": 0.0,
         "ramp_increment_per_amp": 0.001,
+        "shift_increment": 0.05,
+        "shift_threshold_a": 50.0,
         "start_increment": 0.2,
         "stop_increment": 0.1,
         "failure_threshold": 100.0,
@@ -38,8 +40,9 @@ class GammaHealthModelTest(unittest.TestCase):
         self.assertAlmostEqual(result.natural_increment, 0.1)
         self.assertAlmostEqual(result.ramp_increment, 0.1)
         self.assertAlmostEqual(result.start_stop_increment, 0.2)
-        self.assertAlmostEqual(result.total_increment, 1.4)
-        self.assertAlmostEqual(result.state.degradation, 1.4)
+        self.assertAlmostEqual(result.shift_increment, 0.05)
+        self.assertAlmostEqual(result.total_increment, 1.45)
+        self.assertAlmostEqual(result.state.degradation, 1.45)
         self.assertTrue(result.state.is_on)
         self.assertEqual(result.state.start_count, 1)
 
@@ -76,6 +79,40 @@ class GammaHealthModelTest(unittest.TestCase):
         self.assertAlmostEqual(result.start_stop_increment, 0.1)
         self.assertFalse(result.state.is_on)
         self.assertEqual(result.state.stop_count, 1)
+
+    def test_zero_current_can_represent_idle_or_fully_stopped(self):
+        health = model(
+            off_rate_per_hour=0.0,
+            ramp_increment_per_amp=0.0,
+            shift_increment=0.0,
+            stop_increment=0.0,
+        )
+        stopped = health.transition(
+            GammaHealthState(), 0.0, 3600.0, stochastic=False, next_on=False
+        )
+        idle = health.transition(
+            GammaHealthState(is_on=True),
+            0.0,
+            3600.0,
+            stochastic=False,
+            next_on=True,
+        )
+        self.assertAlmostEqual(stopped.total_increment, 0.0)
+        self.assertAlmostEqual(idle.total_increment, 0.1)
+
+    def test_explicit_shift_event_can_override_current_threshold(self):
+        health = model(
+            ramp_increment_per_amp=0.0,
+            start_increment=0.0,
+            natural_rate_per_hour=0.0,
+        )
+        state = GammaHealthState(current_a=100.0, is_on=True)
+        no_shift = health.transition(
+            state, 200.0, stochastic=False, shift_event=False
+        )
+        shift = health.transition(state, 200.0, stochastic=False, shift_event=True)
+        self.assertAlmostEqual(no_shift.shift_increment, 0.0)
+        self.assertAlmostEqual(shift.shift_increment, 0.05)
 
     def test_stack_heterogeneity_scales_expected_damage(self):
         nominal = model(

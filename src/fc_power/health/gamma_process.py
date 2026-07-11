@@ -57,6 +57,8 @@ class GammaHealthParams:
     natural_rate_per_hour: float = 0.0
     off_rate_per_hour: float = 0.0
     ramp_increment_per_amp: float = 0.0
+    shift_increment: float = 0.0
+    shift_threshold_a: float | None = None
     start_increment: float = 0.0
     stop_increment: float = 0.0
     on_threshold_a: float = 1e-9
@@ -69,6 +71,7 @@ class GammaHealthParams:
             "natural_rate_per_hour": self.natural_rate_per_hour,
             "off_rate_per_hour": self.off_rate_per_hour,
             "ramp_increment_per_amp": self.ramp_increment_per_amp,
+            "shift_increment": self.shift_increment,
             "start_increment": self.start_increment,
             "stop_increment": self.stop_increment,
             "on_threshold_a": self.on_threshold_a,
@@ -78,6 +81,10 @@ class GammaHealthParams:
                 raise ValueError(f"{name} must be finite and non-negative")
         if self.gamma_scale <= 0:
             raise ValueError("gamma_scale must be positive")
+        if self.shift_threshold_a is not None and (
+            not np.isfinite(self.shift_threshold_a) or self.shift_threshold_a < 0
+        ):
+            raise ValueError("shift_threshold_a must be finite and non-negative")
         if not np.isfinite(self.heterogeneity_factor) or self.heterogeneity_factor <= 0:
             raise ValueError("heterogeneity_factor must be finite and positive")
         if self.failure_threshold is not None and (
@@ -118,6 +125,7 @@ class HealthTransition:
     expected_load_increment: float
     natural_increment: float
     ramp_increment: float
+    shift_increment: float
     start_stop_increment: float
     stochastic: bool
 
@@ -128,12 +136,14 @@ class GammaHealthModel:
     def __init__(self, params: GammaHealthParams):
         self.params = params
 
-    def expected_load_increment(self, current_a: float, dt_s: float) -> float:
+    def expected_load_increment(
+        self, current_a: float, dt_s: float, *, is_on: bool | None = None
+    ) -> float:
         """Return the expected intrinsic increment before random sampling."""
 
         self._validate_step(current_a, dt_s)
-        is_on = current_a > self.params.on_threshold_a
-        if is_on:
+        operating = current_a > self.params.on_threshold_a if is_on is None else is_on
+        if operating:
             rate = self.params.load_rate_map.rate_at(current_a)
         else:
             rate = self.params.off_rate_per_hour
@@ -147,6 +157,8 @@ class GammaHealthModel:
         *,
         stochastic: bool = True,
         rng: np.random.Generator | None = None,
+        next_on: bool | None = None,
+        shift_event: bool | None = None,
     ) -> HealthTransition:
         """Predict one action-dependent transition without mutating ``state``.
 
@@ -161,8 +173,14 @@ class GammaHealthModel:
         if not isinstance(state, GammaHealthState):
             raise TypeError("state must be GammaHealthState")
 
-        next_on = current_a > self.params.on_threshold_a
-        expected_load = self.expected_load_increment(current_a, dt_s)
+        operating = (
+            current_a > self.params.on_threshold_a if next_on is None else bool(next_on)
+        )
+        if not operating and current_a > self.params.on_threshold_a:
+            raise ValueError("a stopped stack cannot have positive current")
+        expected_load = self.expected_load_increment(
+            current_a, dt_s, is_on=operating
+        )
         if stochastic and expected_load > 0:
             generator = np.random.default_rng() if rng is None else rng
             shape = expected_load / self.params.gamma_scale
@@ -170,30 +188,51 @@ class GammaHealthModel:
         else:
             load_increment = expected_load
 
-        natural_increment = (
-            self.params.natural_rate_per_hour
-            * self.params.heterogeneity_factor
-            * dt_s
-            / 3600.0
-        )
+        natural_increment = 0.0
+        if operating:
+            natural_increment = (
+                self.params.natural_rate_per_hour
+                * self.params.heterogeneity_factor
+                * dt_s
+                / 3600.0
+            )
         ramp_increment = (
             self.params.ramp_increment_per_amp
             * abs(current_a - state.current_a)
             * self.params.heterogeneity_factor
         )
 
-        started = next_on and not state.is_on
-        stopped = state.is_on and not next_on
+        if shift_event is None:
+            shifted = (
+                self.params.shift_threshold_a is not None
+                and abs(current_a - state.current_a) > self.params.shift_threshold_a
+            )
+        else:
+            shifted = bool(shift_event)
+        shift_increment = (
+            self.params.shift_increment
+            * int(shifted)
+            * self.params.heterogeneity_factor
+        )
+
+        started = operating and not state.is_on
+        stopped = state.is_on and not operating
         start_stop_increment = self.params.heterogeneity_factor * (
             self.params.start_increment * int(started)
             + self.params.stop_increment * int(stopped)
         )
 
-        total = load_increment + natural_increment + ramp_increment + start_stop_increment
+        total = (
+            load_increment
+            + natural_increment
+            + ramp_increment
+            + shift_increment
+            + start_stop_increment
+        )
         next_state = GammaHealthState(
             degradation=state.degradation + total,
             current_a=float(current_a),
-            is_on=next_on,
+            is_on=operating,
             start_count=state.start_count + int(started),
             stop_count=state.stop_count + int(stopped),
             elapsed_s=state.elapsed_s + dt_s,
@@ -205,6 +244,7 @@ class GammaHealthModel:
             expected_load_increment=expected_load,
             natural_increment=natural_increment,
             ramp_increment=ramp_increment,
+            shift_increment=shift_increment,
             start_stop_increment=start_stop_increment,
             stochastic=stochastic,
         )
