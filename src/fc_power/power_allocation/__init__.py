@@ -1,1 +1,19 @@
 """Instant and receding-horizon power allocators."""
+
+from fc_power.power_allocation.multistack_allocator import (
+    PlanningResult,
+    choose_beam,
+    choose_instant,
+    enumerate_actions,
+    power_balance,
+    project_to_feasible,
+)
+
+__all__ = [
+    "PlanningResult",
+    "choose_beam",
+    "choose_instant",
+    "enumerate_actions",
+    "power_balance",
+    "project_to_feasible",
+]
