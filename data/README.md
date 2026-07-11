@@ -2,6 +2,37 @@
 
 本目录只保存可复现处理链路的输出。原始整车 CSV、MATLAB MAT 文件和论文不提交 Git；大体积中间表默认由脚本在本地重建。当前实验没有把韩成杰或其他论文中的退化系数混入刘占伟数据链。
 
+## 0. 新环境如何恢复关键数据
+
+仓库提供了可接手运行的压缩关键数据：
+
+```text
+data/key/
+```
+
+下载仓库后先运行：
+
+```bash
+python scripts/00_materialize_key_data.py
+```
+
+这会恢复当前 baseline 需要的 processed CSV，包括：
+
+- `processed/liu_vehicle_canonical_1s.csv`
+- `processed/baseline_power_demand.csv`
+- `processed/power_demand_from_dynamics.csv`
+- `processed/baseline_prediction_results.csv`
+- `processed/prediction_results.csv`
+- `processed/current_point_degradation_h2.csv`
+
+如果还要恢复李俊豪三台双堆发动机的三日 processed 表：
+
+```bash
+python scripts/00_materialize_key_data.py --include-li-junhao
+```
+
+注意：这些仍然是处理后的关键数据，不是原始 CSV/XLSX/MAT。原始数据、论文 PDF 和本地路径配置不进入 Git。
+
 ## 1. 当前使用的数据
 
 整车需求与预测主链使用刘占伟目录中的 7 个 `21UBE0022` 日文件：
