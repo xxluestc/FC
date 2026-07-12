@@ -1,4 +1,8 @@
 """Metrics and publication-style plotting helpers."""
+from fc_power.evaluation.degradation_sensitivity import (
+    ActionExposure,
+    extract_action_exposure,
+)
 from fc_power.evaluation.load_profiles import (
     EVENT_NAMES,
     SyntheticLoadConfig,
@@ -22,6 +26,7 @@ from fc_power.evaluation.gamma_sensitivity import (
 )
 
 __all__ = [
+    "ActionExposure",
     "EVENT_NAMES",
     "GammaExposure",
     "SyntheticLoadConfig",
@@ -33,6 +38,7 @@ __all__ = [
     "generate_event_load",
     "generate_real_block_bootstrap",
     "exposure_from_trajectory",
+    "extract_action_exposure",
     "paired_strategy_comparison",
     "run_policy",
     "sample_repeated_exposure",

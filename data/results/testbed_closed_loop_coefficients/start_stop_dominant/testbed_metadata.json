@@ -1,0 +1,115 @@
+{
+  "synthetic_load_config": {
+    "length_s": 45,
+    "dt_s": 1.0,
+    "power_min_kw": -75.0,
+    "power_max_kw": 180.0,
+    "smoothing": 0.35,
+    "noise_std_kw": 2.0,
+    "max_ramp_kw_per_s": 35.0,
+    "duration_ranges_s": [
+      [
+        8,
+        35
+      ],
+      [
+        15,
+        55
+      ],
+      [
+        8,
+        30
+      ],
+      [
+        4,
+        18
+      ]
+    ],
+    "target_ranges_kw": [
+      [
+        -2.0,
+        5.0
+      ],
+      [
+        25.0,
+        80.0
+      ],
+      [
+        95.0,
+        175.0
+      ],
+      [
+        -70.0,
+        -10.0
+      ]
+    ],
+    "transition_matrix": [
+      [
+        0.1,
+        0.75,
+        0.15,
+        0.0
+      ],
+      [
+        0.2,
+        0.15,
+        0.4,
+        0.25
+      ],
+      [
+        0.05,
+        0.45,
+        0.15,
+        0.35
+      ],
+      [
+        0.45,
+        0.45,
+        0.1,
+        0.0
+      ]
+    ],
+    "ensure_event_coverage": true
+  },
+  "seeds": [
+    2026,
+    2027,
+    2028,
+    2029,
+    2030
+  ],
+  "strategies": [
+    "average",
+    "beam_health"
+  ],
+  "n_stacks": 2,
+  "initial_damage_fraction": [
+    0.1,
+    0.7
+  ],
+  "heterogeneity_factors": [
+    1.0,
+    1.1
+  ],
+  "stochastic_health": false,
+  "gamma_terminal_cv": 0.1,
+  "health_coefficients": {
+    "start_stop_pct_per_cycle": 0.00784,
+    "high_load_pct_per_hour": 0.000735,
+    "low_load_pct_per_hour": 0.00063,
+    "natural_on_pct_per_hour": 0.001,
+    "load_shift_pct_per_cycle": 2.965e-05
+  },
+  "coefficient_multipliers": {
+    "continuous": 0.5,
+    "start_stop": 4.0,
+    "load_shift": 0.5
+  },
+  "soc_recovery_length": 75,
+  "soc_recovery_demand_kw": 30.0,
+  "stack_capacity_reserve_fraction": 0.01,
+  "beam_horizon": 16,
+  "beam_width": 3,
+  "runtime_s": 191.90345857899956,
+  "scope": "Synthetic settings are stress-test assumptions. Real-block profiles preserve measured samples but not original trip-level chronology."
+}

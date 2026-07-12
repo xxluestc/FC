@@ -1,0 +1,11 @@
+load_source,strategy,reference_strategy,metric,n_pairs,mean_delta,ci95,mean_relative_pct,lower_is_better_win_share
+real_block_bootstrap,beam_health,average,hydrogen_soc_corrected_g,1,-0.0357416238358752,0.0,-0.11325896222573271,1.0
+real_block_bootstrap,beam_health,average,main_expected_damage_increment_pct,1,-0.004271995,0.0,-100.0,1.0
+real_block_bootstrap,beam_health,average,main_performance_loss_sum,1,-0.052158535585155555,0.0,-100.0,1.0
+real_block_bootstrap,beam_health,average,battery_throughput_kwh,1,-0.01438083030629099,0.0,-20.373234870630927,1.0
+real_block_bootstrap,beam_health,average,main_aged_stack_current_share,1,-0.5,0.0,-100.0,1.0
+synthetic_event_markov,beam_health,average,hydrogen_soc_corrected_g,1,-0.13540947932155234,0.0,-0.3093141567571416,1.0
+synthetic_event_markov,beam_health,average,main_expected_damage_increment_pct,1,-0.00013508555555555562,0.0,-3.1664165089018934,1.0
+synthetic_event_markov,beam_health,average,main_performance_loss_sum,1,0.08144091146278987,0.0,12.441526945308857,0.0
+synthetic_event_markov,beam_health,average,battery_throughput_kwh,1,-0.09411568235082285,0.0,-37.95769632879005,1.0
+synthetic_event_markov,beam_health,average,main_aged_stack_current_share,1,-0.08709677419354839,0.0,-17.419354838709676,1.0

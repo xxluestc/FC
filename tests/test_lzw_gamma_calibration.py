@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 
 from fc_power.health.lzw_gamma_calibration import (
+    GhaderiPeiCoefficients,
     THETA_COLUMNS,
     cumulative_damage_components,
     fit_theta_power_law,
@@ -18,6 +19,28 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class LzwGammaCalibrationTest(unittest.TestCase):
+    def test_literature_coefficients_reject_negative_values(self):
+        with self.assertRaises(ValueError):
+            GhaderiPeiCoefficients(load_shift_pct_per_cycle=-1.0)
+        with self.assertRaises(ValueError):
+            GhaderiPeiCoefficients().scaled(continuous=-1.0)
+
+    def test_literature_coefficients_scale_mechanisms_separately(self):
+        baseline = GhaderiPeiCoefficients()
+        scaled = baseline.scaled(continuous=2.0, start_stop=3.0, load_shift=4.0)
+        self.assertEqual(
+            scaled.natural_on_pct_per_hour,
+            2 * baseline.natural_on_pct_per_hour,
+        )
+        self.assertEqual(
+            scaled.start_stop_pct_per_cycle,
+            3 * baseline.start_stop_pct_per_cycle,
+        )
+        self.assertEqual(
+            scaled.load_shift_pct_per_cycle,
+            4 * baseline.load_shift_pct_per_cycle,
+        )
+
     @classmethod
     def setUpClass(cls):
         cls.events = pd.read_csv(
@@ -63,12 +86,18 @@ class LzwGammaCalibrationTest(unittest.TestCase):
         self.assertAlmostEqual(realized, cv)
 
     def test_action_parameters_keep_idle_and_off_distinct(self):
-        params = ghaderi_gamma_params(gamma_scale=0.1)
+        coefficients = GhaderiPeiCoefficients()
+        params = ghaderi_gamma_params(gamma_scale=0.1, coefficients=coefficients)
         idle_rate = params.load_rate_map.rate_at(0.0)
         nominal_rate = params.load_rate_map.rate_at(195.0)
         high_rate = params.load_rate_map.rate_at(370.0)
-        self.assertGreater(idle_rate, nominal_rate)
-        self.assertGreater(high_rate, nominal_rate)
+        self.assertEqual(idle_rate, coefficients.low_load_pct_per_hour)
+        self.assertEqual(nominal_rate, coefficients.natural_on_pct_per_hour)
+        self.assertEqual(
+            high_rate,
+            coefficients.natural_on_pct_per_hour
+            + coefficients.high_load_pct_per_hour,
+        )
         self.assertEqual(params.off_rate_per_hour, 0.0)
 
 

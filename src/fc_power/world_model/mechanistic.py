@@ -173,6 +173,7 @@ class CostBreakdown:
     ramp: float
     raw_hydrogen_g: float
     raw_degradation_increment_pct: float
+    raw_degradation_reference_pct: float
     raw_battery_throughput_kwh: float
 
 
@@ -415,10 +416,7 @@ class MechanisticMultiStackWorldModel:
         degradation_raw = sum(
             item.degradation_increment_pct for item in stack_steps
         )
-        damage_reference = sum(
-            proxy.mapping.damage_reference_pct
-            for proxy in self.performance_proxies
-        )
+        damage_reference = self._one_step_degradation_reference()
         throughput_raw = float(
             throughput_cost(battery_power_kw, self.config.dt_s)
         )
@@ -455,5 +453,54 @@ class MechanisticMultiStackWorldModel:
             **{name: float(value) for name, value in components.items()},
             raw_hydrogen_g=float(hydrogen_raw),
             raw_degradation_increment_pct=float(degradation_raw),
+            raw_degradation_reference_pct=float(damage_reference),
             raw_battery_throughput_kwh=throughput_raw,
+        )
+
+    def _one_step_degradation_reference(self) -> float:
+        """Return a conservative maximum action-induced increment for one step.
+
+        Normalizing a one-second increment by lifetime damage suppresses the
+        degradation objective by several orders of magnitude. This reference
+        instead sums each stack's maximum continuous, ramp, shift and on/off
+        increment so the dimensionless cost is O(1) at a severe event.
+        """
+
+        references = []
+        maximum_current = max(self.config.allowed_currents_a)
+        for health_model in self.health_models:
+            params = health_model.params
+            continuous = max(
+                health_model.expected_load_increment(
+                    current,
+                    self.config.dt_s,
+                    is_on=True,
+                )
+                for current in self.config.allowed_currents_a
+            )
+            natural = (
+                params.natural_rate_per_hour
+                * params.heterogeneity_factor
+                * self.config.dt_s
+                / 3600.0
+            )
+            ramp = (
+                params.ramp_increment_per_amp
+                * maximum_current
+                * params.heterogeneity_factor
+            )
+            shift = params.shift_increment * params.heterogeneity_factor
+            switch = (
+                max(params.start_increment, params.stop_increment)
+                * params.heterogeneity_factor
+            )
+            references.append(continuous + natural + ramp + shift + switch)
+        reference = float(sum(references))
+        if reference > 0:
+            return reference
+        return float(
+            sum(
+                proxy.mapping.damage_reference_pct
+                for proxy in self.performance_proxies
+            )
         )

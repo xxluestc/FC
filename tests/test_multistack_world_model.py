@@ -8,6 +8,7 @@ from fc_power.world_model import (
     StackControlState,
     load_lzw_multistack_world_model,
 )
+from fc_power.health.lzw_gamma_calibration import GhaderiPeiCoefficients
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -46,6 +47,17 @@ class MultiStackWorldModelTest(unittest.TestCase):
             result.stacks[1].degradation_increment_pct,
             result.stacks[0].degradation_increment_pct,
         )
+
+    def test_degradation_cost_uses_one_step_not_lifetime_reference(self):
+        state = self.model.initial_state()
+        step = self.model.step(
+            state,
+            MultiStackAction.from_currents([195.0, 195.0]),
+            demand_power_kw=50.0,
+        )
+        self.assertGreater(step.cost.degradation_increment, 0.5)
+        self.assertLessEqual(step.cost.degradation_increment, 1.0)
+        self.assertLess(step.cost.raw_degradation_reference_pct, 0.01)
 
     def test_zero_current_distinguishes_energized_idle_from_off(self):
         state = self.model.initial_state()
@@ -125,6 +137,20 @@ class MultiStackWorldModelTest(unittest.TestCase):
         self.assertGreater(
             high.health_models[0].params.gamma_scale,
             low.health_models[0].params.gamma_scale,
+        )
+
+    def test_factory_exposes_literature_coefficient_sensitivity(self):
+        baseline = load_lzw_multistack_world_model(ROOT, n_stacks=2)
+        doubled = load_lzw_multistack_world_model(
+            ROOT,
+            n_stacks=2,
+            health_coefficients=GhaderiPeiCoefficients(
+                start_stop_pct_per_cycle=2 * 0.00196
+            ),
+        )
+        self.assertEqual(
+            doubled.health_models[0].params.start_increment,
+            2 * baseline.health_models[0].params.start_increment,
         )
 
 

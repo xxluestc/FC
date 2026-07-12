@@ -2,6 +2,7 @@
   "interpretation": "Literature coefficients define relative mean action exposure; LZW theta calibrates the monotone state mapping. This is not an independent causal identification of material degradation rates.",
   "n_events": 6104,
   "coefficients_source": "Ghaderi 2023 Table 4, citing Pei 2008",
+  "operating_regime_definition": "0 A uses the low-load term without natural-on time; positive current uses natural-on decay, with the high-load term added at 370 A. Start/stop and load shift are additive events.",
   "coefficients_percent_units": {
     "start_stop_pct_per_cycle": 0.00196,
     "high_load_pct_per_hour": 0.00147,
@@ -39,25 +40,25 @@
       0.06342080000000001
     ],
     "exponents": [
-      2.0492841055036046,
-      0.7407589460816796,
+      2.04928410550346,
+      0.7407589460816812,
       1.6039142370027748
     ],
     "active_area_cm2": 406.0
   },
   "theta_fit_metrics": {
     "i0_A_per_cm2": {
-      "exponent": 2.0492841055036046,
-      "rmse": 3.9386982889581363e-10,
-      "mae": 3.0704254607469856e-10,
-      "max_abs_error": 7.78616213080078e-10,
+      "exponent": 2.04928410550346,
+      "rmse": 3.938698288958136e-10,
+      "mae": 3.0704254607468507e-10,
+      "max_abs_error": 7.786162130798397e-10,
       "r2": 0.9824979969341607
     },
     "ih_A_per_cm2": {
-      "exponent": 0.7407589460816796,
+      "exponent": 0.7407589460816812,
       "rmse": 0.00013237926971074697,
-      "mae": 0.00010347887771755218,
-      "max_abs_error": 0.0002586205421277435,
+      "mae": 0.00010347887771755231,
+      "max_abs_error": 0.0002586205421277422,
       "r2": 0.9406737608640221
     },
     "R_ohm_reported_ohm_cm2": {

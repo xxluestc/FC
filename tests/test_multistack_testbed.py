@@ -36,7 +36,7 @@ class MultiStackTestbedTest(unittest.TestCase):
             (0.1, 0.7),
             stochastic_health=False,
         )
-        run = run_policy(self.model, scenario, "instant_health")
+        run = run_policy(self.model, scenario, "average")
         for index in range(2):
             before = run.trajectory[f"stack_{index}_damage_before_pct"].to_numpy()
             after = run.trajectory[f"stack_{index}_damage_after_pct"].to_numpy()

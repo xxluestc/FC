@@ -10,6 +10,7 @@ import pandas as pd
 from fc_power.health.dynamic_proxy import DynamicPerformanceLossProxy, LzwIvConditions
 from fc_power.health.gamma_process import GammaHealthModel
 from fc_power.health.lzw_gamma_calibration import (
+    GhaderiPeiCoefficients,
     ThetaPowerLawMap,
     gamma_scale_for_terminal_cv,
     ghaderi_gamma_params,
@@ -27,6 +28,7 @@ def load_lzw_multistack_world_model(
     heterogeneity_factors=None,
     config: WorldModelConfig | None = None,
     gamma_terminal_cv: float | None = None,
+    health_coefficients: GhaderiPeiCoefficients | None = None,
 ) -> MechanisticMultiStackWorldModel:
     """Load a deterministic model definition; stochasticity is chosen per step."""
 
@@ -64,10 +66,17 @@ def load_lzw_multistack_world_model(
     )
     if len(factors) != n_stacks:
         raise ValueError("heterogeneity_factors must match n_stacks")
+    coefficients = (
+        GhaderiPeiCoefficients()
+        if health_coefficients is None
+        else health_coefficients
+    )
     health_models = tuple(
         GammaHealthModel(
             ghaderi_gamma_params(
-                gamma_scale, heterogeneity_factor=factor
+                gamma_scale,
+                coefficients=coefficients,
+                heterogeneity_factor=factor,
             )
         )
         for factor in factors

@@ -116,6 +116,11 @@ def main() -> None:
         ),
         "n_events": len(events),
         "coefficients_source": "Ghaderi 2023 Table 4, citing Pei 2008",
+        "operating_regime_definition": (
+            "0 A uses the low-load term without natural-on time; positive "
+            "current uses natural-on decay, with the high-load term added at "
+            "370 A. Start/stop and load shift are additive events."
+        ),
         "coefficients_percent_units": coefficients.__dict__,
         "terminal_total_damage_pct": terminal_total,
         "terminal_continuous_damage_pct": terminal_continuous,
@@ -154,6 +159,7 @@ def main() -> None:
 - 启停/变载离散部分：{summary['terminal_discrete_damage_pct']:.6f}%
 - Gamma终点CV假设：{args.terminal_cv:.1%}
 - 对应Gamma scale：{gamma_scale:.6g} %
+- 工况口径：0 A只计低载；正电流计自然运行，370 A再叠加高载项；启停和变载作为可叠加离散事件。
 
 ## theta映射拟合
 

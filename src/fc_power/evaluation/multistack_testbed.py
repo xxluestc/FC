@@ -166,6 +166,17 @@ def run_policy(
             "hydrogen_g": executed.cost.raw_hydrogen_g,
             "battery_throughput_kwh": executed.cost.raw_battery_throughput_kwh,
             "performance_loss": executed.cost.performance_loss,
+            "objective_total": executed.cost.total,
+            "objective_hydrogen": executed.cost.hydrogen,
+            "objective_degradation_increment": executed.cost.degradation_increment,
+            "objective_degradation_reference_pct": (
+                executed.cost.raw_degradation_reference_pct
+            ),
+            "objective_performance_loss": executed.cost.performance_loss,
+            "objective_battery_use": executed.cost.battery_use,
+            "objective_soc": executed.cost.soc,
+            "objective_switch": executed.cost.switch,
+            "objective_ramp": executed.cost.ramp,
             "expected_damage_increment_pct": planned.step.cost.raw_degradation_increment_pct,
             "sampled_damage_increment_pct": executed.cost.raw_degradation_increment_pct,
             "expected_continuous_damage_increment_pct": sum(
@@ -298,6 +309,10 @@ def summarize_run(model, scenario, strategy, trajectory, final_state):
             recovery.expected_damage_increment_pct.sum()
         ),
         "performance_loss_sum": float(trajectory.performance_loss.sum()),
+        "objective_total_sum": float(trajectory.objective_total.sum()),
+        "objective_degradation_increment_sum": float(
+            trajectory.objective_degradation_increment.sum()
+        ),
         "main_performance_loss_sum": float(main.performance_loss.sum()),
         "recovery_performance_loss_sum": float(recovery.performance_loss.sum()),
         "main_hydrogen_g": float(main.hydrogen_g.sum()),

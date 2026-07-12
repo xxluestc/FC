@@ -21,6 +21,7 @@ from fc_power.evaluation import (
     paired_strategy_comparison,
     run_policy,
 )
+from fc_power.health.lzw_gamma_calibration import GhaderiPeiCoefficients
 from fc_power.world_model import load_lzw_multistack_world_model
 
 
@@ -86,6 +87,9 @@ def main() -> None:
     parser.add_argument("--beam-width", type=int, default=4)
     parser.add_argument("--stochastic-health", action="store_true")
     parser.add_argument("--gamma-terminal-cv", type=float, default=0.10)
+    parser.add_argument("--continuous-coefficient-multiplier", type=float, default=1.0)
+    parser.add_argument("--start-stop-coefficient-multiplier", type=float, default=1.0)
+    parser.add_argument("--load-shift-coefficient-multiplier", type=float, default=1.0)
     parser.add_argument(
         "--strategies", nargs="+", choices=STRATEGIES, default=list(STRATEGIES)
     )
@@ -102,6 +106,13 @@ def main() -> None:
         raise ValueError("SOC recovery length must be non-negative")
     if args.gamma_terminal_cv <= 0:
         raise ValueError("gamma terminal CV must be positive")
+    coefficient_multipliers = (
+        args.continuous_coefficient_multiplier,
+        args.start_stop_coefficient_multiplier,
+        args.load_shift_coefficient_multiplier,
+    )
+    if any(not np.isfinite(value) or value < 0 for value in coefficient_multipliers):
+        raise ValueError("coefficient multipliers must be finite and non-negative")
     if not 0 <= args.stack_capacity_reserve_fraction < 1:
         raise ValueError("stack capacity reserve fraction must lie in [0, 1)")
     if not args.seeds:
@@ -115,11 +126,17 @@ def main() -> None:
     heterogeneity_factors = (
         (1.0, 1.10) if args.n_stacks == 2 else (1.0, 1.05, 1.10)
     )
+    coefficients = GhaderiPeiCoefficients().scaled(
+        continuous=args.continuous_coefficient_multiplier,
+        start_stop=args.start_stop_coefficient_multiplier,
+        load_shift=args.load_shift_coefficient_multiplier,
+    )
     model = load_lzw_multistack_world_model(
         ROOT,
         n_stacks=args.n_stacks,
         heterogeneity_factors=heterogeneity_factors,
         gamma_terminal_cv=args.gamma_terminal_cv,
+        health_coefficients=coefficients,
     )
     trajectories, metrics = [], []
     started = time.perf_counter()
@@ -198,6 +215,12 @@ def main() -> None:
         "heterogeneity_factors": heterogeneity_factors,
         "stochastic_health": args.stochastic_health,
         "gamma_terminal_cv": args.gamma_terminal_cv,
+        "health_coefficients": asdict(coefficients),
+        "coefficient_multipliers": {
+            "continuous": args.continuous_coefficient_multiplier,
+            "start_stop": args.start_stop_coefficient_multiplier,
+            "load_shift": args.load_shift_coefficient_multiplier,
+        },
         "soc_recovery_length": args.soc_recovery_length,
         "soc_recovery_demand_kw": args.soc_recovery_demand_kw,
         "stack_capacity_reserve_fraction": args.stack_capacity_reserve_fraction,
@@ -268,6 +291,7 @@ def main() -> None:
 - 策略：{', '.join(args.strategies)}；
 - 每一步均执行“动作→Gamma/均值损伤→theta→IV/功率→下一状态”，并由代码检查状态连续性和不可逆性；
 - stochastic_health={args.stochastic_health}，Gamma终点CV={args.gamma_terminal_cv:.0%}。确定性均值用于策略公平比较；随机Gamma模式用于敏感性分析。
+- 退化系数倍率：连续{args.continuous_coefficient_multiplier:g}×、启停{args.start_stop_coefficient_multiplier:g}×、变载{args.load_shift_coefficient_multiplier:g}×。
 - 统一负载上界预留初始燃料电池容量的{args.stack_capacity_reserve_fraction:.1%}，避免在线老化后“初始极限点”变为无解；所有裁剪均保留审计列。
 - SOC恢复尾段是所有策略共同执行的标准化负载，用于把初始/末端电池能量拉回同一口径，不属于原始随机负载。
 

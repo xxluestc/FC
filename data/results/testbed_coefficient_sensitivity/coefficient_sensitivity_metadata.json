@@ -1,0 +1,36 @@
+{
+  "source_trajectory": "/workspace/scratch/31a2d176184b/FC/data/results/testbed_multiseed/testbed_trajectory.csv",
+  "source_metadata": "/workspace/scratch/31a2d176184b/FC/data/results/testbed_multiseed/testbed_metadata.json",
+  "baseline_coefficients": {
+    "start_stop_pct_per_cycle": 0.00196,
+    "high_load_pct_per_hour": 0.00147,
+    "low_load_pct_per_hour": 0.00126,
+    "natural_on_pct_per_hour": 0.002,
+    "load_shift_pct_per_cycle": 5.93e-05
+  },
+  "continuous_multipliers": [
+    0.5,
+    1.0,
+    2.0
+  ],
+  "start_stop_multipliers": [
+    0.25,
+    0.5,
+    1.0,
+    2.0,
+    4.0
+  ],
+  "load_shift_multipliers": [
+    0.25,
+    0.5,
+    1.0,
+    2.0,
+    4.0
+  ],
+  "n_stacks": 2,
+  "heterogeneity_factors": [
+    1.0,
+    1.1
+  ],
+  "scope": "Fixed-action exposure reweighting. It tests evaluation robustness but does not re-plan actions or replay health-dependent power."
+}

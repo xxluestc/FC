@@ -42,6 +42,36 @@ class GhaderiPeiCoefficients:
     natural_on_pct_per_hour: float = 0.002
     load_shift_pct_per_cycle: float = 5.93e-5
 
+    def __post_init__(self) -> None:
+        for name, value in asdict(self).items():
+            if not np.isfinite(value) or value < 0:
+                raise ValueError(f"{name} must be finite and non-negative")
+
+    def scaled(
+        self,
+        *,
+        continuous: float = 1.0,
+        start_stop: float = 1.0,
+        load_shift: float = 1.0,
+    ) -> "GhaderiPeiCoefficients":
+        """Scale continuous regimes and discrete event mechanisms separately."""
+
+        multipliers = {
+            "continuous": continuous,
+            "start_stop": start_stop,
+            "load_shift": load_shift,
+        }
+        for name, value in multipliers.items():
+            if not np.isfinite(value) or value < 0:
+                raise ValueError(f"{name} multiplier must be finite and non-negative")
+        return GhaderiPeiCoefficients(
+            start_stop_pct_per_cycle=self.start_stop_pct_per_cycle * start_stop,
+            high_load_pct_per_hour=self.high_load_pct_per_hour * continuous,
+            low_load_pct_per_hour=self.low_load_pct_per_hour * continuous,
+            natural_on_pct_per_hour=self.natural_on_pct_per_hour * continuous,
+            load_shift_pct_per_cycle=self.load_shift_pct_per_cycle * load_shift,
+        )
+
 
 @dataclass(frozen=True)
 class ThetaPowerLawMap:
@@ -243,11 +273,15 @@ def ghaderi_gamma_params(
 
     rates = []
     for current in CURRENT_LEVELS_A:
-        rate = coefficients.natural_on_pct_per_hour
         if current == 0:
-            rate += coefficients.low_load_pct_per_hour
-        if current == max(CURRENT_LEVELS_A):
-            rate += coefficients.high_load_pct_per_hour
+            rate = coefficients.low_load_pct_per_hour
+        elif current == max(CURRENT_LEVELS_A):
+            rate = (
+                coefficients.natural_on_pct_per_hour
+                + coefficients.high_load_pct_per_hour
+            )
+        else:
+            rate = coefficients.natural_on_pct_per_hour
         rates.append(rate)
     return GammaHealthParams(
         load_rate_map=LoadRateMap(CURRENT_LEVELS_A, tuple(rates)),

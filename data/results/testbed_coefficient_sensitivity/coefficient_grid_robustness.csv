@@ -1,0 +1,3 @@
+load_source,grid_points,mean_beam_lower_grid_share,ci95_beam_lower_grid_share,all_seed_beam_lower_grid_share,sign_reversal_grid_share,minimum_mean_delta_pct,maximum_mean_delta_pct
+real_block_bootstrap,75,1.0,0.4,0.0,0.0,-0.0013212653333333337,-8.411383333333333e-05
+synthetic_event_markov,75,1.0,0.06666666666666667,0.0,0.0,-0.0001909118333333338,-1.3926958333332958e-05
