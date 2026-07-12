@@ -13,7 +13,9 @@ from fc_power.evaluation.load_profiles import (
 from fc_power.evaluation.zuo_load_calibration import (
     ZUO_FAST_TRANSITION,
     ZUO_SLOW_TRANSITION,
+    blend_transition_matrices,
     estimate_segmented_transitions,
+    generate_zuo_markov_system_load,
     split_at_largest_segment_gap,
 )
 
@@ -115,6 +117,37 @@ class LoadProfilesTest(unittest.TestCase):
             self.assertEqual(values.shape, (4, 4))
             self.assertTrue((values >= 0).all())
             np.testing.assert_allclose(values.sum(axis=1), 1.0)
+
+    def test_zuo_matrix_blend_keeps_explicit_endpoints(self):
+        empirical = np.eye(4)
+        fast = np.asarray(ZUO_FAST_TRANSITION)
+        np.testing.assert_allclose(
+            blend_transition_matrices(empirical, fast, 0.0), fast
+        )
+        np.testing.assert_allclose(
+            blend_transition_matrices(empirical, fast, 1.0), empirical
+        )
+        middle = blend_transition_matrices(empirical, fast, 0.5)
+        np.testing.assert_allclose(middle.sum(axis=1), 1.0)
+
+    def test_zuo_system_load_is_reproducible_and_piecewise_constant(self):
+        kwargs = {
+            "length_s": 95,
+            "decision_interval_s": 30,
+            "system_power_reference_kw": 80.0,
+            "transition_matrix": ZUO_FAST_TRANSITION,
+            "initial_probabilities": [1.0, 0.0, 0.0, 0.0],
+        }
+        first = generate_zuo_markov_system_load(8, **kwargs)
+        second = generate_zuo_markov_system_load(8, **kwargs)
+        self.assertTrue(first.equals(second))
+        self.assertEqual(len(first), 95)
+        self.assertTrue(first.markov_decision.iloc[[0, 30, 60, 90]].all())
+        self.assertEqual(int(first.markov_decision.sum()), 4)
+        self.assertTrue((first.demand_power_kw > 0).all())
+        self.assertLessEqual(first.demand_power_kw.max(), 80.0)
+        for _, block in first.groupby(first.step // 30):
+            self.assertEqual(block.demand_power_kw.nunique(), 1)
 
 
 if __name__ == "__main__":

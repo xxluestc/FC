@@ -51,6 +51,15 @@ class MultiStackWorldModelTest(unittest.TestCase):
                 power_interface="fc_only",
                 fc_power_tracking_tolerance_kw=-1.0,
             )
+        with self.assertRaisesRegex(ValueError, "min_online_stacks"):
+            load_lzw_multistack_world_model(
+                ROOT,
+                n_stacks=3,
+                config=WorldModelConfig(
+                    min_online_stacks=3,
+                    max_online_stacks=2,
+                ),
+            )
 
     def test_high_load_has_larger_health_increment(self):
         state = self.model.initial_state()
@@ -178,6 +187,7 @@ class MultiStackWorldModelTest(unittest.TestCase):
 
     def test_fc_only_interface_exposes_tracking_without_battery(self):
         config = WorldModelConfig(
+            min_online_stacks=2,
             max_online_stacks=2,
             power_interface="fc_only",
             fc_power_tracking_tolerance_kw=5.5,
@@ -215,6 +225,7 @@ class MultiStackWorldModelTest(unittest.TestCase):
         self.assertFalse(
             any(item.startswith("battery:") for item in infeasible.constraints.violations)
         )
+        self.assertIn("system:min_online_stacks", infeasible.constraints.violations)
 
     def test_minimum_dwell_violation_is_reported(self):
         stack = StackControlState(

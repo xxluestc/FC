@@ -140,6 +140,7 @@ class MultiStackTestbedTest(unittest.TestCase):
             ROOT,
             n_stacks=3,
             config=WorldModelConfig(
+                min_online_stacks=2,
                 max_online_stacks=2,
                 power_interface="fc_only",
                 fc_power_tracking_tolerance_kw=5.5,
@@ -160,6 +161,7 @@ class MultiStackTestbedTest(unittest.TestCase):
         self.assertLessEqual(run.metrics["fc_tracking_max_abs_kw"], 5.5)
         self.assertEqual(run.metrics["fc_tracking_within_tolerance_share"], 1.0)
         self.assertLessEqual(run.metrics["online_stack_count_max"], 2)
+        self.assertEqual(run.metrics["online_stack_count_mean"], 2.0)
         self.assertFalse(run.metrics["soc_metrics_applicable"])
         self.assertTrue(np.isnan(run.metrics["hydrogen_soc_corrected_g"]))
         self.assertTrue(np.isnan(run.metrics["battery_throughput_kwh"]))

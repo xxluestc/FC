@@ -106,6 +106,7 @@ class WorldModelConfig:
     )
     min_dwell_s: float = 15.0
     max_ramp_a_per_s: float | None = None
+    min_online_stacks: int = 0
     max_online_stacks: int | None = None
     power_interface: str = "battery"
     fc_power_tracking_tolerance_kw: float | None = None
@@ -131,6 +132,12 @@ class WorldModelConfig:
             not np.isfinite(self.max_ramp_a_per_s) or self.max_ramp_a_per_s <= 0
         ):
             raise ValueError("max_ramp_a_per_s must be finite and positive")
+        if (
+            isinstance(self.min_online_stacks, bool)
+            or not isinstance(self.min_online_stacks, int)
+            or self.min_online_stacks < 0
+        ):
+            raise ValueError("min_online_stacks must be a non-negative integer")
         if self.max_online_stacks is not None and (
             isinstance(self.max_online_stacks, bool)
             or not isinstance(self.max_online_stacks, int)
@@ -243,6 +250,13 @@ class MechanisticMultiStackWorldModel:
             and self.config.max_online_stacks > len(self.health_models)
         ):
             raise ValueError("max_online_stacks cannot exceed the stack count")
+        if self.config.min_online_stacks > len(self.health_models):
+            raise ValueError("min_online_stacks cannot exceed the stack count")
+        if (
+            self.config.max_online_stacks is not None
+            and self.config.min_online_stacks > self.config.max_online_stacks
+        ):
+            raise ValueError("min_online_stacks cannot exceed max_online_stacks")
 
     @property
     def n_stacks(self) -> int:
@@ -323,6 +337,8 @@ class MechanisticMultiStackWorldModel:
             and effective_online > self.config.max_online_stacks
         ):
             violations.append("system:max_online_stacks")
+        if demand_power_kw > 0 and effective_online < self.config.min_online_stacks:
+            violations.append("system:min_online_stacks")
 
         for index, (stack_state, requested_current, requested_on) in enumerate(
             zip(state.stacks, action.current_a, action.is_on)

@@ -152,6 +152,88 @@ def estimate_segmented_transitions(
     )
 
 
+def blend_transition_matrices(empirical, literature, empirical_weight: float):
+    """Convexly blend two audited stochastic matrices with an explicit weight."""
+
+    if not np.isfinite(empirical_weight) or not 0 <= empirical_weight <= 1:
+        raise ValueError("empirical_weight must lie in [0, 1]")
+    empirical = _validated_transition_matrix(empirical, "empirical")
+    literature = _validated_transition_matrix(literature, "literature")
+    blended = empirical_weight * empirical + (1 - empirical_weight) * literature
+    return blended / blended.sum(axis=1, keepdims=True)
+
+
+def generate_zuo_markov_system_load(
+    seed: int,
+    *,
+    length_s: int,
+    decision_interval_s: int,
+    system_power_reference_kw: float,
+    transition_matrix,
+    initial_probabilities=None,
+    state_fractions=ZUO_LOAD_LEVEL_FRACTIONS,
+    source: str = "zuo_calibrated_markov",
+) -> pd.DataFrame:
+    """Generate a piecewise-constant N+1 system demand from four load states."""
+
+    if length_s <= 0 or decision_interval_s <= 0:
+        raise ValueError("length_s and decision_interval_s must be positive")
+    if not np.isfinite(system_power_reference_kw) or system_power_reference_kw <= 0:
+        raise ValueError("system_power_reference_kw must be finite and positive")
+    matrix = _validated_transition_matrix(transition_matrix, "transition")
+    fractions = np.asarray(state_fractions, dtype=float)
+    if (
+        fractions.shape != (4,)
+        or np.any(~np.isfinite(fractions))
+        or np.any(fractions <= 0)
+        or np.any(np.diff(fractions) <= 0)
+        or fractions[-1] > 1
+    ):
+        raise ValueError("state_fractions must be four increasing values in (0, 1]")
+    if initial_probabilities is None:
+        initial = np.full(4, 0.25)
+    else:
+        initial = np.asarray(initial_probabilities, dtype=float)
+        if (
+            initial.shape != (4,)
+            or np.any(~np.isfinite(initial))
+            or np.any(initial < 0)
+            or initial.sum() <= 0
+        ):
+            raise ValueError("initial_probabilities must be four non-negative values")
+        initial = initial / initial.sum()
+
+    rng = np.random.default_rng(seed)
+    state = int(rng.choice(4, p=initial))
+    previous_state = None
+    event_id = -1
+    rows = []
+    for block_start in range(0, length_s, decision_interval_s):
+        changed = previous_state is None or state != previous_state
+        if changed:
+            event_id += 1
+        block_stop = min(block_start + decision_interval_s, length_s)
+        demand = float(fractions[state] * system_power_reference_kw)
+        for step in range(block_start, block_stop):
+            rows.append(
+                {
+                    "step": step,
+                    "time_s": float(step),
+                    "demand_power_kw": demand,
+                    "load_state": state,
+                    "event": f"load_state_{state}",
+                    "event_id": event_id,
+                    "event_boundary": changed and step == block_start,
+                    "markov_decision": step == block_start,
+                    "source": source,
+                    "seed": seed,
+                }
+            )
+        previous_state = state
+        state = int(rng.choice(4, p=matrix[state]))
+    return pd.DataFrame(rows)
+
+
 def _row_probabilities(counts: np.ndarray) -> np.ndarray:
     totals = counts.sum(axis=1, keepdims=True)
     return np.divide(
@@ -160,6 +242,15 @@ def _row_probabilities(counts: np.ndarray) -> np.ndarray:
         out=np.full(counts.shape, np.nan, dtype=float),
         where=totals > 0,
     )
+
+
+def _validated_transition_matrix(values, name: str) -> np.ndarray:
+    matrix = np.asarray(values, dtype=float)
+    if matrix.shape != (4, 4) or np.any(~np.isfinite(matrix)) or np.any(matrix < 0):
+        raise ValueError(f"{name} transition matrix must be finite non-negative 4x4")
+    if not np.allclose(matrix.sum(axis=1), 1.0):
+        raise ValueError(f"{name} transition matrix rows must sum to one")
+    return matrix
 
 
 def _segment_bootstrap_intervals(segment_counts, samples: int, seed: int):

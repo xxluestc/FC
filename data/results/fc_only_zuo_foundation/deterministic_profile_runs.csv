@@ -1,0 +1,3 @@
+load_source,load_seed,n_steps,constraint_violation_steps,fc_tracking_mae_kw,fc_tracking_max_abs_kw,fc_tracking_within_tolerance_share,online_stack_count_max,online_stack_count_mean,hydrogen_g,expected_damage_increment_pct,final_damage_range_pct
+fast_blend_50,2026,120,0,0.36144113721246285,1.3073696201747822,1.0,2,2.0,76.71955101728472,0.0042104566666666685,6.545093304722222
+slow_blend_50,2027,120,0,1.3073701604910128,1.3073712145562908,1.0,2,2.0,57.53966326296354,0.004128766666666669,6.545093304722222
