@@ -76,6 +76,7 @@ class WorldCostWeights:
     hydrogen: float = 0.45
     degradation_increment: float = 1.0
     performance_loss: float = 0.25
+    power_tracking: float = 5.0
     battery_use: float = 1.5
     soc: float = 3.0
     switch: float = 0.08
@@ -106,6 +107,8 @@ class WorldModelConfig:
     min_dwell_s: float = 15.0
     max_ramp_a_per_s: float | None = None
     max_online_stacks: int | None = None
+    power_interface: str = "battery"
+    fc_power_tracking_tolerance_kw: float | None = None
     soc_reference: float = 0.70
     soc_feedback_kw_per_soc: float = 1200.0
     power_balance_tolerance_kw: float = 1e-9
@@ -134,6 +137,20 @@ class WorldModelConfig:
             or self.max_online_stacks <= 0
         ):
             raise ValueError("max_online_stacks must be a positive integer or None")
+        if self.power_interface not in {"battery", "fc_only"}:
+            raise ValueError("power_interface must be 'battery' or 'fc_only'")
+        if self.fc_power_tracking_tolerance_kw is not None and (
+            not np.isfinite(self.fc_power_tracking_tolerance_kw)
+            or self.fc_power_tracking_tolerance_kw < 0
+        ):
+            raise ValueError(
+                "fc_power_tracking_tolerance_kw must be finite and non-negative"
+            )
+        if (
+            self.power_interface == "fc_only"
+            and self.fc_power_tracking_tolerance_kw is None
+        ):
+            raise ValueError("fc_only mode requires an explicit tracking tolerance")
         if not self.battery.soc_min <= self.soc_reference <= self.battery.soc_max:
             raise ValueError("soc_reference must be within battery SOC limits")
         if (
@@ -174,6 +191,7 @@ class CostBreakdown:
     hydrogen: float
     degradation_increment: float
     performance_loss: float
+    power_tracking: float
     battery_use: float
     soc: float
     switch: float
@@ -181,6 +199,7 @@ class CostBreakdown:
     raw_hydrogen_g: float
     raw_degradation_increment_pct: float
     raw_degradation_reference_pct: float
+    raw_power_tracking_error_kw: float
     raw_battery_throughput_kwh: float
 
 
@@ -193,6 +212,7 @@ class ConstraintInfo:
     battery_power_kw: float
     power_balance_error_kw: float
     next_soc: float
+    power_interface: str
     safety_overrides: tuple[str, ...] = ()
 
 
@@ -393,29 +413,51 @@ class MechanisticMultiStackWorldModel:
             )
 
         total_stack_power = float(sum(item.power_kw for item in stack_steps))
-        battery_power = float(demand_power_kw - total_stack_power)
-        next_battery_soc = float(
-            next_soc(state.soc, battery_power, self.config.dt_s, self.config.battery)
-        )
-        balance_error = total_stack_power + battery_power - demand_power_kw
-        battery = self.config.battery
-        if battery_power < battery.charge_power_limit_kw - 1e-12:
-            violations.append("battery:charge_power_limit")
-        if battery_power > battery.discharge_power_limit_kw + 1e-12:
-            violations.append("battery:discharge_power_limit")
-        if next_battery_soc < battery.soc_min - 1e-12:
-            violations.append("battery:soc_min")
-        if next_battery_soc > battery.soc_max + 1e-12:
-            violations.append("battery:soc_max")
-        if abs(balance_error) > self.config.power_balance_tolerance_kw:
-            violations.append("system:power_balance")
+        tracking_error = float(total_stack_power - demand_power_kw)
+        if self.config.power_interface == "battery":
+            battery_power = float(-tracking_error)
+            next_battery_soc = float(
+                next_soc(
+                    state.soc,
+                    battery_power,
+                    self.config.dt_s,
+                    self.config.battery,
+                )
+            )
+            balance_error = total_stack_power + battery_power - demand_power_kw
+            battery = self.config.battery
+            if battery_power < battery.charge_power_limit_kw - 1e-12:
+                violations.append("battery:charge_power_limit")
+            if battery_power > battery.discharge_power_limit_kw + 1e-12:
+                violations.append("battery:discharge_power_limit")
+            if next_battery_soc < battery.soc_min - 1e-12:
+                violations.append("battery:soc_min")
+            if next_battery_soc > battery.soc_max + 1e-12:
+                violations.append("battery:soc_max")
+            if abs(balance_error) > self.config.power_balance_tolerance_kw:
+                violations.append("system:power_balance")
+        else:
+            battery_power = 0.0
+            next_battery_soc = state.soc
+            balance_error = tracking_error
+            if (
+                abs(tracking_error)
+                > self.config.fc_power_tracking_tolerance_kw + 1e-12
+            ):
+                violations.append("system:fc_power_tracking")
 
         next_state = MultiStackState(
             soc=next_battery_soc,
             stacks=tuple(next_stack_states),
             elapsed_s=state.elapsed_s + self.config.dt_s,
         )
-        cost = self._cost(state, next_state, stack_steps, battery_power)
+        cost = self._cost(
+            state,
+            next_state,
+            stack_steps,
+            battery_power,
+            tracking_error,
+        )
         constraints = ConstraintInfo(
             feasible=not violations,
             violations=tuple(violations),
@@ -424,6 +466,7 @@ class MechanisticMultiStackWorldModel:
             battery_power_kw=battery_power,
             power_balance_error_kw=float(balance_error),
             next_soc=next_battery_soc,
+            power_interface=self.config.power_interface,
             safety_overrides=tuple(safety_overrides),
         )
         return WorldStep(next_state, tuple(stack_steps), cost, constraints)
@@ -434,6 +477,7 @@ class MechanisticMultiStackWorldModel:
         next_state: MultiStackState,
         stack_steps: list[StackStep],
         battery_power_kw: float,
+        power_tracking_error_kw: float,
     ) -> CostBreakdown:
         n = self.n_stacks
         weights = self.config.weights
@@ -446,9 +490,7 @@ class MechanisticMultiStackWorldModel:
             item.degradation_increment_pct for item in stack_steps
         )
         damage_reference = self._one_step_degradation_reference()
-        throughput_raw = float(
-            throughput_cost(battery_power_kw, self.config.dt_s)
-        )
+        throughput_raw = float(throughput_cost(battery_power_kw, self.config.dt_s))
         battery_power_reference = max(
             abs(self.config.battery.charge_power_limit_kw),
             abs(self.config.battery.discharge_power_limit_kw),
@@ -459,9 +501,22 @@ class MechanisticMultiStackWorldModel:
             abs(item.current_a - previous.health.current_a)
             for item, previous in zip(stack_steps, state.stacks)
         ) / (n * max_current)
-        desired_battery_power = self.config.soc_feedback_kw_per_soc * (
-            state.soc - self.config.soc_reference
-        )
+        if self.config.power_interface == "battery":
+            desired_battery_power = self.config.soc_feedback_kw_per_soc * (
+                state.soc - self.config.soc_reference
+            )
+            battery_use = (
+                abs(battery_power_kw - desired_battery_power)
+                / battery_power_reference
+            )
+            soc_cost = abs(next_state.soc - self.config.soc_reference) / soc_range
+            power_tracking = 0.0
+        else:
+            battery_use = 0.0
+            soc_cost = 0.0
+            power_tracking = abs(power_tracking_error_kw) / max(
+                self.fc_power_reference_kw(), 1e-12
+            )
         components = {
             "hydrogen": hydrogen_raw / max(max_h2, 1e-12),
             "degradation_increment": degradation_raw
@@ -470,9 +525,9 @@ class MechanisticMultiStackWorldModel:
                 item.normalized_performance_loss for item in stack_steps
             )
             / n,
-            "battery_use": abs(battery_power_kw - desired_battery_power)
-            / battery_power_reference,
-            "soc": abs(next_state.soc - self.config.soc_reference) / soc_range,
+            "power_tracking": power_tracking,
+            "battery_use": battery_use,
+            "soc": soc_cost,
             "switch": switches,
             "ramp": ramp,
         }
@@ -483,8 +538,25 @@ class MechanisticMultiStackWorldModel:
             raw_hydrogen_g=float(hydrogen_raw),
             raw_degradation_increment_pct=float(degradation_raw),
             raw_degradation_reference_pct=float(damage_reference),
+            raw_power_tracking_error_kw=float(power_tracking_error_kw),
             raw_battery_throughput_kwh=throughput_raw,
         )
+
+    def fc_power_reference_kw(self) -> float:
+        """Healthy aggregate capacity for stable FC-only cost normalization."""
+
+        maximum_current = max(self.config.allowed_currents_a)
+        capacities = sorted(
+            (
+                float(
+                    proxy.evaluate(0.0, [maximum_current])["stack_power_kw"][0]
+                )
+                for proxy in self.performance_proxies
+            ),
+            reverse=True,
+        )
+        online_limit = self.config.max_online_stacks or self.n_stacks
+        return float(sum(capacities[:online_limit]))
 
     def _one_step_degradation_reference(self) -> float:
         """Return a conservative maximum action-induced increment for one step.

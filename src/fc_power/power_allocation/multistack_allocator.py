@@ -139,6 +139,9 @@ def choose_beam(
         raise ValueError("terminal_soc_weight must be finite and non-negative")
     if not np.isfinite(dwell_override_penalty) or dwell_override_penalty < 0:
         raise ValueError("dwell_override_penalty must be finite and non-negative")
+    effective_terminal_soc_weight = (
+        0.0 if model.config.power_interface == "fc_only" else terminal_soc_weight
+    )
 
     beam: list[_BeamNode | None] = [None]
     expanded = 0
@@ -188,7 +191,7 @@ def choose_beam(
             candidates,
             key=lambda node: (
                 node.objective
-                + terminal_soc_weight
+                + effective_terminal_soc_weight
                 * abs(node.state.soc - model.config.soc_reference),
                 _action_tiebreak(node.first_action),
             ),
@@ -198,12 +201,12 @@ def choose_beam(
         beam,
         key=lambda node: (
             node.objective
-            + terminal_soc_weight
+            + effective_terminal_soc_weight
             * abs(node.state.soc - model.config.soc_reference),
             _action_tiebreak(node.first_action),
         ),
     )
-    final_objective = best.objective + terminal_soc_weight * abs(
+    final_objective = best.objective + effective_terminal_soc_weight * abs(
         best.state.soc - model.config.soc_reference
     )
     return PlanningResult(
@@ -279,6 +282,9 @@ def choose_terminal_soc_recovery(
     labelled recovery tail.  Hydrogen and degradation incurred during recovery
     remain in each strategy's total metrics.
     """
+
+    if model.config.power_interface == "fc_only":
+        raise ValueError("SOC recovery is not available in fc_only mode")
 
     best = None
     expanded = 0

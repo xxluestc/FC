@@ -10,7 +10,7 @@ from fc_power.evaluation import (
     paired_strategy_comparison,
     run_policy,
 )
-from fc_power.world_model import load_lzw_multistack_world_model
+from fc_power.world_model import WorldModelConfig, load_lzw_multistack_world_model
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -134,6 +134,80 @@ class MultiStackTestbedTest(unittest.TestCase):
         run = run_policy(model, scenario, "instant_health")
         self.assertIn("stack_2_final_damage_pct", run.metrics)
         self.assertEqual(run.metrics["constraint_violation_steps"], 0)
+
+    def test_fc_only_runner_reports_tracking_and_no_battery_metrics(self):
+        model = load_lzw_multistack_world_model(
+            ROOT,
+            n_stacks=3,
+            config=WorldModelConfig(
+                max_online_stacks=2,
+                power_interface="fc_only",
+                fc_power_tracking_tolerance_kw=5.5,
+            ),
+        )
+        scenario = TestScenario(
+            "fc_only",
+            self.demand(20, 40.0),
+            (0.1, 0.4, 0.8),
+            initial_soc=0.61,
+            stochastic_health=False,
+        )
+        run = run_policy(model, scenario, "instant_health")
+        self.assertTrue((run.trajectory.battery_power_kw == 0.0).all())
+        self.assertTrue((run.trajectory.soc == 0.61).all())
+        self.assertEqual(run.metrics["power_interface"], "fc_only")
+        self.assertEqual(run.metrics["constraint_violation_steps"], 0)
+        self.assertLessEqual(run.metrics["fc_tracking_max_abs_kw"], 5.5)
+        self.assertEqual(run.metrics["fc_tracking_within_tolerance_share"], 1.0)
+        self.assertLessEqual(run.metrics["online_stack_count_max"], 2)
+        self.assertFalse(run.metrics["soc_metrics_applicable"])
+        self.assertTrue(np.isnan(run.metrics["hydrogen_soc_corrected_g"]))
+        self.assertTrue(np.isnan(run.metrics["battery_throughput_kwh"]))
+
+    def test_fc_only_runner_rejects_soc_recovery_tail(self):
+        model = load_lzw_multistack_world_model(
+            ROOT,
+            n_stacks=3,
+            config=WorldModelConfig(
+                max_online_stacks=2,
+                power_interface="fc_only",
+                fc_power_tracking_tolerance_kw=5.5,
+            ),
+        )
+        demand = self.demand(2, 40.0)
+        demand["is_soc_recovery"] = [False, True]
+        scenario = TestScenario("invalid_recovery", demand, (0.1, 0.4, 0.8))
+        with self.assertRaisesRegex(ValueError, "SOC recovery"):
+            run_policy(model, scenario, "instant_health")
+
+    def test_fc_only_beam_runner_tracks_and_freezes_soc(self):
+        model = load_lzw_multistack_world_model(
+            ROOT,
+            n_stacks=3,
+            config=WorldModelConfig(
+                max_online_stacks=2,
+                power_interface="fc_only",
+                fc_power_tracking_tolerance_kw=5.5,
+            ),
+        )
+        scenario = TestScenario(
+            "fc_only_beam",
+            self.demand(4, 40.0),
+            (0.1, 0.4, 0.8),
+            initial_soc=0.58,
+            stochastic_health=False,
+        )
+        run = run_policy(
+            model,
+            scenario,
+            "beam_health",
+            beam_horizon=2,
+            beam_width=2,
+        )
+        self.assertEqual(run.metrics["constraint_violation_steps"], 0)
+        self.assertEqual(run.metrics["fc_tracking_within_tolerance_share"], 1.0)
+        self.assertTrue((run.trajectory.soc == 0.58).all())
+        self.assertTrue((run.trajectory.battery_power_kw == 0.0).all())
 
     def test_strategy_statistics_are_paired_by_load_and_health_seed(self):
         rows = []

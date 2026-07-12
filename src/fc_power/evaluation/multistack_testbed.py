@@ -117,6 +117,12 @@ def run_policy(
     )
     rng = np.random.default_rng(scenario.health_seed)
     demand = scenario.demand.demand_power_kw.to_numpy(dtype=float)
+    if (
+        model.config.power_interface == "fc_only"
+        and "is_soc_recovery" in scenario.demand
+        and bool(scenario.demand.is_soc_recovery.any())
+    ):
+        raise ValueError("fc_only scenarios cannot contain an SOC recovery tail")
     rows = []
     for step_index, current_demand in enumerate(demand):
         is_recovery = (
@@ -160,6 +166,7 @@ def run_policy(
             "demand_power_kw": current_demand,
             "event": scenario.demand.event.iloc[step_index],
             "is_soc_recovery": is_recovery,
+            "power_interface": executed.constraints.power_interface,
             "stack_power_kw": executed.constraints.stack_power_kw,
             "battery_power_kw": executed.constraints.battery_power_kw,
             "soc": executed.next_state.soc,
@@ -173,6 +180,7 @@ def run_policy(
                 executed.cost.raw_degradation_reference_pct
             ),
             "objective_performance_loss": executed.cost.performance_loss,
+            "objective_power_tracking": executed.cost.power_tracking,
             "objective_battery_use": executed.cost.battery_use,
             "objective_soc": executed.cost.soc,
             "objective_switch": executed.cost.switch,
@@ -201,6 +209,9 @@ def run_policy(
             "constraint_feasible": executed.constraints.feasible,
             "safety_override": bool(executed.constraints.safety_overrides),
             "power_balance_error_kw": executed.constraints.power_balance_error_kw,
+            "fc_power_tracking_error_kw": (
+                executed.cost.raw_power_tracking_error_kw
+            ),
         }
         for index, (before, expected, after) in enumerate(
             zip(state.stacks, planned.step.stacks, executed.stacks)
@@ -259,14 +270,25 @@ def summarize_run(model, scenario, strategy, trajectory, final_state):
         [main[f"stack_{i}_current_a"].sum() for i in range(model.n_stacks)]
     )
     aged_index = int(np.argmax(initial_damage))
+    fc_only = model.config.power_interface == "fc_only"
     soc_error = final_state.soc - model.config.soc_reference
     reference_current = 195.0
     reference_power = model.performance_proxies[0].evaluate(
         0.0, [reference_current]
     )["stack_power_kw"][0]
     h2_g_per_kwh = faraday_h2_g_s(reference_current) * 3600 / reference_power
-    corrected_h2 = trajectory.hydrogen_g.sum() - (
-        soc_error * model.config.battery.energy_kwh * h2_g_per_kwh
+    corrected_h2 = (
+        np.nan
+        if fc_only
+        else trajectory.hydrogen_g.sum()
+        - soc_error * model.config.battery.energy_kwh * h2_g_per_kwh
+    )
+    tracking_error = trajectory.fc_power_tracking_error_kw.to_numpy(dtype=float)
+    online = np.column_stack(
+        [
+            trajectory[f"stack_{i}_on"].to_numpy(dtype=bool)
+            for i in range(model.n_stacks)
+        ]
     )
     return {
         "scenario": scenario.name,
@@ -277,6 +299,7 @@ def summarize_run(model, scenario, strategy, trajectory, final_state):
         if "seed" in scenario.demand
         else -1,
         "strategy": strategy,
+        "power_interface": model.config.power_interface,
         "health_seed": scenario.health_seed,
         "n_steps": len(trajectory),
         "hydrogen_g": float(trajectory.hydrogen_g.sum()),
@@ -317,9 +340,36 @@ def summarize_run(model, scenario, strategy, trajectory, final_state):
         "recovery_performance_loss_sum": float(recovery.performance_loss.sum()),
         "main_hydrogen_g": float(main.hydrogen_g.sum()),
         "recovery_hydrogen_g": float(recovery.hydrogen_g.sum()),
-        "battery_throughput_kwh": float(trajectory.battery_throughput_kwh.sum()),
-        "soc_final": final_state.soc,
-        "soc_error": soc_error,
+        "battery_throughput_kwh": (
+            np.nan if fc_only else float(trajectory.battery_throughput_kwh.sum())
+        ),
+        "soc_final": np.nan if fc_only else final_state.soc,
+        "soc_error": np.nan if fc_only else soc_error,
+        "soc_metrics_applicable": not fc_only,
+        "fc_tracking_mae_kw": (
+            float(np.mean(np.abs(tracking_error))) if fc_only else np.nan
+        ),
+        "fc_tracking_rmse_kw": (
+            float(np.sqrt(np.mean(tracking_error**2))) if fc_only else np.nan
+        ),
+        "fc_tracking_bias_kw": (
+            float(np.mean(tracking_error)) if fc_only else np.nan
+        ),
+        "fc_tracking_max_abs_kw": (
+            float(np.max(np.abs(tracking_error))) if fc_only else np.nan
+        ),
+        "fc_tracking_within_tolerance_share": (
+            float(
+                np.mean(
+                    np.abs(tracking_error)
+                    <= model.config.fc_power_tracking_tolerance_kw + 1e-12
+                )
+            )
+            if fc_only
+            else np.nan
+        ),
+        "online_stack_count_mean": float(online.sum(axis=1).mean()),
+        "online_stack_count_max": int(online.sum(axis=1).max()),
         "constraint_violation_steps": int((~trajectory.constraint_feasible).sum()),
         "safety_override_steps": int(trajectory.safety_override.sum()),
         "max_power_balance_error_kw": float(
@@ -357,6 +407,16 @@ def summarize_run(model, scenario, strategy, trajectory, final_state):
         **{
             f"stack_{index}_final_damage_pct": float(value)
             for index, value in enumerate(final_damage)
+        },
+        **{
+            f"stack_{index}_online_steps": int(online[:, index].sum())
+            for index in range(model.n_stacks)
+        },
+        **{
+            f"stack_{index}_max_consecutive_off_steps": _max_consecutive_true(
+                ~online[:, index]
+            )
+            for index in range(model.n_stacks)
         },
     }
 
@@ -437,3 +497,11 @@ def _assert_online_health_invariants(trajectory: pd.DataFrame, n_stacks: int):
             before[1:], after[:-1], atol=tolerance, rtol=1e-10
         ):
             raise AssertionError("updated health was not carried into the next decision")
+
+
+def _max_consecutive_true(values) -> int:
+    longest = current = 0
+    for value in np.asarray(values, dtype=bool):
+        current = current + 1 if value else 0
+        longest = max(longest, current)
+    return int(longest)

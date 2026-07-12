@@ -28,8 +28,7 @@ def choose_average(
         model,
         state,
         demand_power_kw,
-        lambda action: len(set(action.current_a)) == 1
-        and len(set(action.is_on)) == 1,
+        lambda action: _is_average_action(model, action),
         lambda step, action: _tracking_score(model, step, target),
     )
     if not candidates:
@@ -70,23 +69,56 @@ def choose_rotating(
 def _target_stack_power(model, state, demand_power_kw, feedback_gain):
     if not np.isfinite(feedback_gain) or feedback_gain < 0:
         raise ValueError("soc feedback gain must be finite and non-negative")
-    correction = feedback_gain * (model.config.soc_reference - state.soc)
-    maximum = model.n_stacks * max(
-        proxy.evaluate(
-            stack.health.degradation,
-            [max(model.config.allowed_currents_a)],
-        )["stack_power_kw"][0]
-        for proxy, stack in zip(model.performance_proxies, state.stacks)
+    correction = (
+        0.0
+        if model.config.power_interface == "fc_only"
+        else feedback_gain * (model.config.soc_reference - state.soc)
     )
+    capacities = sorted(
+        (
+            float(
+                proxy.evaluate(
+                    stack.health.degradation,
+                    [max(model.config.allowed_currents_a)],
+                )["stack_power_kw"][0]
+            )
+            for proxy, stack in zip(model.performance_proxies, state.stacks)
+        ),
+        reverse=True,
+    )
+    online_limit = model.config.max_online_stacks or model.n_stacks
+    maximum = sum(capacities[:online_limit])
     return float(np.clip(max(demand_power_kw, 0.0) + correction, 0.0, maximum))
 
 
-def _tracking_score(model, step, target_stack_power_kw):
-    power_scale = max(
-        abs(model.config.battery.charge_power_limit_kw),
-        abs(model.config.battery.discharge_power_limit_kw),
-        1.0,
+def _is_average_action(model, action):
+    online_limit = model.config.max_online_stacks or model.n_stacks
+    if online_limit >= model.n_stacks:
+        return len(set(action.current_a)) == 1 and len(set(action.is_on)) == 1
+    online_currents = [
+        current for current, is_on in zip(action.current_a, action.is_on) if is_on
+    ]
+    offline_currents_are_zero = all(
+        current == 0.0
+        for current, is_on in zip(action.current_a, action.is_on)
+        if not is_on
     )
+    return (
+        offline_currents_are_zero
+        and len(online_currents) <= online_limit
+        and len(set(online_currents)) <= 1
+    )
+
+
+def _tracking_score(model, step, target_stack_power_kw):
+    if model.config.power_interface == "fc_only":
+        power_scale = max(model.fc_power_reference_kw(), 1.0)
+    else:
+        power_scale = max(
+            abs(model.config.battery.charge_power_limit_kw),
+            abs(model.config.battery.discharge_power_limit_kw),
+            1.0,
+        )
     tracking = abs(step.constraints.stack_power_kw - target_stack_power_kw) / power_scale
     hydrogen = step.cost.hydrogen
     switches = step.cost.switch

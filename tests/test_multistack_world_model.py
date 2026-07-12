@@ -10,6 +10,7 @@ from fc_power.world_model import (
     MultiStackAction,
     MultiStackState,
     StackControlState,
+    WorldModelConfig,
     load_lzw_multistack_world_model,
 )
 from fc_power.health.lzw_gamma_calibration import GhaderiPeiCoefficients
@@ -39,6 +40,17 @@ class MultiStackWorldModelTest(unittest.TestCase):
         )
         self.assertLess(result.next_state.soc, state.soc)
         self.assertTrue(all(item.degradation_increment_pct > 0 for item in result.stacks))
+
+    def test_fc_only_config_requires_valid_interface_and_tolerance(self):
+        with self.assertRaisesRegex(ValueError, "power_interface"):
+            WorldModelConfig(power_interface="unknown")
+        with self.assertRaisesRegex(ValueError, "explicit tracking tolerance"):
+            WorldModelConfig(power_interface="fc_only")
+        with self.assertRaisesRegex(ValueError, "non-negative"):
+            WorldModelConfig(
+                power_interface="fc_only",
+                fc_power_tracking_tolerance_kw=-1.0,
+            )
 
     def test_high_load_has_larger_health_increment(self):
         state = self.model.initial_state()
@@ -163,6 +175,46 @@ class MultiStackWorldModelTest(unittest.TestCase):
         )
         self.assertFalse(result.constraints.feasible)
         self.assertIn("battery:discharge_power_limit", result.constraints.violations)
+
+    def test_fc_only_interface_exposes_tracking_without_battery(self):
+        config = WorldModelConfig(
+            max_online_stacks=2,
+            power_interface="fc_only",
+            fc_power_tracking_tolerance_kw=5.5,
+        )
+        model = load_lzw_multistack_world_model(
+            ROOT,
+            n_stacks=3,
+            config=config,
+        )
+        state = model.initial_state(soc=0.61)
+        result = model.step(
+            state,
+            MultiStackAction.from_currents([90.0, 195.0, 0.0]),
+            demand_power_kw=36.0,
+        )
+        self.assertTrue(result.constraints.feasible)
+        self.assertEqual(result.constraints.power_interface, "fc_only")
+        self.assertEqual(result.constraints.battery_power_kw, 0.0)
+        self.assertEqual(result.next_state.soc, state.soc)
+        self.assertEqual(result.cost.battery_use, 0.0)
+        self.assertEqual(result.cost.soc, 0.0)
+        self.assertGreater(result.cost.power_tracking, 0.0)
+        self.assertAlmostEqual(
+            result.cost.raw_power_tracking_error_kw,
+            result.constraints.power_balance_error_kw,
+        )
+
+        infeasible = model.step(
+            state,
+            MultiStackAction.from_currents([0.0, 0.0, 0.0]),
+            demand_power_kw=50.0,
+        )
+        self.assertFalse(infeasible.constraints.feasible)
+        self.assertIn("system:fc_power_tracking", infeasible.constraints.violations)
+        self.assertFalse(
+            any(item.startswith("battery:") for item in infeasible.constraints.violations)
+        )
 
     def test_minimum_dwell_violation_is_reported(self):
         stack = StackControlState(

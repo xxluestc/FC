@@ -8,7 +8,11 @@ from fc_power.power_allocation.multistack_allocator import (
     project_to_feasible,
     choose_terminal_soc_recovery,
 )
-from fc_power.world_model import MultiStackAction, load_lzw_multistack_world_model
+from fc_power.world_model import (
+    MultiStackAction,
+    WorldModelConfig,
+    load_lzw_multistack_world_model,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -49,6 +53,85 @@ class MultiStackAllocatorTest(unittest.TestCase):
             + result.step.constraints.battery_power_kw,
             55.0,
         )
+
+    def test_fc_only_instant_tracks_without_changing_soc(self):
+        model = load_lzw_multistack_world_model(
+            ROOT,
+            n_stacks=3,
+            config=WorldModelConfig(
+                max_online_stacks=2,
+                power_interface="fc_only",
+                fc_power_tracking_tolerance_kw=5.5,
+            ),
+        )
+        state = model.initial_state(soc=0.63)
+        result = choose_instant(model, state, demand_power_kw=40.0)
+        self.assertTrue(result.step.constraints.feasible)
+        self.assertLessEqual(
+            abs(result.step.constraints.power_balance_error_kw), 5.5
+        )
+        self.assertEqual(result.step.constraints.battery_power_kw, 0.0)
+        self.assertEqual(result.step.next_state.soc, state.soc)
+        self.assertLessEqual(sum(result.action.is_on), 2)
+
+    def test_fc_only_beam_ignores_terminal_soc_and_tracks_power(self):
+        model = load_lzw_multistack_world_model(
+            ROOT,
+            n_stacks=3,
+            config=WorldModelConfig(
+                max_online_stacks=2,
+                power_interface="fc_only",
+                fc_power_tracking_tolerance_kw=5.5,
+            ),
+        )
+        state = model.initial_state(soc=0.55)
+        result = choose_beam(
+            model,
+            state,
+            demand_preview_kw=[40.0, 40.0],
+            beam_width=4,
+            terminal_soc_weight=10_000.0,
+        )
+        self.assertTrue(result.step.constraints.feasible)
+        self.assertLessEqual(
+            abs(result.step.constraints.power_balance_error_kw), 5.5
+        )
+        self.assertEqual(result.step.next_state.soc, state.soc)
+        self.assertEqual(result.step.constraints.battery_power_kw, 0.0)
+
+    def test_fc_only_safety_projection_respects_tracking(self):
+        model = load_lzw_multistack_world_model(
+            ROOT,
+            n_stacks=3,
+            config=WorldModelConfig(
+                max_online_stacks=2,
+                power_interface="fc_only",
+                fc_power_tracking_tolerance_kw=5.5,
+            ),
+        )
+        state = model.initial_state()
+        requested = MultiStackAction.from_currents([0.0, 0.0, 0.0])
+        result = project_to_feasible(model, state, requested, demand_power_kw=40.0)
+        self.assertTrue(result.step.constraints.feasible)
+        self.assertLessEqual(
+            abs(result.step.constraints.power_balance_error_kw), 5.5
+        )
+        self.assertLessEqual(sum(result.action.is_on), 2)
+
+    def test_fc_only_terminal_soc_recovery_is_rejected(self):
+        model = load_lzw_multistack_world_model(
+            ROOT,
+            n_stacks=3,
+            config=WorldModelConfig(
+                max_online_stacks=2,
+                power_interface="fc_only",
+                fc_power_tracking_tolerance_kw=5.5,
+            ),
+        )
+        with self.assertRaisesRegex(ValueError, "fc_only"):
+            choose_terminal_soc_recovery(
+                model, model.initial_state(), demand_power_kw=40.0
+            )
 
     def test_health_aware_cost_prefers_healthier_stack(self):
         reference = self.model.performance_proxies[0].mapping.damage_reference_pct
