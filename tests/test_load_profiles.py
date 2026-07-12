@@ -1,6 +1,7 @@
 import unittest
 
 import numpy as np
+import pandas as pd
 
 from fc_power.evaluation.load_profiles import (
     EVENT_NAMES,
@@ -8,6 +9,12 @@ from fc_power.evaluation.load_profiles import (
     append_soc_recovery_tail,
     generate_event_load,
     generate_real_block_bootstrap,
+)
+from fc_power.evaluation.zuo_load_calibration import (
+    ZUO_FAST_TRANSITION,
+    ZUO_SLOW_TRANSITION,
+    estimate_segmented_transitions,
+    split_at_largest_segment_gap,
 )
 
 
@@ -59,6 +66,55 @@ class LoadProfilesTest(unittest.TestCase):
         self.assertFalse(extended.is_soc_recovery.iloc[:20].any())
         self.assertTrue(extended.is_soc_recovery.iloc[20:].all())
         self.assertTrue((extended.demand_power_kw.iloc[20:] == 30.0).all())
+
+    def test_temporal_split_uses_complete_segments_around_largest_gap(self):
+        frame = pd.DataFrame(
+            {
+                "segment_id": [0, 0, 1, 1, 2, 2],
+                "timestamp": pd.to_datetime(
+                    [
+                        "2025-01-01 00:00:00",
+                        "2025-01-01 00:00:01",
+                        "2025-01-01 00:00:10",
+                        "2025-01-01 00:00:11",
+                        "2025-01-03 00:00:00",
+                        "2025-01-03 00:00:01",
+                    ]
+                ),
+            }
+        )
+        split = split_at_largest_segment_gap(frame)
+        self.assertEqual(split.calibration_segments, (0, 1))
+        self.assertEqual(split.holdout_segments, (2,))
+        self.assertGreater(split.gap_seconds, 86_000)
+
+    def test_transition_counts_do_not_bridge_off_or_segment_boundaries(self):
+        frame = pd.DataFrame(
+            {
+                "segment_id": [0, 0, 0, 0, 1, 1],
+                "fc_input_power_kw": [16.0, 16.0, 0.0, 40.0, 40.0, 40.0],
+            }
+        )
+        estimate = estimate_segmented_transitions(
+            frame,
+            normalization_power_kw=40.0,
+            stride_s=1,
+            bootstrap_samples=50,
+            bootstrap_seed=7,
+        )
+        self.assertEqual(int(estimate.counts.sum()), 2)
+        self.assertEqual(estimate.counts[0, 0], 1)
+        self.assertEqual(estimate.counts[3, 3], 1)
+        self.assertEqual(estimate.counts[0, 3], 0)
+        self.assertAlmostEqual(estimate.probabilities[0, 0], 1.0)
+        self.assertAlmostEqual(estimate.probabilities[3, 3], 1.0)
+
+    def test_zuo_reference_matrices_are_stochastic(self):
+        for matrix in (ZUO_FAST_TRANSITION, ZUO_SLOW_TRANSITION):
+            values = np.asarray(matrix)
+            self.assertEqual(values.shape, (4, 4))
+            self.assertTrue((values >= 0).all())
+            np.testing.assert_allclose(values.sum(axis=1), 1.0)
 
 
 if __name__ == "__main__":
