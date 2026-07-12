@@ -81,8 +81,12 @@ def load_lzw_multistack_world_model(
         )
         for factor in factors
     )
+    if config is None:
+        config = WorldModelConfig(
+            max_online_stacks=2 if n_stacks == 3 else n_stacks
+        )
     return MechanisticMultiStackWorldModel(
         health_models,
         tuple(proxy for _ in range(n_stacks)),
-        WorldModelConfig() if config is None else config,
+        config,
     )

@@ -69,6 +69,12 @@ def enumerate_actions(
         per_stack.append(tuple(candidates))
 
     for combined in product(*per_stack):
+        if (
+            model.config.max_online_stacks is not None
+            and sum(bool(item[1] or item[0] > 0) for item in combined)
+            > model.config.max_online_stacks
+        ):
+            continue
         yield MultiStackAction(
             current_a=tuple(item[0] for item in combined),
             is_on=tuple(item[1] for item in combined),

@@ -26,6 +26,19 @@ class MultiStackAllocatorTest(unittest.TestCase):
         self.assertEqual(len(actions), per_stack**2)
         self.assertIn(MultiStackAction((0.0, 0.0), (False, True)), actions)
 
+    def test_three_stack_lzw_model_keeps_one_stack_off(self):
+        model = load_lzw_multistack_world_model(ROOT, n_stacks=3)
+        state = model.initial_state()
+        actions = list(enumerate_actions(model, state))
+        self.assertEqual(model.config.max_online_stacks, 2)
+        self.assertTrue(actions)
+        self.assertTrue(all(sum(action.is_on) <= 2 for action in actions))
+
+        invalid = MultiStackAction.from_currents([90.0, 90.0, 90.0])
+        step = model.step(state, invalid, demand_power_kw=60.0)
+        self.assertFalse(step.constraints.feasible)
+        self.assertIn("system:max_online_stacks", step.constraints.violations)
+
     def test_instant_controller_returns_feasible_action(self):
         state = self.model.initial_state()
         result = choose_instant(self.model, state, demand_power_kw=55.0)

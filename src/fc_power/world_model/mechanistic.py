@@ -105,6 +105,7 @@ class WorldModelConfig:
     )
     min_dwell_s: float = 15.0
     max_ramp_a_per_s: float | None = None
+    max_online_stacks: int | None = None
     soc_reference: float = 0.70
     soc_feedback_kw_per_soc: float = 1200.0
     power_balance_tolerance_kw: float = 1e-9
@@ -127,6 +128,12 @@ class WorldModelConfig:
             not np.isfinite(self.max_ramp_a_per_s) or self.max_ramp_a_per_s <= 0
         ):
             raise ValueError("max_ramp_a_per_s must be finite and positive")
+        if self.max_online_stacks is not None and (
+            isinstance(self.max_online_stacks, bool)
+            or not isinstance(self.max_online_stacks, int)
+            or self.max_online_stacks <= 0
+        ):
+            raise ValueError("max_online_stacks must be a positive integer or None")
         if not self.battery.soc_min <= self.soc_reference <= self.battery.soc_max:
             raise ValueError("soc_reference must be within battery SOC limits")
         if (
@@ -211,6 +218,11 @@ class MechanisticMultiStackWorldModel:
         self.health_models = tuple(health_models)
         self.performance_proxies = tuple(performance_proxies)
         self.config = config
+        if (
+            self.config.max_online_stacks is not None
+            and self.config.max_online_stacks > len(self.health_models)
+        ):
+            raise ValueError("max_online_stacks cannot exceed the stack count")
 
     @property
     def n_stacks(self) -> int:
@@ -231,6 +243,12 @@ class MechanisticMultiStackWorldModel:
         on = currents > 0 if is_on is None else np.asarray(is_on, dtype=bool)
         if damages.shape != (n,) or currents.shape != (n,) or on.shape != (n,):
             raise ValueError("initial stack vectors must match n_stacks")
+        effective_on = np.logical_or(on, currents > 0)
+        if (
+            self.config.max_online_stacks is not None
+            and int(effective_on.sum()) > self.config.max_online_stacks
+        ):
+            raise ValueError("initial state exceeds max_online_stacks")
         stacks = tuple(
             StackControlState(
                 health=GammaHealthState(
@@ -274,6 +292,17 @@ class MechanisticMultiStackWorldModel:
         next_stack_states: list[StackControlState] = []
         allowed = np.asarray(self.config.allowed_currents_a)
         generator = np.random.default_rng() if rng is None else rng
+        effective_online = sum(
+            bool(requested_on or requested_current > 0)
+            for requested_current, requested_on in zip(
+                action.current_a, action.is_on
+            )
+        )
+        if (
+            self.config.max_online_stacks is not None
+            and effective_online > self.config.max_online_stacks
+        ):
+            violations.append("system:max_online_stacks")
 
         for index, (stack_state, requested_current, requested_on) in enumerate(
             zip(state.stacks, action.current_a, action.is_on)
