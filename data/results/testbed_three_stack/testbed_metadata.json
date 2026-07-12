@@ -1,0 +1,101 @@
+{
+  "synthetic_load_config": {
+    "length_s": 30,
+    "dt_s": 1.0,
+    "power_min_kw": -75.0,
+    "power_max_kw": 180.0,
+    "smoothing": 0.35,
+    "noise_std_kw": 2.0,
+    "max_ramp_kw_per_s": 35.0,
+    "duration_ranges_s": [
+      [
+        8,
+        35
+      ],
+      [
+        15,
+        55
+      ],
+      [
+        8,
+        30
+      ],
+      [
+        4,
+        18
+      ]
+    ],
+    "target_ranges_kw": [
+      [
+        -2.0,
+        5.0
+      ],
+      [
+        25.0,
+        80.0
+      ],
+      [
+        95.0,
+        175.0
+      ],
+      [
+        -70.0,
+        -10.0
+      ]
+    ],
+    "transition_matrix": [
+      [
+        0.1,
+        0.75,
+        0.15,
+        0.0
+      ],
+      [
+        0.2,
+        0.15,
+        0.4,
+        0.25
+      ],
+      [
+        0.05,
+        0.45,
+        0.15,
+        0.35
+      ],
+      [
+        0.45,
+        0.45,
+        0.1,
+        0.0
+      ]
+    ],
+    "ensure_event_coverage": true
+  },
+  "seeds": [
+    2026
+  ],
+  "strategies": [
+    "average",
+    "rotating",
+    "instant_health",
+    "beam_health"
+  ],
+  "n_stacks": 3,
+  "initial_damage_fraction": [
+    0.1,
+    0.4,
+    0.7
+  ],
+  "heterogeneity_factors": [
+    1.0,
+    1.05,
+    1.1
+  ],
+  "stochastic_health": false,
+  "soc_recovery_length": 60,
+  "soc_recovery_demand_kw": 30.0,
+  "beam_horizon": 8,
+  "beam_width": 2,
+  "runtime_s": 136.69288040599986,
+  "scope": "Synthetic settings are stress-test assumptions. Real-block profiles preserve measured samples but not original trip-level chronology."
+}

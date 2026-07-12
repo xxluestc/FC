@@ -262,5 +262,69 @@ def project_to_feasible(
     return PlanningResult(best[1], best[2], best[0][0], expanded, feasible)
 
 
+def choose_terminal_soc_recovery(
+    model: MechanisticMultiStackWorldModel,
+    state: MultiStackState,
+    demand_power_kw: float,
+) -> PlanningResult:
+    """Common terminal controller minimizing next-step SOC error.
+
+    It is intentionally strategy-independent and is used only in an explicitly
+    labelled recovery tail.  Hydrogen and degradation incurred during recovery
+    remain in each strategy's total metrics.
+    """
+
+    best = None
+    expanded = 0
+    feasible = 0
+    hold_steps = max(
+        1, int(np.ceil(model.config.min_dwell_s / model.config.dt_s))
+    )
+    for respect_dwell, override in ((True, False), (False, True)):
+        for action in enumerate_actions(model, state, respect_dwell=respect_dwell):
+            expanded += 1
+            step = model.step(
+                state,
+                action,
+                demand_power_kw,
+                allow_dwell_override=override,
+            )
+            if not step.constraints.feasible:
+                continue
+            rollout_state = step.next_state
+            rollout_cost = step.cost.total
+            rollout_feasible = True
+            for _ in range(1, hold_steps):
+                future = model.step(
+                    rollout_state,
+                    action,
+                    demand_power_kw,
+                )
+                expanded += 1
+                if not future.constraints.feasible:
+                    rollout_feasible = False
+                    break
+                rollout_state = future.next_state
+                rollout_cost += future.cost.total
+            if not rollout_feasible:
+                continue
+            feasible += 1
+            soc_error = abs(
+                rollout_state.soc - model.config.soc_reference
+            )
+            key = (
+                soc_error,
+                rollout_cost,
+                _action_tiebreak(action),
+            )
+            if best is None or key < best[0]:
+                best = (key, action, step)
+        if best is not None:
+            break
+    if best is None:
+        raise RuntimeError("no feasible action for terminal SOC recovery")
+    return PlanningResult(best[1], best[2], best[0][0], expanded, feasible)
+
+
 def _action_tiebreak(action: MultiStackAction):
     return tuple(action.current_a) + tuple(int(value) for value in action.is_on)

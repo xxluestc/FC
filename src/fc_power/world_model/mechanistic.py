@@ -149,6 +149,11 @@ class StackStep:
     power_kw: float
     hydrogen_g: float
     degradation_increment_pct: float
+    expected_load_increment_pct: float
+    natural_increment_pct: float
+    ramp_increment_pct: float
+    shift_increment_pct: float
+    start_stop_increment_pct: float
     degradation_after_pct: float
     theta_reported: tuple[float, float, float]
     normalized_performance_loss: float
@@ -332,6 +337,11 @@ class MechanisticMultiStackWorldModel:
                     power_kw=power_kw,
                     hydrogen_g=hydrogen_g,
                     degradation_increment_pct=transition.total_increment,
+                    expected_load_increment_pct=transition.expected_load_increment,
+                    natural_increment_pct=transition.natural_increment,
+                    ramp_increment_pct=transition.ramp_increment,
+                    shift_increment_pct=transition.shift_increment,
+                    start_stop_increment_pct=transition.start_stop_increment,
                     degradation_after_pct=transition.state.degradation,
                     theta_reported=theta,
                     normalized_performance_loss=float(

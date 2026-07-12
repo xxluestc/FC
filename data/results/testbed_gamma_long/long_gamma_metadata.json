@@ -1,0 +1,11 @@
+{
+  "source_trajectory": "data/results/testbed_lifetime_source/testbed_trajectory.csv",
+  "requested_exposure_hours": 1000.0,
+  "samples": 5000,
+  "cvs": [
+    0.05,
+    0.1,
+    0.2
+  ],
+  "interpretation": "A short online-control cycle is repeated as an exposure pattern. Continuous Gamma increments are aggregated exactly; start/shift events remain deterministic. This is a sensitivity test, not a claim that the short trip repeats unchanged in service."
+}

@@ -21,6 +21,7 @@ data/results/**/test_demand.csv
 data/results/health/lzw_gamma_health_trajectory.csv
 data/results/prediction_event/event_probabilistic_predictions.csv
 data/results/prediction_event/prediction_control_trajectory.csv
+data/results/testbed*/testbed_trajectory.csv
 data/results/optimization/**/feature_selected_predictions.csv
 data/results/optimization/**/optimized_strategy_trajectories.csv
 data/processed/baseline_*.csv

@@ -11,6 +11,7 @@ from fc_power.health.dynamic_proxy import DynamicPerformanceLossProxy, LzwIvCond
 from fc_power.health.gamma_process import GammaHealthModel
 from fc_power.health.lzw_gamma_calibration import (
     ThetaPowerLawMap,
+    gamma_scale_for_terminal_cv,
     ghaderi_gamma_params,
 )
 from fc_power.world_model.mechanistic import (
@@ -25,6 +26,7 @@ def load_lzw_multistack_world_model(
     *,
     heterogeneity_factors=None,
     config: WorldModelConfig | None = None,
+    gamma_terminal_cv: float | None = None,
 ) -> MechanisticMultiStackWorldModel:
     """Load a deterministic model definition; stochasticity is chosen per step."""
 
@@ -47,6 +49,13 @@ def load_lzw_multistack_world_model(
     normalization = float(table.equivalent_stack_power_loss_clipped_W.max())
     mapping = ThetaPowerLawMap.from_dict(calibration["theta_power_law_map"])
     proxy = DynamicPerformanceLossProxy(mapping, conditions, normalization)
+    gamma_scale = float(calibration["gamma_scale_pct"])
+    if gamma_terminal_cv is not None:
+        gamma_scale = gamma_scale_for_terminal_cv(
+            calibration["terminal_total_damage_pct"],
+            calibration["terminal_continuous_damage_pct"],
+            float(gamma_terminal_cv),
+        )
 
     factors = (
         tuple(1.0 for _ in range(n_stacks))
@@ -58,7 +67,7 @@ def load_lzw_multistack_world_model(
     health_models = tuple(
         GammaHealthModel(
             ghaderi_gamma_params(
-                calibration["gamma_scale_pct"], heterogeneity_factor=factor
+                gamma_scale, heterogeneity_factor=factor
             )
         )
         for factor in factors

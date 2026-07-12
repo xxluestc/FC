@@ -115,6 +115,18 @@ class MultiStackWorldModelTest(unittest.TestCase):
         reference = self.model.step(reference_soc, action, demand)
         self.assertLess(high.cost.battery_use, reference.cost.battery_use)
 
+    def test_factory_exposes_gamma_cv_sensitivity(self):
+        low = load_lzw_multistack_world_model(
+            ROOT, n_stacks=2, gamma_terminal_cv=0.05
+        )
+        high = load_lzw_multistack_world_model(
+            ROOT, n_stacks=2, gamma_terminal_cv=0.20
+        )
+        self.assertGreater(
+            high.health_models[0].params.gamma_scale,
+            low.health_models[0].params.gamma_scale,
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

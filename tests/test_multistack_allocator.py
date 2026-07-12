@@ -6,6 +6,7 @@ from fc_power.power_allocation.multistack_allocator import (
     choose_instant,
     enumerate_actions,
     project_to_feasible,
+    choose_terminal_soc_recovery,
 )
 from fc_power.world_model import MultiStackAction, load_lzw_multistack_world_model
 
@@ -88,6 +89,16 @@ class MultiStackAllocatorTest(unittest.TestCase):
         result = choose_beam(self.model, state, [-73.0], beam_width=4)
         self.assertTrue(result.step.constraints.feasible)
         self.assertTrue(result.step.constraints.safety_overrides)
+
+    def test_terminal_recovery_moves_soc_toward_reference(self):
+        for soc in (0.68, 0.72):
+            state = self.model.initial_state(soc=soc)
+            result = choose_terminal_soc_recovery(
+                self.model, state, demand_power_kw=30.0
+            )
+            self.assertLess(
+                abs(result.step.next_state.soc - 0.70), abs(state.soc - 0.70)
+            )
 
 
 if __name__ == "__main__":
