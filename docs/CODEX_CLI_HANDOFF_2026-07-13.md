@@ -2,11 +2,15 @@
 
 更新时间：2026-07-14
 
+> 最新物理边界、强异质性权重筛查和Rate-bounded Blend交接见
+> `docs/CODEX_CLI_HANDOFF_2026-07-14.md`；本文件保留此前完整背景。
+
 ## 1. Git检查点
 
 - 仓库：`H:/其他/2026刘展玮/FC`
 - 分支：`codex/gamma-health-foundation`
-- 研究代码检查点：`4252160c11fd5d84fd53472a78e98e9e48d2aa23`
+- 最新研究代码检查点：`fe55b39`（物理边界与Rate-bounded Blend）
+- 前一稳健性检查点：`4252160c11fd5d84fd53472a78e98e9e48d2aa23`
 - 前序归一化与证据检查点：`1c90ebd0de3f50439bf00f051d1b8f07d576d0ef`
 - 上一论文证据检查点：`f29eeeada607704d30b2246cad4d2d65c2354f8d`
 - 完整留出与容量检查点：`d2920cb64a0cc4916169d749cf9fb37193f8d8a5`
