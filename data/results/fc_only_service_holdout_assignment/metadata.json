@@ -1,0 +1,77 @@
+{
+  "scope": "frozen slow-assignment validation on unseen real center windows",
+  "holdout_segments": [
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+  ],
+  "operating_windows": 6,
+  "health_cases": {
+    "oldest_stack_2": [
+      0.1,
+      0.4,
+      0.8
+    ],
+    "oldest_stack_0": [
+      0.8,
+      0.1,
+      0.4
+    ],
+    "oldest_stack_1": [
+      0.4,
+      0.8,
+      0.1
+    ]
+  },
+  "candidate_assignments": [
+    [
+      0,
+      1
+    ],
+    [
+      0,
+      2
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      1,
+      2
+    ],
+    [
+      2,
+      0
+    ],
+    [
+      2,
+      1
+    ]
+  ],
+  "decision_information": "development-template mean and pre-window health only",
+  "oracle_information": "post-window candidate outcomes; evaluation only",
+  "entry_start_handling": "first-sample start damage removed from assignment ranking",
+  "runtime_s": 328.6180059998296
+}

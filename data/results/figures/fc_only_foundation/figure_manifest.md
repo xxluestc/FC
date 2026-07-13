@@ -14,5 +14,6 @@
 | `fig10_service_robustness` | 扩展实车模板上的单因素稳健性。分别改变健康边界、连续退化、变载、完整校准段运行启停率和调度启动系数；线为10种子配对平均增益，阴影为最小-最大范围。 |
 | `fig11_expanded_service_results` | 120个快层闭环模板的暴露构成，以及四类开发场景20种子到健康边界时间和相对固定双堆的配对范围。实车主模板包含完整校准段启停率；三类压力场景保持连续正功率。 |
 | `fig12_service_hysteresis_pareto` | 切换滞回的开发Pareto筛查。较大阈值可减少主动启动，但没有阈值通过冻结的逐种子非劣规则，因此不进入主方法。 |
+| `fig13_holdout_assignment_validation` | 冻结慢层在未参与标定的真实中心窗口上的事后oracle验证。三个健康身份循环共18例；health-greedy与Expected-max均命中oracle在线集合且零最大退化遗憾，Expected-max的角色顺序命中未转化为额外健康收益。虚线为5.5 kW冻结跟踪容差。 |
 
 每张图保存为320 DPI PNG。图内`30 s*`表示工程时间基准假设，不是Zuo论文直接给定值。

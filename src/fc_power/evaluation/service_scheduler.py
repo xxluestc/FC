@@ -143,6 +143,37 @@ def stationary_service_exposure(
     )
 
 
+def orient_service_pair(
+    pair: tuple[int, int],
+    state: ServiceScheduleState,
+    exposure: ServiceExposure,
+    heterogeneity_factors,
+) -> tuple[int, int]:
+    """Map the heavier fast-layer role to the better residual-health stack."""
+
+    if len(set(pair)) != 2 or min(pair) < 0 or max(pair) >= len(state.damage_pct):
+        raise ValueError("pair must contain two valid distinct stack indices")
+    factors = np.asarray(heterogeneity_factors, dtype=float)
+    if factors.shape != (len(state.damage_pct),) or np.any(factors <= 0):
+        raise ValueError("heterogeneity_factors must match the service state")
+    role_damage = (
+        np.asarray(exposure.continuous_mean_pct)
+        + np.asarray(exposure.load_shift_damage_pct)
+        + np.asarray(exposure.operational_start_damage_pct)
+    )
+    candidates = (pair, (pair[1], pair[0]))
+    return min(
+        candidates,
+        key=lambda assignment: (
+            max(
+                state.damage_pct[stack] + role_damage[role] * factors[stack]
+                for role, stack in enumerate(assignment)
+            ),
+            assignment,
+        ),
+    )
+
+
 def choose_service_assignment(
     state: ServiceScheduleState,
     exposure: ServiceExposure,

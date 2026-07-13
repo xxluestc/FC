@@ -16,6 +16,7 @@ from fc_power.evaluation import (
     ServiceScheduleState,
     choose_service_assignment,
     evaluate_service_assignment,
+    orient_service_pair,
     stationary_service_exposure,
     transition_service_epoch,
 )
@@ -121,24 +122,7 @@ def aggregate_epoch(
 
 def orient_pair(pair, state, exposure):
     """Map the heavier role to the stack with more residual health."""
-
-    first, second = pair
-    role_damage = (
-        np.asarray(exposure.continuous_mean_pct)
-        + np.asarray(exposure.load_shift_damage_pct)
-        + np.asarray(exposure.operational_start_damage_pct)
-    )
-    candidates = ((first, second), (second, first))
-    return min(
-        candidates,
-        key=lambda assignment: (
-            max(
-                state.damage_pct[stack] + role_damage[role] * HETEROGENEITY[stack]
-                for role, stack in enumerate(assignment)
-            ),
-            assignment,
-        ),
-    )
+    return orient_service_pair(pair, state, exposure, HETEROGENEITY)
 
 
 def choose_policy_assignment(

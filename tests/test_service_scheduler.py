@@ -9,6 +9,7 @@ from fc_power.evaluation.service_scheduler import (
     candidate_assignments,
     choose_service_assignment,
     evaluate_service_assignment,
+    orient_service_pair,
     stationary_service_exposure,
     transition_service_epoch,
 )
@@ -81,6 +82,13 @@ class ServiceSchedulerTest(unittest.TestCase):
             objective="expected_max",
         )
         self.assertEqual(selected, evaluated)
+
+    def test_role_orientation_maps_heavier_exposure_to_healthier_stack(self):
+        state = ServiceScheduleState((1.0, 4.0, 8.0))
+        assignment = orient_service_pair(
+            (0, 1), state, self.exposure, self.config.heterogeneity_factors
+        )
+        self.assertEqual(assignment, (1, 0))
 
     def test_transition_updates_only_online_stacks_and_counts_real_starts(self):
         state = ServiceScheduleState((1.0, 4.0, 8.0))

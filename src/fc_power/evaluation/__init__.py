@@ -33,6 +33,7 @@ from fc_power.evaluation.service_scheduler import (
     candidate_assignments,
     choose_service_assignment,
     evaluate_service_assignment,
+    orient_service_pair,
     stationary_service_exposure,
     transition_service_epoch,
 )
@@ -79,6 +80,7 @@ __all__ = [
     "clip_profile_to_feasible_envelope",
     "choose_service_assignment",
     "evaluate_service_assignment",
+    "orient_service_pair",
     "blend_transition_matrices",
     "generate_event_load",
     "generate_real_block_bootstrap",
