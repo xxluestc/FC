@@ -1,0 +1,17 @@
+{
+  "source": "data\\results\\fc_only_deterministic_comparison\\per_run_metrics.csv",
+  "requested_exposure_hours": 1000.0,
+  "samples_per_load_seed": 10000,
+  "terminal_cv_assumptions": [
+    0.05,
+    0.1,
+    0.2
+  ],
+  "strategies": [
+    "average",
+    "rotating",
+    "instant_health"
+  ],
+  "coupling": "common inverse-CDF uniforms across strategies within each load_source/load_seed/CV tuple",
+  "interpretation": "A frozen 120-second action exposure is repeated to diagnose long-scale Gamma sensitivity. This is not a service-life prediction."
+}

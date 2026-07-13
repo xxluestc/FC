@@ -1,0 +1,47 @@
+{
+  "scope": "FC-only stochastic Gamma health with online action feedback",
+  "load_scenarios": [
+    "empirical_1s",
+    "zuo_slow_30s",
+    "zuo_fast_30s"
+  ],
+  "pair_seeds": [
+    2026,
+    2027,
+    2028,
+    2029,
+    2030,
+    2031,
+    2032,
+    2033,
+    2034,
+    2035
+  ],
+  "health_seed_rule": "30000 + pair_seed, shared across strategies",
+  "pairing_keys": [
+    "load_source",
+    "load_seed",
+    "health_seed"
+  ],
+  "strategies": [
+    "average",
+    "rotating",
+    "instant_health"
+  ],
+  "excluded_strategy": "beam_health deferred to sensitivity because deterministic benefit was not stable and planning cost was about twice instant_health",
+  "length_s": 120,
+  "gamma_terminal_cv": 0.1,
+  "gamma_scale_pct": 0.13417673000740873,
+  "stochastic_health": true,
+  "capacity_reserve_fraction": 0.05,
+  "tracking_tolerance_kw": 5.5,
+  "initial_damage_fraction": [
+    0.1,
+    0.4,
+    0.8
+  ],
+  "initial_health_interpretation": "one heterogeneous three-stack initial state per run; stack-level values are aggregated into one run record and also retained in stack-specific fields",
+  "parallel_jobs": 8,
+  "runtime_s": 359.966456099879,
+  "interpretation": "Each load seed is paired with one health seed. This estimates joint load-and-health variability and does not separate their variance components. The health seed is a deterministic one-to-one mapping of the load seed, not an independent two-factor factorial design."
+}

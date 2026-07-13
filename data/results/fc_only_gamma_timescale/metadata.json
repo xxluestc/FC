@@ -1,0 +1,15 @@
+{
+  "source": "data\\results\\fc_only_deterministic_comparison\\per_run_metrics.csv",
+  "strategy": "instant_health deterministic exposure paths",
+  "gamma_terminal_cv": 0.1,
+  "gamma_scale_pct": 0.13417673000740873,
+  "horizons_h": [
+    0.03333333333333333,
+    1.0,
+    10.0,
+    100.0,
+    1000.0
+  ],
+  "near_zero_definition": "Gamma increment below 1% of its conditional mean",
+  "interpretation": "Analytical aggregation uses Gamma additivity with a frozen action-exposure rate. It diagnoses time scale and is not a service-life prediction."
+}
