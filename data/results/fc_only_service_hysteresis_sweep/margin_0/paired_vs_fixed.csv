@@ -1,0 +1,3 @@
+policy,reference_policy,mean_gain_h,minimum_gain_h,maximum_gain_h,win_share,nonworse_share
+health_greedy,fixed_pair,400.7,397.0,408.0,1.0,1.0
+expected_hysteresis,fixed_pair,401.1,396.0,408.0,1.0,1.0

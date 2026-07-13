@@ -1,0 +1,3 @@
+policy,n_runs,health_limit_crossing_share,time_to_limit_mean_h,time_to_limit_std_h,time_to_limit_q10_h,time_to_limit_median_h,time_to_limit_q90_h,start_count_mean,assignment_change_mean
+fixed_pair,10,1.0,1764.6,8.720346578229815,1756.4,1763.0,1775.4,2.0,0.0
+health_greedy,10,1.0,2286.5,12.231562087939182,2273.8,2283.5,2299.4,46.8,44.8

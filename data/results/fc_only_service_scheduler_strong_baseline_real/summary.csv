@@ -1,0 +1,5 @@
+policy,n_runs,health_limit_crossing_share,time_to_limit_mean_h,time_to_limit_std_h,time_to_limit_q10_h,time_to_limit_median_h,time_to_limit_q90_h,start_count_mean,assignment_change_mean
+expected_max,20,1.0,1682.4,179.04553963491495,1437.2,1731.5,1875.0,24.8,22.8
+fixed_pair,20,1.0,1287.45,163.33835563349052,1054.7,1320.0,1487.7,2.0,0.0
+gamma_cvar,20,1.0,1646.1,170.4695990800891,1406.6,1668.0,1830.2,23.05,21.05
+health_greedy,20,1.0,1680.8,179.93525151243185,1437.7,1734.0,1875.0,25.7,23.7

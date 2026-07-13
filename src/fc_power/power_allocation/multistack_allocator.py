@@ -44,6 +44,7 @@ def enumerate_actions(
     *,
     include_energized_idle: bool = True,
     respect_dwell: bool = True,
+    allowed_online_stacks=None,
 ):
     """Yield the discrete Cartesian action grid allowed by dwell memory.
 
@@ -53,10 +54,18 @@ def enumerate_actions(
 
     if len(state.stacks) != model.n_stacks:
         raise ValueError("state stack count does not match model")
+    allowed = None
+    if allowed_online_stacks is not None:
+        allowed = frozenset(int(index) for index in allowed_online_stacks)
+        if not allowed or min(allowed) < 0 or max(allowed) >= model.n_stacks:
+            raise ValueError("allowed_online_stacks contains an invalid stack index")
     per_stack = []
-    for stack in state.stacks:
+    for index, stack in enumerate(state.stacks):
         if respect_dwell and stack.dwell_s + 1e-12 < model.config.min_dwell_s:
             per_stack.append(((stack.health.current_a, stack.health.is_on),))
+            continue
+        if allowed is not None and index not in allowed:
+            per_stack.append(((0.0, False),))
             continue
         candidates = [(0.0, False)]
         if include_energized_idle:
@@ -87,6 +96,7 @@ def choose_instant(
     demand_power_kw: float,
     *,
     allow_dwell_override: bool = True,
+    online_assignment=None,
 ) -> PlanningResult:
     """Choose the minimum-cost feasible one-step action."""
 
@@ -97,7 +107,12 @@ def choose_instant(
     if allow_dwell_override:
         passes.append((False, True))
     for respect_dwell, override in passes:
-        for action in enumerate_actions(model, state, respect_dwell=respect_dwell):
+        for action in enumerate_actions(
+            model,
+            state,
+            respect_dwell=respect_dwell,
+            allowed_online_stacks=online_assignment,
+        ):
             expanded += 1
             step = model.step(
                 state,

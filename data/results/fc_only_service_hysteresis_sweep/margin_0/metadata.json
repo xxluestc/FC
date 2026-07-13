@@ -1,0 +1,42 @@
+{
+  "scope": "development screen using real-calibrated Markov exposure templates; not holdout validation",
+  "policies": [
+    "fixed_pair",
+    "health_greedy",
+    "expected_hysteresis"
+  ],
+  "seeds": [
+    2026,
+    2027,
+    2028,
+    2029,
+    2030,
+    2031,
+    2032,
+    2033,
+    2034,
+    2035
+  ],
+  "epoch_h": 1.0,
+  "max_hours": 4000.0,
+  "rotation_hours": 24.0,
+  "reschedule_hours": 24.0,
+  "risk_horizon_h": 100.0,
+  "risk_samples": 128,
+  "health_limit_pct": 9.353028530555555,
+  "health_limit_interpretation": "LZW calibrated trajectory endpoint, not an identified failure threshold",
+  "gamma_scale_pct": 0.13417673000740873,
+  "gamma_terminal_cv": 0.1,
+  "health_limit_multiplier": 1.0,
+  "continuous_multiplier": 1.0,
+  "load_shift_multiplier": 1.0,
+  "operational_start_multiplier": 1.0,
+  "assignment_start_multiplier": 1.0,
+  "switch_margin_fraction": 0.0,
+  "template_count": 48,
+  "template_input": "H:\\其他\\2026刘展玮\\FC\\data\\results\\fc_only_service_templates\\service_exposure_templates.csv",
+  "template_source": "real_calibration_window",
+  "decision_information": "stationary mean of development templates; no upcoming epoch exposure",
+  "health_pairing": "common inverse-CDF uniforms by seed, epoch and online role",
+  "stochastic_health_execution": false
+}

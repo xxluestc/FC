@@ -1,0 +1,8 @@
+margin_fraction,fixed_time_mean_h,fixed_start_mean,health_greedy_time_mean_h,health_greedy_start_mean,hysteresis_time_mean_h,hysteresis_start_mean,time_gain_vs_health_mean_h,time_gain_vs_health_min_h,time_gain_vs_health_max_h,win_share_vs_health,nonworse_share_vs_health
+0.0,1331.5,2.0,1732.2,36.2,1732.6,35.7,0.4,-2.0,10.0,0.2,0.3
+0.0001,1331.5,2.0,1732.2,36.2,1732.8,35.7,0.6,-2.0,10.0,0.2,0.5
+0.00025,1331.5,2.0,1732.2,36.2,1733.4,35.2,1.2,-2.0,10.0,0.2,0.6
+0.0005,1331.5,2.0,1732.2,36.2,1733.5,34.8,1.3,-2.0,11.0,0.2,0.5
+0.001,1331.5,2.0,1732.2,36.2,1732.8,33.3,0.6,-1.0,5.0,0.4,0.6
+0.0025,1331.5,2.0,1732.2,36.2,1733.5,28.6,1.3,-23.0,11.0,0.7,0.8
+0.005,1331.5,2.0,1732.2,36.2,1734.5,19.8,2.3,-21.0,15.0,0.7,0.9

@@ -1,0 +1,2 @@
+policy,reference_policy,mean_gain_h,minimum_gain_h,maximum_gain_h,win_share,nonworse_share
+fixed_pair,health_greedy,-266.6,-274.0,-263.0,0.0,0.0

@@ -1,0 +1,31 @@
+{
+  "scope": "one-factor-at-a-time deterministic conditional-mean robustness",
+  "template_source": "real_calibration_window",
+  "seeds": [
+    2026,
+    2027,
+    2028,
+    2029,
+    2030,
+    2031,
+    2032,
+    2033,
+    2034,
+    2035
+  ],
+  "max_hours": 4000.0,
+  "cases": [
+    "base",
+    "health_limit_0p8",
+    "health_limit_1p2",
+    "continuous_0p5",
+    "continuous_2",
+    "load_shift_0p5",
+    "load_shift_2",
+    "operational_start_0p434",
+    "operational_start_2p396",
+    "assignment_start_0p5",
+    "assignment_start_2"
+  ],
+  "operational_start_bounds_source": "complete calibration segment bootstrap 95% interval"
+}

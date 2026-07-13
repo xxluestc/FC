@@ -1,0 +1,4 @@
+policy,reference_policy,mean_gain_h,minimum_gain_h,maximum_gain_h,win_share,nonworse_share
+health_greedy,fixed_pair,393.35,189.0,552.0,1.0,1.0
+expected_max,fixed_pair,394.95,191.0,552.0,1.0,1.0
+gamma_cvar,fixed_pair,358.65,187.0,493.0,1.0,1.0

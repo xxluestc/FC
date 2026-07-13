@@ -15,6 +15,7 @@ from fc_power.evaluation import (
     ServiceScheduleConfig,
     ServiceScheduleState,
     choose_service_assignment,
+    evaluate_service_assignment,
     stationary_service_exposure,
     transition_service_epoch,
 )
@@ -26,13 +27,43 @@ INPUT = ROOT / "data/results/fc_only_mechanism_ablation/per_run_metrics.csv"
 CALIBRATION = ROOT / "data/results/health/lzw_gamma_calibration.json"
 OUTPUT = ROOT / "data/results/fc_only_service_scheduler"
 FIGURES = ROOT / "data/results/figures/fc_only_foundation"
-POLICIES = ("fixed_pair", "periodic_rotation", "expected_max", "gamma_cvar")
+POLICIES = (
+    "fixed_pair",
+    "periodic_rotation",
+    "health_greedy",
+    "expected_hysteresis",
+    "expected_max",
+    "gamma_cvar",
+)
 HETEROGENEITY = np.asarray((1.0, 1.05, 1.10))
 INITIAL_DAMAGE_FRACTION = np.asarray((0.10, 0.40, 0.80))
 
 
-def load_templates() -> list[ServiceExposure]:
-    table = pd.read_csv(INPUT)
+def load_templates(input_path=INPUT, template_source=None) -> list[ServiceExposure]:
+    table = pd.read_csv(input_path)
+    if "template_source" in table and template_source is not None:
+        table = table[table.template_source == template_source]
+    if "role_0_continuous_mean_pct" in table:
+        if len(table) < 3:
+            raise ValueError("at least three fast-layer templates are required")
+        return [
+            ServiceExposure(
+                duration_h=float(row.duration_h),
+                continuous_mean_pct=(
+                    row.role_0_continuous_mean_pct,
+                    row.role_1_continuous_mean_pct,
+                ),
+                load_shift_damage_pct=(
+                    row.role_0_load_shift_damage_pct,
+                    row.role_1_load_shift_damage_pct,
+                ),
+                operational_start_damage_pct=(
+                    row.role_0_operational_start_damage_pct,
+                    row.role_1_operational_start_damage_pct,
+                ),
+            )
+            for row in table.itertuples(index=False)
+        ]
     selected = table[
         (table.load_source == "empirical_1s")
         & (table.strategy == "instant_health")
@@ -75,10 +106,16 @@ def aggregate_epoch(
     shifts = np.sum(
         [templates[index].load_shift_damage_pct for index in sampled], axis=0
     )
+    operational_starts = np.sum(
+        [templates[index].operational_start_damage_pct for index in sampled], axis=0
+    )
     return ServiceExposure(
         duration_h=epoch_h,
         continuous_mean_pct=tuple(float(value) for value in continuous),
         load_shift_damage_pct=tuple(float(value) for value in shifts),
+        operational_start_damage_pct=tuple(
+            float(value) for value in operational_starts
+        ),
     )
 
 
@@ -86,8 +123,10 @@ def orient_pair(pair, state, exposure):
     """Map the heavier role to the stack with more residual health."""
 
     first, second = pair
-    role_damage = np.asarray(exposure.continuous_mean_pct) + np.asarray(
-        exposure.load_shift_damage_pct
+    role_damage = (
+        np.asarray(exposure.continuous_mean_pct)
+        + np.asarray(exposure.load_shift_damage_pct)
+        + np.asarray(exposure.operational_start_damage_pct)
     )
     candidates = ((first, second), (second, first))
     return min(
@@ -110,6 +149,7 @@ def choose_policy_assignment(
     epoch,
     rotation_epochs,
     reschedule_epochs,
+    switch_margin_fraction,
 ):
     if policy == "fixed_pair":
         return orient_pair((0, 1), state, exposure)
@@ -118,15 +158,48 @@ def choose_policy_assignment(
         pair = pairs[(epoch // rotation_epochs) % len(pairs)]
         return orient_pair(pair, state, exposure)
     if (
-        policy in {"expected_max", "gamma_cvar"}
+        policy in {
+            "health_greedy",
+            "expected_hysteresis",
+            "expected_max",
+            "gamma_cvar",
+        }
         and state.online_assignment is not None
         and epoch % reschedule_epochs != 0
     ):
         return orient_pair(state.online_assignment, state, exposure)
+    if policy == "health_greedy":
+        pair = tuple(
+            sorted(
+                range(len(state.damage_pct)),
+                key=lambda index: (state.damage_pct[index], index),
+            )[:2]
+        )
+        return orient_pair(pair, state, exposure)
     if policy == "expected_max":
         return choose_service_assignment(
             state, exposure, config, objective="expected_max"
         ).assignment
+    if policy == "expected_hysteresis":
+        best = choose_service_assignment(
+            state, exposure, config, objective="expected_max"
+        )
+        if state.online_assignment is None:
+            return best.assignment
+        current_assignment = orient_pair(state.online_assignment, state, exposure)
+        current = evaluate_service_assignment(
+            state,
+            exposure,
+            config,
+            current_assignment,
+            objective="expected_max",
+        )
+        improvement = current.objective - best.objective
+        return (
+            current_assignment
+            if improvement <= switch_margin_fraction
+            else best.assignment
+        )
     if policy == "gamma_cvar":
         return choose_service_assignment(
             state, exposure, config, objective="gamma_cvar"
@@ -145,6 +218,8 @@ def simulate_case(task):
         max_hours,
         rotation_epochs,
         reschedule_epochs,
+        stochastic_health,
+        switch_margin_fraction,
     ) = task
     state = ServiceScheduleState(
         tuple(float(value) for value in INITIAL_DAMAGE_FRACTION * config.health_limit_pct)
@@ -162,13 +237,14 @@ def simulate_case(task):
             epoch,
             rotation_epochs,
             reschedule_epochs,
+            switch_margin_fraction,
         )
         transition = transition_service_epoch(
             state,
             exposure,
             config,
             assignment,
-            stochastic=True,
+            stochastic=stochastic_health,
             continuous_uniforms=health_uniforms[epoch],
         )
         state = transition.state
@@ -224,19 +300,22 @@ def summarize(per_run):
     return pd.DataFrame(rows)
 
 
-def paired_vs_fixed(per_run):
-    fixed = per_run[per_run.policy == "fixed_pair"].set_index("seed")
+def paired_against(per_run, reference):
+    baseline = per_run[per_run.policy == reference].set_index("seed")
+    if baseline.empty:
+        raise ValueError(f"reference policy is absent: {reference}")
     rows = []
-    for policy in POLICIES:
-        if policy == "fixed_pair":
+    for policy in per_run.policy.unique():
+        if policy == reference:
             continue
         selected = per_run[per_run.policy == policy].set_index("seed")
         delta = (
-            selected.time_to_health_limit_h - fixed.time_to_health_limit_h
+            selected.time_to_health_limit_h - baseline.time_to_health_limit_h
         ).to_numpy(dtype=float)
         rows.append(
             {
                 "policy": policy,
+                "reference_policy": reference,
                 "mean_gain_h": float(delta.mean()),
                 "minimum_gain_h": float(delta.min()),
                 "maximum_gain_h": float(delta.max()),
@@ -252,12 +331,16 @@ def plot_results(per_run, summary):
     colors = {
         "fixed_pair": "#4C78A8",
         "periodic_rotation": "#F2A541",
+        "health_greedy": "#7A5195",
+        "expected_hysteresis": "#B56576",
         "expected_max": "#2A9D8F",
         "gamma_cvar": "#D65F5F",
     }
     labels = {
         "fixed_pair": "Fixed pair",
         "periodic_rotation": "Periodic rotation",
+        "health_greedy": "Health greedy",
+        "expected_hysteresis": "Expected hysteresis",
         "expected_max": "Expected max",
         "gamma_cvar": "Gamma-CVaR",
     }
@@ -281,7 +364,8 @@ def plot_results(per_run, summary):
     fig, axes = plt.subplots(1, 2, figsize=(7.2, 2.6))
     maximum = int(per_run.time_to_health_limit_h.max())
     times = np.linspace(0, maximum, 200)
-    for policy in POLICIES:
+    available_policies = [policy for policy in POLICIES if policy in set(per_run.policy)]
+    for policy in available_policies:
         values = per_run[per_run.policy == policy].time_to_health_limit_h.to_numpy()
         survival = np.asarray([(values > time).mean() for time in times])
         axes[0].step(
@@ -297,11 +381,11 @@ def plot_results(per_run, summary):
     axes[0].legend(frameon=False)
     axes[0].text(-0.12, 1.04, "a", transform=axes[0].transAxes, fontweight="bold")
 
-    ordered = summary.set_index("policy").loc[list(POLICIES)]
-    positions = np.arange(len(POLICIES))
+    ordered = summary.set_index("policy").loc[available_policies]
+    positions = np.arange(len(available_policies))
     lower = ordered.time_to_limit_median_h - ordered.time_to_limit_q10_h
     upper = ordered.time_to_limit_q90_h - ordered.time_to_limit_median_h
-    for index, policy in enumerate(POLICIES):
+    for index, policy in enumerate(available_policies):
         axes[1].errorbar(
             positions[index],
             ordered.time_to_limit_median_h.iloc[index],
@@ -315,7 +399,7 @@ def plot_results(per_run, summary):
         )
     axes[1].set_xticks(
         positions,
-        [labels[policy].replace(" ", "\n") for policy in POLICIES],
+        [labels[policy].replace(" ", "\n") for policy in available_policies],
     )
     axes[1].set_ylabel("Time to health boundary (h)")
     axes[1].text(-0.12, 1.04, "b", transform=axes[1].transAxes, fontweight="bold")
@@ -336,11 +420,32 @@ def main():
     parser.add_argument("--reschedule-hours", type=float, default=24.0)
     parser.add_argument("--risk-samples", type=int, default=128)
     parser.add_argument("--gamma-terminal-cv", type=float, default=0.10)
+    parser.add_argument("--health-limit-multiplier", type=float, default=1.0)
+    parser.add_argument("--continuous-multiplier", type=float, default=1.0)
+    parser.add_argument("--load-shift-multiplier", type=float, default=1.0)
+    parser.add_argument("--operational-start-multiplier", type=float, default=1.0)
+    parser.add_argument("--assignment-start-multiplier", type=float, default=1.0)
+    parser.add_argument("--switch-margin-fraction", type=float, default=0.0)
     parser.add_argument("--skip-plot", action="store_true")
+    parser.add_argument("--deterministic-health", action="store_true")
+    parser.add_argument("--template-input", type=Path, default=INPUT)
+    parser.add_argument("--template-source")
+    parser.add_argument("--policies", nargs="+", choices=POLICIES, default=list(POLICIES))
     parser.add_argument("--out-dir", type=Path, default=OUTPUT)
     args = parser.parse_args()
+    multipliers = (
+        args.health_limit_multiplier,
+        args.continuous_multiplier,
+        args.load_shift_multiplier,
+        args.operational_start_multiplier,
+        args.assignment_start_multiplier,
+    )
     if args.max_hours <= 0 or args.epoch_h <= 0 or not args.seeds:
         raise ValueError("time settings and seeds must be positive")
+    if any(not np.isfinite(value) or value <= 0 for value in multipliers):
+        raise ValueError("sensitivity multipliers must be finite and positive")
+    if not np.isfinite(args.switch_margin_fraction) or args.switch_margin_fraction < 0:
+        raise ValueError("switch-margin-fraction must be finite and non-negative")
     rotation_epochs = int(round(args.rotation_hours / args.epoch_h))
     reschedule_epochs = int(round(args.reschedule_hours / args.epoch_h))
     epochs = int(np.ceil(args.max_hours / args.epoch_h))
@@ -348,7 +453,10 @@ def main():
         raise ValueError("scheduling periods must cover at least one epoch")
 
     calibration = json.loads(CALIBRATION.read_text(encoding="utf-8"))
-    health_limit = float(calibration["terminal_total_damage_pct"])
+    health_limit = (
+        float(calibration["terminal_total_damage_pct"])
+        * args.health_limit_multiplier
+    )
     gamma_scale = gamma_scale_for_terminal_cv(
         float(calibration["terminal_total_damage_pct"]),
         float(calibration["terminal_continuous_damage_pct"]),
@@ -360,11 +468,29 @@ def main():
         heterogeneity_factors=tuple(HETEROGENEITY),
         start_damage_pct=float(
             calibration["coefficients_percent_units"]["start_stop_pct_per_cycle"]
-        ),
+        ) * args.assignment_start_multiplier,
         risk_horizon_h=args.risk_horizon_h,
         risk_samples=args.risk_samples,
     )
-    templates = load_templates()
+    templates = load_templates(args.template_input, args.template_source)
+    templates = [
+        ServiceExposure(
+            duration_h=item.duration_h,
+            continuous_mean_pct=tuple(
+                args.continuous_multiplier * value
+                for value in item.continuous_mean_pct
+            ),
+            load_shift_damage_pct=tuple(
+                args.load_shift_multiplier * value
+                for value in item.load_shift_damage_pct
+            ),
+            operational_start_damage_pct=tuple(
+                args.operational_start_multiplier * value
+                for value in item.operational_start_damage_pct
+            ),
+        )
+        for item in templates
+    ]
     decision_exposure = stationary_service_exposure(templates, args.epoch_h)
     tasks = []
     for seed in args.seeds:
@@ -387,21 +513,32 @@ def main():
                 args.max_hours,
                 rotation_epochs,
                 reschedule_epochs,
+                not args.deterministic_health,
+                args.switch_margin_fraction,
             )
-            for policy in POLICIES
+            for policy in args.policies
         )
     per_run = pd.DataFrame(map(simulate_case, tasks))
     summary = summarize(per_run)
-    paired = paired_vs_fixed(per_run)
+    paired = paired_against(per_run, "fixed_pair")
+    paired_health = (
+        paired_against(per_run, "health_greedy")
+        if "health_greedy" in set(per_run.policy)
+        else pd.DataFrame()
+    )
     args.out_dir.mkdir(parents=True, exist_ok=True)
     per_run.to_csv(args.out_dir / "per_run_metrics.csv", index=False)
     summary.to_csv(args.out_dir / "summary.csv", index=False)
     paired.to_csv(args.out_dir / "paired_vs_fixed.csv", index=False)
+    if not paired_health.empty:
+        paired_health.to_csv(
+            args.out_dir / "paired_vs_health_greedy.csv", index=False
+        )
     if not args.skip_plot:
         plot_results(per_run, summary)
     metadata = {
         "scope": "development screen using real-calibrated Markov exposure templates; not holdout validation",
-        "policies": list(POLICIES),
+        "policies": list(args.policies),
         "seeds": args.seeds,
         "epoch_h": args.epoch_h,
         "max_hours": args.max_hours,
@@ -413,16 +550,25 @@ def main():
         "health_limit_interpretation": "LZW calibrated trajectory endpoint, not an identified failure threshold",
         "gamma_scale_pct": config.gamma_scale_pct,
         "gamma_terminal_cv": args.gamma_terminal_cv,
+        "health_limit_multiplier": args.health_limit_multiplier,
+        "continuous_multiplier": args.continuous_multiplier,
+        "load_shift_multiplier": args.load_shift_multiplier,
+        "operational_start_multiplier": args.operational_start_multiplier,
+        "assignment_start_multiplier": args.assignment_start_multiplier,
+        "switch_margin_fraction": args.switch_margin_fraction,
         "template_count": len(templates),
+        "template_input": str(args.template_input),
+        "template_source": args.template_source,
         "decision_information": "stationary mean of development templates; no upcoming epoch exposure",
         "health_pairing": "common inverse-CDF uniforms by seed, epoch and online role",
+        "stochastic_health_execution": not args.deterministic_health,
     }
     (args.out_dir / "metadata.json").write_text(
         json.dumps(metadata, ensure_ascii=False, indent=2), encoding="utf-8"
     )
     report = "# 小时级N+1调度开发筛查\n\n"
     report += (
-        "本实验使用实车标定Markov开发场景的120秒Instant动作暴露作为块模板，"
+        "本实验使用指定的开发模板库所产生的Instant快层动作暴露，"
         "决策仅使用开发模板平均暴露，未知的执行暴露按小时重采样；启动损伤只在慢层"
         "在线集合实际变化时计入。健康边界是LZW"
         "标定轨迹终点，不是已辨识失效阈值，因此结果只用于筛选方法。\n\n"
@@ -430,6 +576,9 @@ def main():
     report += summary.to_markdown(index=False) + "\n"
     report += "\n## 相对固定双堆的配对结果\n\n"
     report += paired.to_markdown(index=False) + "\n"
+    if not paired_health.empty:
+        report += "\n## 相对当前健康贪心的配对结果\n\n"
+        report += paired_health.to_markdown(index=False) + "\n"
     (args.out_dir / "report.md").write_text(report, encoding="utf-8")
     print(summary.to_string(index=False))
 

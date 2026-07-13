@@ -1,0 +1,28 @@
+{
+  "scope": "development-only deterministic hysteresis Pareto screen",
+  "template_source": "real_calibration_window",
+  "margins": [
+    0.0,
+    0.0001,
+    0.00025,
+    0.0005,
+    0.001,
+    0.0025,
+    0.005
+  ],
+  "seeds": [
+    2026,
+    2027,
+    2028,
+    2029,
+    2030,
+    2031,
+    2032,
+    2033,
+    2034,
+    2035
+  ],
+  "selection_rule": "smallest starts subject to <=1% mean time loss and nonnegative minimum paired time change",
+  "selected_margin": null,
+  "selection_outcome": "no margin passed the frozen rule"
+}

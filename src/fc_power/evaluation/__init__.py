@@ -32,8 +32,15 @@ from fc_power.evaluation.service_scheduler import (
     ServiceScheduleTransition,
     candidate_assignments,
     choose_service_assignment,
+    evaluate_service_assignment,
     stationary_service_exposure,
     transition_service_epoch,
+)
+from fc_power.evaluation.service_templates import (
+    CalibrationWindow,
+    materialize_calibration_window,
+    select_calibration_windows,
+    service_exposure_from_trajectory,
 )
 from fc_power.evaluation.zuo_load_calibration import (
     TemporalSegmentSplit,
@@ -50,6 +57,7 @@ from fc_power.evaluation.zuo_load_calibration import (
 
 __all__ = [
     "ActionExposure",
+    "CalibrationWindow",
     "EVENT_NAMES",
     "GammaExposure",
     "SyntheticLoadConfig",
@@ -70,6 +78,7 @@ __all__ = [
     "candidate_assignments",
     "clip_profile_to_feasible_envelope",
     "choose_service_assignment",
+    "evaluate_service_assignment",
     "blend_transition_matrices",
     "generate_event_load",
     "generate_real_block_bootstrap",
@@ -78,9 +87,12 @@ __all__ = [
     "extract_action_exposure",
     "estimate_segmented_transitions",
     "paired_strategy_comparison",
+    "materialize_calibration_window",
     "quantize_zuo_states",
     "run_policy",
     "sample_repeated_exposure",
+    "select_calibration_windows",
+    "service_exposure_from_trajectory",
     "split_at_largest_segment_gap",
     "summarize_run",
     "stationary_service_exposure",

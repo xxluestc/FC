@@ -8,6 +8,7 @@ from fc_power.evaluation.service_scheduler import (
     ServiceScheduleState,
     candidate_assignments,
     choose_service_assignment,
+    evaluate_service_assignment,
     stationary_service_exposure,
     transition_service_epoch,
 )
@@ -47,6 +48,7 @@ class ServiceSchedulerTest(unittest.TestCase):
             duration_h=1.0,
             continuous_mean_pct=(0.0040, 0.0042),
             load_shift_damage_pct=(0.0004, 0.0006),
+            operational_start_damage_pct=(0.0008, 0.0010),
         )
         exposure = stationary_service_exposure([self.exposure, second], 2.0)
         self.assertTrue(
@@ -55,6 +57,9 @@ class ServiceSchedulerTest(unittest.TestCase):
         self.assertTrue(
             np.allclose(exposure.load_shift_damage_pct, (0.0006, 0.0008))
         )
+        self.assertTrue(
+            np.allclose(exposure.operational_start_damage_pct, (0.0008, 0.0010))
+        )
 
     def test_gamma_cvar_scheduler_is_deterministic(self):
         state = ServiceScheduleState((1.0, 4.0, 8.0))
@@ -62,6 +67,20 @@ class ServiceSchedulerTest(unittest.TestCase):
         second = choose_service_assignment(state, self.exposure, self.config)
         self.assertEqual(first, second)
         self.assertIsNotNone(first.cvar_max_health_fraction)
+
+    def test_candidate_evaluation_matches_selected_expected_objective(self):
+        state = ServiceScheduleState((1.0, 4.0, 8.0))
+        selected = choose_service_assignment(
+            state, self.exposure, self.config, objective="expected_max"
+        )
+        evaluated = evaluate_service_assignment(
+            state,
+            self.exposure,
+            self.config,
+            selected.assignment,
+            objective="expected_max",
+        )
+        self.assertEqual(selected, evaluated)
 
     def test_transition_updates_only_online_stacks_and_counts_real_starts(self):
         state = ServiceScheduleState((1.0, 4.0, 8.0))
@@ -86,6 +105,23 @@ class ServiceSchedulerTest(unittest.TestCase):
         )
         self.assertEqual(second.state.start_count, 2)
         self.assertTrue(np.allclose(second.start_damage_pct, 0.0))
+
+    def test_operational_starts_do_not_count_as_pair_switches(self):
+        exposure = ServiceExposure(
+            duration_h=1.0,
+            continuous_mean_pct=(0.0, 0.0),
+            load_shift_damage_pct=(0.0, 0.0),
+            operational_start_damage_pct=(0.003, 0.004),
+        )
+        state = ServiceScheduleState((1.0, 4.0, 8.0), online_assignment=(0, 1))
+        result = transition_service_epoch(
+            state, exposure, self.config, (0, 1), stochastic=False
+        )
+        self.assertEqual(result.state.start_count, 0)
+        self.assertTrue(np.allclose(result.start_damage_pct, 0.0))
+        self.assertTrue(
+            np.allclose(result.operational_start_damage_pct, (0.003, 0.0042, 0.0))
+        )
 
     def test_seeded_stochastic_transition_is_reproducible(self):
         state = ServiceScheduleState((1.0, 4.0, 8.0))

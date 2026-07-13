@@ -1,0 +1,4 @@
+policy,n_runs,health_limit_crossing_share,time_to_limit_mean_h,time_to_limit_std_h,time_to_limit_q10_h,time_to_limit_median_h,time_to_limit_q90_h,start_count_mean,assignment_change_mean
+expected_hysteresis,10,1.0,1732.6,6.535373831014651,1722.9,1732.5,1739.1,35.7,33.7
+fixed_pair,10,1.0,1331.5,6.654154925892376,1325.7,1329.5,1342.0,2.0,0.0
+health_greedy,10,1.0,1732.2,7.685484153042452,1723.6,1733.5,1740.1,36.2,34.2

@@ -104,6 +104,7 @@ def run_policy(
     beam_horizon: int = 16,
     beam_width: int = 4,
     rotation_period: int = 30,
+    fixed_online_assignment=None,
 ) -> TestRun:
     """Plan deterministically, execute Gamma health online, and record every step."""
 
@@ -111,6 +112,8 @@ def run_policy(
         raise ValueError("scenario initial health does not match n_stacks")
     if beam_horizon <= 0 or beam_width <= 0 or rotation_period <= 0:
         raise ValueError("planner sizes must be positive")
+    if fixed_online_assignment is not None and strategy != "instant_health":
+        raise ValueError("fixed_online_assignment is only supported by instant_health")
     reference = model.performance_proxies[0].mapping.damage_reference_pct
     initial_damage = np.asarray(scenario.initial_damage_fraction) * reference
     state = model.initial_state(
@@ -139,7 +142,12 @@ def run_policy(
             lead = (step_index // rotation_period) % model.n_stacks
             planned = choose_rotating(model, state, current_demand, lead)
         elif strategy == "instant_health":
-            planned = choose_instant(model, state, current_demand)
+            planned = choose_instant(
+                model,
+                state,
+                current_demand,
+                online_assignment=fixed_online_assignment,
+            )
         elif strategy == "beam_health":
             preview_length = min(beam_horizon, len(demand) - step_index)
             preview = np.full(preview_length, current_demand, dtype=float)

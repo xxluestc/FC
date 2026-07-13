@@ -74,6 +74,28 @@ class MultiStackAllocatorTest(unittest.TestCase):
         self.assertEqual(result.step.next_state.soc, state.soc)
         self.assertLessEqual(sum(result.action.is_on), 2)
 
+    def test_instant_can_be_restricted_to_a_slow_layer_assignment(self):
+        model = load_lzw_multistack_world_model(
+            ROOT,
+            n_stacks=3,
+            config=WorldModelConfig(
+                min_online_stacks=2,
+                max_online_stacks=2,
+                power_interface="fc_only",
+                fc_power_tracking_tolerance_kw=5.5,
+            ),
+        )
+        state = model.initial_state(degradation_pct=(0.1, 0.2, 0.3))
+        result = choose_instant(
+            model,
+            state,
+            demand_power_kw=40.0,
+            online_assignment=(1, 2),
+        )
+        self.assertFalse(result.action.is_on[0])
+        self.assertEqual(sum(result.action.is_on), 2)
+        self.assertTrue(result.step.constraints.feasible)
+
     def test_fc_only_beam_ignores_terminal_soc_and_tracks_power(self):
         model = load_lzw_multistack_world_model(
             ROOT,

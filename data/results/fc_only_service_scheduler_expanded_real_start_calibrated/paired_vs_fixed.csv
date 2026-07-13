@@ -1,0 +1,4 @@
+policy,mean_gain_h,minimum_gain_h,maximum_gain_h,win_share,nonworse_share
+periodic_rotation,-645.35,-867.0,-441.0,0.0,0.0
+expected_max,394.95,191.0,552.0,1.0,1.0
+gamma_cvar,358.65,187.0,493.0,1.0,1.0

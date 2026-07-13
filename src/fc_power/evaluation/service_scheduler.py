@@ -16,6 +16,7 @@ class ServiceExposure:
     duration_h: float
     continuous_mean_pct: tuple[float, float]
     load_shift_damage_pct: tuple[float, float]
+    operational_start_damage_pct: tuple[float, float] = (0.0, 0.0)
 
     def __post_init__(self) -> None:
         if not np.isfinite(self.duration_h) or self.duration_h <= 0:
@@ -23,6 +24,7 @@ class ServiceExposure:
         for name, values in (
             ("continuous_mean_pct", self.continuous_mean_pct),
             ("load_shift_damage_pct", self.load_shift_damage_pct),
+            ("operational_start_damage_pct", self.operational_start_damage_pct),
         ):
             array = np.asarray(values, dtype=float)
             if array.shape != (2,) or np.any(~np.isfinite(array)) or np.any(array < 0):
@@ -98,6 +100,7 @@ class ServiceScheduleTransition:
     state: ServiceScheduleState
     continuous_damage_pct: tuple[float, ...]
     load_shift_damage_pct: tuple[float, ...]
+    operational_start_damage_pct: tuple[float, ...]
     start_damage_pct: tuple[float, ...]
 
 
@@ -127,10 +130,16 @@ def stationary_service_exposure(
     shifts = blocks * np.mean(
         [item.load_shift_damage_pct for item in templates], axis=0
     )
+    operational_starts = blocks * np.mean(
+        [item.operational_start_damage_pct for item in templates], axis=0
+    )
     return ServiceExposure(
         duration_h=duration_h,
         continuous_mean_pct=tuple(float(value) for value in continuous),
         load_shift_damage_pct=tuple(float(value) for value in shifts),
+        operational_start_damage_pct=tuple(
+            float(value) for value in operational_starts
+        ),
     )
 
 
@@ -148,34 +157,49 @@ def choose_service_assignment(
     if objective not in {"expected_max", "gamma_cvar"}:
         raise ValueError("objective must be expected_max or gamma_cvar")
 
-    uniforms = _common_uniforms(config.risk_samples, len(state.damage_pct), config.risk_seed)
     best = None
     for assignment in candidate_assignments(len(state.damage_pct)):
-        expected_damage, starts = _project_expected_damage(
-            state, exposure, config, assignment
+        decision = evaluate_service_assignment(
+            state, exposure, config, assignment, objective=objective
         )
-        expected_max = float(expected_damage.max() / config.health_limit_pct)
-        cvar = None
-        if objective == "gamma_cvar":
-            cvar = _project_cvar(
-                state, exposure, config, assignment, uniforms
-            )
-            score = cvar
-        else:
-            score = expected_max
-        key = (score, starts, assignment)
+        key = (decision.objective, decision.new_starts, assignment)
         if best is None or key < best[0]:
-            best = (
-                key,
-                ServiceScheduleDecision(
-                    assignment=assignment,
-                    objective=float(score),
-                    expected_max_health_fraction=expected_max,
-                    cvar_max_health_fraction=cvar,
-                    new_starts=starts,
-                ),
-            )
+            best = (key, decision)
     return best[1]
+
+
+def evaluate_service_assignment(
+    state: ServiceScheduleState,
+    exposure: ServiceExposure,
+    config: ServiceScheduleConfig,
+    assignment: tuple[int, int],
+    *,
+    objective: str = "expected_max",
+) -> ServiceScheduleDecision:
+    """Evaluate one auditable candidate without selecting among assignments."""
+
+    if assignment not in candidate_assignments(len(state.damage_pct)):
+        raise ValueError("assignment is not a valid two-stack role mapping")
+    if objective not in {"expected_max", "gamma_cvar"}:
+        raise ValueError("objective must be expected_max or gamma_cvar")
+    expected_damage, starts = _project_expected_damage(
+        state, exposure, config, assignment
+    )
+    expected_max = float(expected_damage.max() / config.health_limit_pct)
+    cvar = None
+    if objective == "gamma_cvar":
+        uniforms = _common_uniforms(
+            config.risk_samples, len(state.damage_pct), config.risk_seed
+        )
+        cvar = _project_cvar(state, exposure, config, assignment, uniforms)
+    score = expected_max if cvar is None else cvar
+    return ServiceScheduleDecision(
+        assignment=assignment,
+        objective=float(score),
+        expected_max_health_fraction=expected_max,
+        cvar_max_health_fraction=cvar,
+        new_starts=starts,
+    )
 
 
 def transition_service_epoch(
@@ -195,6 +219,7 @@ def transition_service_epoch(
     factors = np.asarray(config.heterogeneity_factors)
     continuous = np.zeros(len(state.damage_pct), dtype=float)
     shifts = np.zeros_like(continuous)
+    operational_starts = np.zeros_like(continuous)
     starts = np.zeros_like(continuous)
     previous = set() if state.online_assignment is None else set(state.online_assignment)
     generator = np.random.default_rng() if rng is None else rng
@@ -222,9 +247,18 @@ def transition_service_epoch(
         else:
             continuous[stack] = mean
         shifts[stack] = exposure.load_shift_damage_pct[role] * factors[stack]
+        operational_starts[stack] = (
+            exposure.operational_start_damage_pct[role] * factors[stack]
+        )
         if stack not in previous:
             starts[stack] = config.start_damage_pct * factors[stack]
-    next_damage = np.asarray(state.damage_pct) + continuous + shifts + starts
+    next_damage = (
+        np.asarray(state.damage_pct)
+        + continuous
+        + shifts
+        + operational_starts
+        + starts
+    )
     next_state = ServiceScheduleState(
         damage_pct=tuple(float(value) for value in next_damage),
         online_assignment=assignment,
@@ -235,6 +269,9 @@ def transition_service_epoch(
         state=next_state,
         continuous_damage_pct=tuple(float(value) for value in continuous),
         load_shift_damage_pct=tuple(float(value) for value in shifts),
+        operational_start_damage_pct=tuple(
+            float(value) for value in operational_starts
+        ),
         start_damage_pct=tuple(float(value) for value in starts),
     )
 
@@ -249,6 +286,7 @@ def _project_expected_damage(state, exposure, config, assignment):
         projected[stack] += factor * heterogeneity[stack] * (
             exposure.continuous_mean_pct[role]
             + exposure.load_shift_damage_pct[role]
+            + exposure.operational_start_damage_pct[role]
         )
         if stack not in previous:
             projected[stack] += config.start_damage_pct * heterogeneity[stack]
@@ -272,7 +310,12 @@ def _project_cvar(state, exposure, config, assignment, uniforms):
                 scale=config.gamma_scale_pct,
             )
         samples[:, stack] += (
-            factor * exposure.load_shift_damage_pct[role] * heterogeneity[stack]
+            factor
+            * (
+                exposure.load_shift_damage_pct[role]
+                + exposure.operational_start_damage_pct[role]
+            )
+            * heterogeneity[stack]
         )
         if stack not in previous:
             samples[:, stack] += config.start_damage_pct * heterogeneity[stack]
