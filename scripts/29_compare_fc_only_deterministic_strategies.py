@@ -119,11 +119,13 @@ def run_case(task):
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--length", type=int, default=120)
-    parser.add_argument("--seeds", nargs="+", type=int, default=[2026, 2027, 2028])
+    parser.add_argument(
+        "--seeds", nargs="+", type=int, default=list(range(2026, 2036))
+    )
     parser.add_argument("--beam-horizon", type=int, default=2)
     parser.add_argument("--beam-width", type=int, default=2)
     parser.add_argument("--rotation-period", type=int, default=30)
-    parser.add_argument("--jobs", type=int, default=4)
+    parser.add_argument("--jobs", type=int, default=8)
     parser.add_argument("--out-dir", type=Path, default=DEFAULT_OUTPUT)
     args = parser.parse_args()
     if min(
@@ -262,6 +264,27 @@ def main() -> None:
             f"{row.online_step_range_mean:.1f} | "
             f"{row.planning_runtime_s_mean:.3f} |"
         )
+    instant_pairs = paired[paired.strategy == "instant_health"]
+    tracking_gain = -instant_pairs[
+        instant_pairs.metric == "fc_tracking_mae_kw"
+    ].mean_relative_pct
+    hydrogen_penalty = instant_pairs[
+        instant_pairs.metric == "hydrogen_g_per_fc_kwh"
+    ].mean_relative_pct
+    damage_gain = -instant_pairs[
+        instant_pairs.metric == "main_expected_damage_increment_pct"
+    ].mean_relative_pct
+    stable_damage_scenarios = int(
+        (
+            instant_pairs[
+                instant_pairs.metric == "main_expected_damage_increment_pct"
+            ].eval("mean_delta + ci95 < 0")
+        ).sum()
+    )
+    rotating_damage = paired[
+        (paired.strategy == "rotating")
+        & (paired.metric == "main_expected_damage_increment_pct")
+    ].mean_relative_pct
     report = f"""# FC-only确定性策略基础比较
 
 - 三堆N+1，正需求时恰好两堆在线；确定性动作驱动健康更新。
@@ -272,6 +295,8 @@ def main() -> None:
 {chr(10).join(lines)}
 
 总氢耗必须与FC实际输出电量和跟踪误差联合解释，较低氢耗不能自动解释为较高效率。
+Instant/Beam相对Average的跟踪MAE降低{tracking_gain.min():.1f}%-{tracking_gain.max():.1f}%，氢耗强度增加{hydrogen_penalty.min():.1f}%-{hydrogen_penalty.max():.1f}%，期望退化均值降低{damage_gain.min():.1f}%-{damage_gain.max():.1f}%；仅{stable_damage_scenarios}/3个场景的退化差值95%区间完全低于0。
+Rotating相对Average的期望退化增加{rotating_damage.min():.1f}%-{rotating_damage.max():.1f}%，不能仅凭轮休更均衡判为延寿。
 本报告是G4基础可执行性与方向检查，不是寿命结论；当前种子数和轨迹长度只支持初步配对区间，规划时间受当前机器影响，Zuo时间尺度、动作网格和目标权重仍需后续消融。
 """
     (args.out_dir / "report.md").write_text(report, encoding="utf-8")

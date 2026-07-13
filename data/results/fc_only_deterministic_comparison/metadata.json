@@ -9,7 +9,14 @@
   "load_seeds": [
     2026,
     2027,
-    2028
+    2028,
+    2029,
+    2030,
+    2031,
+    2032,
+    2033,
+    2034,
+    2035
   ],
   "length_s": 120,
   "initial_damage_fraction": [
@@ -28,9 +35,9 @@
   "beam_width": 2,
   "beam_preview": "current demand held constant; no future demand access",
   "rotation_period": 30,
-  "parallel_jobs": 4,
+  "parallel_jobs": 8,
   "stochastic_health": false,
-  "runtime_s": 403.8540721000172,
+  "runtime_s": 764.6969547001645,
   "scenario_intervals_s": {
     "empirical_1s": 1,
     "zuo_slow_30s": 30,
