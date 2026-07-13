@@ -1,0 +1,25 @@
+boundary_id,scenario_id,policy,samples,first_boundary_gain_mean_h,first_boundary_gain_ci95_low_h,first_boundary_gain_ci95_high_h,second_boundary_gain_mean_h,second_boundary_gain_ci95_low_h,second_boundary_gain_ci95_high_h,second_boundary_nonworse_share,start_count_delta_mean,boundary_label,boundary_order,boundary_over_calibration
+lzw_calibration_endpoint,reference,guarded_blend,20,91.65,40.72430720806406,167.1,2.45,0.65,6.85,1.0,1.1,LZW endpoint,0,1.0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,guarded_blend,20,51.3,31.0,81.61097338031004,-16.45,-41.7,-1.5379065636268023,0.55,3.45,LZW endpoint,0,1.0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,guarded_blend,20,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,LZW endpoint,0,1.0
+370a_5pct_voltage_loss,reference,guarded_blend,20,629.5,573.35,677.6,132.5,91.0,181.45,0.95,23.8,"370 A, 5% loss",1,1.3036156466795592
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,guarded_blend,20,259.65,217.7182966434129,308.85708083817445,-14.2,-43.4,15.5,0.35,19.3,"370 A, 5% loss",1,1.3036156466795592
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,guarded_blend,20,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,"370 A, 5% loss",1,1.3036156466795592
+195a_5pct_voltage_loss,reference,guarded_blend,20,1072.15,1016.2414115855502,1130.1989398057733,633.75,569.8694409085593,696.8,1.0,74.3,"195 A, 5% loss",2,1.894180880616048
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,guarded_blend,20,729.2,662.85,809.95,15.55,-21.45,56.106074218868706,0.55,51.3,"195 A, 5% loss",2,1.894180880616048
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,guarded_blend,20,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,"195 A, 5% loss",2,1.894180880616048
+370a_10pct_voltage_loss,reference,guarded_blend,20,1153.95,1095.4,1218.6621108861511,713.9,650.1419311723222,783.105103617157,1.0,82.05,"370 A, 10% loss",3,1.9807788142182403
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,guarded_blend,20,786.25,719.1,866.190219561087,6.0,-46.06456923936836,60.11381027180878,0.5,56.2,"370 A, 10% loss",3,1.9807788142182403
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,guarded_blend,20,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,"370 A, 10% loss",3,1.9807788142182403
+lzw_calibration_endpoint,reference,rate_bounded_blend,20,91.65,34.05,167.35,2.45,0.65,6.8,1.0,1.1,LZW endpoint,0,1.0
+370a_5pct_voltage_loss,reference,rate_bounded_blend,20,629.5,572.5386507064686,677.45,132.5,90.76538792695324,180.37656468369477,0.95,23.8,"370 A, 5% loss",1,1.3036156466795592
+195a_5pct_voltage_loss,reference,rate_bounded_blend,20,1072.15,1017.4,1129.7950032898464,633.75,567.84078376857,695.5903442580736,1.0,74.3,"195 A, 5% loss",2,1.894180880616048
+370a_10pct_voltage_loss,reference,rate_bounded_blend,20,1153.95,1095.5527538253957,1218.2214287268648,713.9,650.5,780.4437601842519,1.0,82.05,"370 A, 10% loss",3,1.9807788142182403
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,rate_bounded_blend,20,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,LZW endpoint,0,1.0
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,rate_bounded_blend,20,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,"370 A, 5% loss",1,1.3036156466795592
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,rate_bounded_blend,20,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,"195 A, 5% loss",2,1.894180880616048
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,rate_bounded_blend,20,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,"370 A, 10% loss",3,1.9807788142182403
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,rate_bounded_blend,20,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,LZW endpoint,0,1.0
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,rate_bounded_blend,20,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,"370 A, 5% loss",1,1.3036156466795592
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,rate_bounded_blend,20,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,"195 A, 5% loss",2,1.894180880616048
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,rate_bounded_blend,20,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,"370 A, 10% loss",3,1.9807788142182403

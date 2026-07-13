@@ -1,0 +1,5 @@
+boundary_id,boundary_label,health_limit_pct,diagnostic_current_a,voltage_loss_fraction,extrapolated,boundary_order,boundary_over_calibration
+lzw_calibration_endpoint,LZW endpoint,9.353028530555555,,,False,0,1.0
+370a_5pct_voltage_loss,"370 A, 5% loss",12.192754336272548,370.0,0.05,True,1,1.3036156466795592
+195a_5pct_voltage_loss,"195 A, 5% loss",17.716327818434742,195.0,0.05,True,2,1.8941808806160478
+370a_10pct_voltage_loss,"370 A, 10% loss",18.526280762103205,370.0,0.1,True,3,1.9807788142182405

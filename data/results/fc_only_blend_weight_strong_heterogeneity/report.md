@@ -1,0 +1,27 @@
+# Blend-weight screen under strong aligned heterogeneity
+
+- The five weights were already declared in the N+1 audit code.
+- A weight is eligible only when its paired N+1 lower confidence bound is
+  nonnegative. Selection remains development-only until external validation.
+
+## Summary
+
+| scenario_id                          | policy         |   n_plus_one_weight |   seeds |   first_boundary_gain_mean_h |   first_boundary_gain_ci95_low_h |   first_boundary_gain_ci95_high_h |   second_boundary_gain_mean_h |   second_boundary_gain_ci95_low_h |   second_boundary_gain_ci95_high_h |   second_boundary_nonworse_share |   start_count_delta_mean |
+|:-------------------------------------|:---------------|--------------------:|--------:|-----------------------------:|---------------------------------:|----------------------------------:|------------------------------:|----------------------------------:|-----------------------------------:|---------------------------------:|-------------------------:|
+| reference                            | order_blend_25 |                0.25 |      20 |                       310.75 |                          291.1   |                          330.7    |                         -0.1  |                         -7.25     |                            7.4     |                             0.5  |                    22.4  |
+| heterogeneity_gp_re_increased_perm_2 | order_blend_25 |                0.25 |      20 |                       179.85 |                          165.8   |                          203.632  |                         -2    |                        -15.5164   |                            9.3     |                             0.65 |                    13.55 |
+| reference                            | order_blend_50 |                0.5  |      20 |                        91.65 |                           34.05  |                          166.255  |                          2.45 |                          0.65     |                            6.57298 |                             1    |                     1.1  |
+| heterogeneity_gp_re_increased_perm_2 | order_blend_50 |                0.5  |      20 |                        51.3  |                           31.25  |                           83.2433 |                        -16.45 |                        -41.7861   |                           -1.31431 |                             0.55 |                     3.45 |
+| reference                            | order_blend_75 |                0.75 |      20 |                      -736.05 |                         -767.635 |                         -710.55   |                          7.85 |                          0.773722 |                           18.1755  |                             0.85 |                     0    |
+| heterogeneity_gp_re_increased_perm_2 | order_blend_75 |                0.75 |      20 |                      -230.45 |                         -314.679 |                         -144.834  |                        -22.2  |                        -49.8336   |                           -0.45    |                             0.45 |                    11.1  |
+| reference                            | order_blend_90 |                0.9  |      20 |                      -736.05 |                         -765.725 |                         -709.8    |                          7.85 |                          1        |                           18.65    |                             0.85 |                     0    |
+| heterogeneity_gp_re_increased_perm_2 | order_blend_90 |                0.9  |      20 |                     -1555.8  |                        -1600.05  |                        -1510.1    |                       -220.95 |                       -242.45     |                         -196.928   |                             0    |                     0    |
+| reference                            | order_blend_99 |                0.99 |      20 |                      -736.05 |                         -766.6   |                         -710.85   |                          7.85 |                          0.95     |                           18.6477  |                             0.85 |                     0    |
+| heterogeneity_gp_re_increased_perm_2 | order_blend_99 |                0.99 |      20 |                     -1555.8  |                        -1600.58  |                        -1508.79   |                       -220.95 |                       -242.85     |                         -196.186   |                             0    |                     0    |
+
+## Candidate selection
+
+| scenario_id                          | selected_policy   |   selected_weight |   first_boundary_gain_mean_h |   second_boundary_gain_mean_h |   second_boundary_gain_ci95_low_h | selection_status                                    |
+|:-------------------------------------|:------------------|------------------:|-----------------------------:|------------------------------:|----------------------------------:|:----------------------------------------------------|
+| reference                            | order_blend_50    |               0.5 |                        91.65 |                          2.45 |                              0.65 | development candidate; external validation required |
+| heterogeneity_gp_re_increased_perm_2 | fixed_pair        |             nan   |                       nan    |                        nan    |                            nan    | no blend weight passed N+1 lower-CI gate            |

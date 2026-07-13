@@ -1,0 +1,7 @@
+scenario_id,policy,samples,first_boundary_gain_mean_h,first_boundary_gain_ci95_low_h,first_boundary_gain_ci95_high_h,second_boundary_gain_mean_h,second_boundary_gain_ci95_low_h,second_boundary_gain_ci95_high_h,second_boundary_nonworse_share,start_count_delta_mean
+reference,guarded_blend,13,71.06923076923076,46.04230769230768,100.10681696022915,4.076923076923077,1.6353262720345325,7.608915478259293,0.9115384615384615,1.7846153846153847
+heterogeneity_gp_re_increased_perm_2,guarded_blend,13,50.77307692307692,41.637987194209295,64.51378619209855,1.1615384615384614,-2.026923076923077,5.065384615384616,0.7,3.8461538461538463
+heterogeneity_gp_re_increased_perm_3,guarded_blend,13,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0
+reference,rate_bounded_blend,13,71.06923076923076,46.70361718100766,100.39721204312406,4.076923076923077,1.6153846153846154,7.438461538461539,0.9115384615384615,1.7846153846153847
+heterogeneity_gp_re_increased_perm_2,rate_bounded_blend,13,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0
+heterogeneity_gp_re_increased_perm_3,rate_bounded_blend,13,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0

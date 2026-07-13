@@ -1,0 +1,25 @@
+{
+  "scope": "diagnostic mapping from LZW damage proxy to voltage-loss thresholds",
+  "calibration_damage_endpoint_pct": 9.353028530555555,
+  "diagnostic_currents_a": [
+    90.0,
+    120.0,
+    160.0,
+    195.0,
+    270.0,
+    340.0,
+    370.0
+  ],
+  "voltage_loss_thresholds": [
+    0.05,
+    0.1,
+    0.15
+  ],
+  "calibration_boundary_scales": [
+    0.8,
+    1.0,
+    1.2
+  ],
+  "extrapolation_warning": "Every 5%, 10%, and 15% voltage-loss threshold lies beyond the observed LZW theta trajectory and is only a stress scenario.",
+  "physical_eol_claimed": false
+}

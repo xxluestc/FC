@@ -1,0 +1,20 @@
+{
+  "scope": "development screen of predeclared order-statistic weights",
+  "scenario_ids": [
+    "reference",
+    "heterogeneity_gp_re_increased_perm_2"
+  ],
+  "weights": [
+    0.25,
+    0.5,
+    0.75,
+    0.9,
+    0.99
+  ],
+  "seeds_per_scenario": 20,
+  "selection_gate": "N+1 gain lower 95% BCa confidence bound >= 0",
+  "selection_tiebreak": "maximum mean first-boundary gain",
+  "external_validation_required": true,
+  "future_demand_used": false,
+  "runtime_s": 86.71303420001641
+}

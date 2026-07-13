@@ -23,6 +23,7 @@ from fc_power.evaluation import (
     evaluate_service_assignment,
     evaluate_service_continuity_assignment,
     orient_service_pair,
+    select_guarded_blend_policy,
     stationary_service_exposure,
     transition_service_epoch,
 )
@@ -61,7 +62,12 @@ CONTINUITY_THRESHOLDS_H = {
 AVAILABLE_POLICIES = (
     POLICIES
     + tuple(BLEND_WEIGHTS)
-    + ("continuity_rul", "guarded_blend", "protected_blend_50")
+    + (
+        "continuity_rul",
+        "guarded_blend",
+        "rate_bounded_blend",
+        "protected_blend_50",
+    )
     + tuple(CONTINUITY_THRESHOLDS_H)
 )
 HETEROGENEITY = np.asarray((1.0, 1.05, 1.10))
@@ -315,18 +321,15 @@ def simulate_case(task):
         raise ValueError("initial damage fractions must lie in [0, 1)")
     initial = initial_fraction * config.health_limit_pct
     effective_policy = policy
-    if policy == "guarded_blend":
-        has_health_separation = not np.allclose(
-            initial_fraction,
-            initial_fraction[0],
-        )
-        aligned = int(np.argmax(initial_fraction)) == int(
-            np.argmax(config.heterogeneity_factors)
-        )
-        effective_policy = (
-            "order_blend_50"
-            if has_health_separation and aligned
-            else "fixed_pair"
+    if policy in {"guarded_blend", "rate_bounded_blend"}:
+        effective_policy = select_guarded_blend_policy(
+            initial,
+            config.heterogeneity_factors,
+            max_rate_ratio=(
+                float(HETEROGENEITY.max() / HETEROGENEITY.min())
+                if policy == "rate_bounded_blend"
+                else None
+            ),
         )
     state = ServiceScheduleState(tuple(float(value) for value in initial))
     crossing_times = np.full(len(initial), np.nan)

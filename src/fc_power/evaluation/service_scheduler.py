@@ -143,6 +143,36 @@ def eligible_service_assignments(
     return tuple(permutations(eligible, 2))
 
 
+def select_guarded_blend_policy(
+    damage_pct: tuple[float, ...] | np.ndarray,
+    heterogeneity_factors: tuple[float, ...] | np.ndarray,
+    *,
+    max_rate_ratio: float | None = None,
+) -> str:
+    """Select Blend only inside an explicit health-rate applicability domain."""
+
+    damage = np.asarray(damage_pct, dtype=float)
+    factors = np.asarray(heterogeneity_factors, dtype=float)
+    if (
+        damage.ndim != 1
+        or damage.size < 3
+        or damage.shape != factors.shape
+        or np.any(~np.isfinite(damage))
+        or np.any(damage < 0)
+    ):
+        raise ValueError("damage_pct must match at least three finite stack rates")
+    if np.any(~np.isfinite(factors)) or np.any(factors <= 0):
+        raise ValueError("heterogeneity_factors must be finite and positive")
+    if max_rate_ratio is not None:
+        if not np.isfinite(max_rate_ratio) or max_rate_ratio < 1:
+            raise ValueError("max_rate_ratio must be finite and at least one")
+        if factors.max() / factors.min() > max_rate_ratio + 1e-12:
+            return "fixed_pair"
+    separated = not np.allclose(damage, damage[0])
+    aligned = int(np.argmax(damage)) == int(np.argmax(factors))
+    return "order_blend_50" if separated and aligned else "fixed_pair"
+
+
 def stationary_service_exposure(
     templates: list[ServiceExposure] | tuple[ServiceExposure, ...],
     duration_h: float,

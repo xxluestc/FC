@@ -17,6 +17,7 @@ data/processed/*.csv
 data/results/*.csv
 !data/results/prediction_metrics.csv
 data/results/**/allocation_trajectory.csv
+data/results/**/representative_*_trajectories.csv
 data/results/**/test_demand.csv
 data/results/health/lzw_gamma_health_trajectory.csv
 data/results/prediction_event/event_probabilistic_predictions.csv

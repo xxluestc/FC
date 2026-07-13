@@ -1,0 +1,3 @@
+scenario_id,selected_policy,selected_weight,first_boundary_gain_mean_h,second_boundary_gain_mean_h,second_boundary_gain_ci95_low_h,selection_status
+reference,order_blend_50,0.5,91.65,2.45,0.65,development candidate; external validation required
+heterogeneity_gp_re_increased_perm_2,fixed_pair,,,,,no blend weight passed N+1 lower-CI gate

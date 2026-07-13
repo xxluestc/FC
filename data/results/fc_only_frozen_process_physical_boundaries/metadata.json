@@ -1,0 +1,30 @@
+{
+  "scope": "frozen-process stopping-boundary stress audit",
+  "boundary_count": 4,
+  "scenario_ids": [
+    "reference",
+    "heterogeneity_gp_re_increased_perm_2",
+    "heterogeneity_gp_re_increased_perm_3"
+  ],
+  "seeds_per_scenario_boundary": 20,
+  "policies": [
+    "fixed_pair",
+    "order_blend_50",
+    "guarded_blend"
+  ],
+  "initial_absolute_damage_pct": [
+    0.9353028530555556,
+    3.7412114122222224,
+    7.482422824444445
+  ],
+  "gamma_scale_pct_frozen": 0.13417673000740873,
+  "degradation_coefficients_frozen": true,
+  "load_templates_frozen": true,
+  "policy_parameters_frozen": true,
+  "future_demand_used": false,
+  "voltage_loss_boundaries_validated": false,
+  "voltage_loss_boundary_status": "model-extrapolation stress scenarios",
+  "pairing": "same sampled exposure and inverse-CDF uniforms within each seed",
+  "bootstrap_samples": 10000,
+  "runtime_s": 575.8792587001808
+}

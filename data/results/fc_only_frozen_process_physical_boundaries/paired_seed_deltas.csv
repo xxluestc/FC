@@ -1,0 +1,481 @@
+boundary_id,scenario_id,local_seed,boundary_label,boundary_order,health_limit_pct,boundary_over_calibration,extrapolated,policy,effective_policy,first_boundary_gain_h,second_boundary_gain_h,start_count_delta,assignment_change_delta
+lzw_calibration_endpoint,reference,0,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,reference,1,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,326.0,24.0,4,4
+lzw_calibration_endpoint,reference,2,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,168.0,0.0,2,2
+lzw_calibration_endpoint,reference,3,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,reference,4,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,reference,5,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,reference,6,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,reference,7,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,reference,8,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,reference,9,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,reference,10,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,reference,11,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,reference,12,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,reference,13,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,333.0,0.0,8,8
+lzw_calibration_endpoint,reference,14,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,345.0,8.0,4,4
+lzw_calibration_endpoint,reference,15,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,321.0,5.0,1,1
+lzw_calibration_endpoint,reference,16,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,reference,17,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,340.0,12.0,3,3
+lzw_calibration_endpoint,reference,18,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,reference,19,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,0,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,97.0,-27.0,6,6
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,1,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,0.0,1.0,0,0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,2,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,3,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,5.0,0.0,0,0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,4,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,45.0,2.0,4,4
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,5,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,25.0,-80.0,4,4
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,6,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,74.0,-32.0,8,8
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,7,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,85.0,-21.0,4,4
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,8,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,134.0,25.0,8,8
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,9,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,5.0,7.0,0,0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,10,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,11,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,45.0,-83.0,4,4
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,12,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,46.0,4.0,4,4
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,13,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,201.0,2.0,13,13
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,14,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,25.0,-152.0,4,4
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,15,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,19.0,-2.0,2,2
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,16,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,17,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,34.0,-27.0,2,2
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,18,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,24.0,-1.0,2,2
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,19,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,162.0,55.0,4,4
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,0,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,363.0,7.0,6,6
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,1,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,117.0,-144.0,2,2
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,2,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,339.0,250.0,8,8
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,3,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,710.0,28.0,18,18
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,4,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,457.0,-21.0,18,18
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,5,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,446.0,36.0,14,14
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,6,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,288.0,14.0,8,8
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,7,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,451.0,224.0,12,12
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,8,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,532.0,39.0,12,12
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,9,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,517.0,0.0,14,14
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,10,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,428.0,44.0,16,16
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,11,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,337.0,30.0,12,12
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,12,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,749.0,112.0,32,32
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,13,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,336.0,-69.0,11,11
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,14,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,162.0,140.0,6,6
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,15,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,268.0,42.0,6,6
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,16,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,112.0,-66.0,2,2
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,17,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,577.0,182.0,18,18
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,18,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,165.0,32.0,6,6
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,19,LZW endpoint,0,9.353028530555555,1.0,False,order_blend_50,order_blend_50,320.0,8.0,10,10
+370a_5pct_voltage_loss,reference,0,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,734.0,122.0,30,30
+370a_5pct_voltage_loss,reference,1,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,526.0,210.0,26,26
+370a_5pct_voltage_loss,reference,2,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,398.0,232.0,23,23
+370a_5pct_voltage_loss,reference,3,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,697.0,116.0,10,10
+370a_5pct_voltage_loss,reference,4,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,685.0,108.0,34,34
+370a_5pct_voltage_loss,reference,5,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,608.0,91.0,23,23
+370a_5pct_voltage_loss,reference,6,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,633.0,140.0,28,28
+370a_5pct_voltage_loss,reference,7,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,664.0,5.0,25,25
+370a_5pct_voltage_loss,reference,8,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,696.0,31.0,11,11
+370a_5pct_voltage_loss,reference,9,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,397.0,-20.0,14,14
+370a_5pct_voltage_loss,reference,10,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,762.0,126.0,26,26
+370a_5pct_voltage_loss,reference,11,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,784.0,11.0,24,24
+370a_5pct_voltage_loss,reference,12,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,734.0,65.0,19,19
+370a_5pct_voltage_loss,reference,13,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,633.0,222.0,34,34
+370a_5pct_voltage_loss,reference,14,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,530.0,285.0,32,32
+370a_5pct_voltage_loss,reference,15,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,531.0,335.0,27,27
+370a_5pct_voltage_loss,reference,16,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,822.0,9.0,12,12
+370a_5pct_voltage_loss,reference,17,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,488.0,318.0,29,29
+370a_5pct_voltage_loss,reference,18,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,706.0,118.0,23,23
+370a_5pct_voltage_loss,reference,19,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,562.0,126.0,26,26
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,0,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,185.0,-70.0,18,18
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,1,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,335.0,-2.0,18,18
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,2,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,267.0,38.0,22,22
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,3,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,410.0,119.0,22,22
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,4,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,176.0,-110.0,22,22
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,5,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,322.0,-6.0,20,20
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,6,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,205.0,-8.0,18,18
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,7,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,324.0,-72.0,24,24
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,8,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,275.0,71.0,18,18
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,9,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,110.0,-28.0,10,10
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,10,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,103.0,-137.0,12,12
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,11,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,237.0,7.0,18,18
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,12,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,286.0,-4.0,22,22
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,13,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,518.0,97.0,32,32
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,14,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,248.0,-66.0,18,18
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,15,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,339.0,34.0,18,18
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,16,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,172.0,-7.0,16,16
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,17,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,133.0,-89.0,16,16
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,18,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,200.0,-93.0,22,22
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,19,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,348.0,42.0,20,20
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,0,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,1695.0,377.0,46,46
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,1,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,1497.0,147.0,46,46
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,2,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,1237.0,2.0,30,30
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,3,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,1608.0,294.0,48,48
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,4,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,1693.0,314.0,62,62
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,5,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,1525.0,292.0,52,52
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,6,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,1675.0,258.0,54,54
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,7,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,1361.0,57.0,36,36
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,8,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,1532.0,371.0,49,49
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,9,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,1606.0,179.0,52,52
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,10,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,1463.0,284.0,42,42
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,11,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,1769.0,192.0,60,60
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,12,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,1428.0,478.0,56,56
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,13,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,1349.0,267.0,39,39
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,14,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,1525.0,128.0,32,32
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,15,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,1554.0,231.0,44,44
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,16,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,1553.0,191.0,48,48
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,17,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,1590.0,236.0,54,54
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,18,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,1411.0,194.0,48,48
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,19,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,order_blend_50,order_blend_50,1419.0,239.0,50,50
+195a_5pct_voltage_loss,reference,0,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,1106.0,572.0,84,84
+195a_5pct_voltage_loss,reference,1,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,914.0,769.0,72,72
+195a_5pct_voltage_loss,reference,2,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,886.0,778.0,72,72
+195a_5pct_voltage_loss,reference,3,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,1235.0,541.0,56,56
+195a_5pct_voltage_loss,reference,4,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,1085.0,663.0,86,86
+195a_5pct_voltage_loss,reference,5,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,1012.0,749.0,79,79
+195a_5pct_voltage_loss,reference,6,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,1047.0,710.0,83,83
+195a_5pct_voltage_loss,reference,7,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,974.0,700.0,67,67
+195a_5pct_voltage_loss,reference,8,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,1086.0,522.0,61,61
+195a_5pct_voltage_loss,reference,9,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,1321.0,374.0,65,65
+195a_5pct_voltage_loss,reference,10,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,1143.0,476.0,84,84
+195a_5pct_voltage_loss,reference,11,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,1154.0,405.0,76,76
+195a_5pct_voltage_loss,reference,12,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,1155.0,401.0,68,68
+195a_5pct_voltage_loss,reference,13,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,1011.0,572.0,79,79
+195a_5pct_voltage_loss,reference,14,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,964.0,675.0,87,87
+195a_5pct_voltage_loss,reference,15,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,935.0,927.0,83,83
+195a_5pct_voltage_loss,reference,16,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,1274.0,598.0,55,55
+195a_5pct_voltage_loss,reference,17,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,835.0,795.0,78,78
+195a_5pct_voltage_loss,reference,18,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,1231.0,775.0,78,78
+195a_5pct_voltage_loss,reference,19,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,1075.0,673.0,73,73
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,0,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,714.0,70.0,50,50
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,1,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,924.0,188.0,50,50
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,2,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,516.0,-136.0,52,52
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,3,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,974.0,152.0,54,54
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,4,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,640.0,-100.0,56,56
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,5,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,846.0,89.0,52,52
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,6,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,731.0,0.0,58,58
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,7,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,681.0,31.0,50,50
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,8,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,714.0,-18.0,48,48
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,9,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,608.0,-13.0,48,48
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,10,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,458.0,5.0,34,34
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,11,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,762.0,61.0,50,50
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,12,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,516.0,-89.0,50,50
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,13,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,1121.0,142.0,62,62
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,14,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,730.0,-61.0,52,52
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,15,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,983.0,104.0,56,56
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,16,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,633.0,-50.0,46,46
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,17,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,712.0,57.0,48,48
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,18,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,670.0,-78.0,60,60
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,19,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,651.0,-43.0,50,50
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,0,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,2667.0,1141.0,82,82
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,1,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,2733.0,874.0,88,88
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,2,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,2151.0,492.0,58,58
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,3,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,2752.0,1026.0,86,86
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,4,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,2681.0,807.0,100,100
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,5,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,2347.0,962.0,80,80
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,6,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,2744.0,870.0,92,92
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,7,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,2594.0,711.0,62,62
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,8,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,2588.0,1326.0,87,87
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,9,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,2403.0,950.0,80,80
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,10,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,2355.0,993.0,78,78
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,11,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,2440.0,696.0,90,90
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,12,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,2506.0,1064.0,86,86
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,13,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,2573.0,1160.0,77,77
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,14,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,2495.0,739.0,66,66
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,15,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,2713.0,961.0,80,80
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,16,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,2562.0,597.0,78,78
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,17,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,2360.0,890.0,86,86
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,18,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,2378.0,900.0,84,84
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,19,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,order_blend_50,order_blend_50,2338.0,872.0,82,82
+370a_10pct_voltage_loss,reference,0,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,1161.0,593.0,90,90
+370a_10pct_voltage_loss,reference,1,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,992.0,870.0,79,79
+370a_10pct_voltage_loss,reference,2,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,999.0,987.0,82,82
+370a_10pct_voltage_loss,reference,3,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,1325.0,557.0,64,64
+370a_10pct_voltage_loss,reference,4,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,1208.0,760.0,93,93
+370a_10pct_voltage_loss,reference,5,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,1096.0,813.0,88,88
+370a_10pct_voltage_loss,reference,6,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,1113.0,808.0,91,91
+370a_10pct_voltage_loss,reference,7,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,974.0,772.0,73,73
+370a_10pct_voltage_loss,reference,8,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,1197.0,706.0,71,71
+370a_10pct_voltage_loss,reference,9,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,1436.0,513.0,75,75
+370a_10pct_voltage_loss,reference,10,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,1200.0,541.0,92,92
+370a_10pct_voltage_loss,reference,11,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,1260.0,494.0,84,84
+370a_10pct_voltage_loss,reference,12,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,1249.0,490.0,75,75
+370a_10pct_voltage_loss,reference,13,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,1076.0,646.0,86,86
+370a_10pct_voltage_loss,reference,14,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,951.0,788.0,92,92
+370a_10pct_voltage_loss,reference,15,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,1017.0,1000.0,91,91
+370a_10pct_voltage_loss,reference,16,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,1362.0,618.0,64,64
+370a_10pct_voltage_loss,reference,17,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,964.0,794.0,83,83
+370a_10pct_voltage_loss,reference,18,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,1316.0,794.0,86,86
+370a_10pct_voltage_loss,reference,19,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,1183.0,734.0,82,82
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,0,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,772.0,-38.0,54,54
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,1,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,992.0,209.0,54,54
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,2,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,535.0,-131.0,56,56
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,3,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,975.0,217.0,56,56
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,4,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,655.0,-159.0,62,62
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,5,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,811.0,16.0,56,56
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,6,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,743.0,-20.0,60,60
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,7,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,909.0,24.0,60,60
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,8,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,828.0,-53.0,56,56
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,9,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,666.0,35.0,52,52
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,10,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,545.0,-30.0,38,38
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,11,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,882.0,131.0,56,56
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,12,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,667.0,-133.0,58,58
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,13,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,1186.0,100.0,68,68
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,14,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,760.0,-56.0,56,56
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,15,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,1031.0,169.0,64,64
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,16,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,654.0,18.0,50,50
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,17,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,805.0,139.0,52,52
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,18,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,689.0,-84.0,64,64
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,19,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,620.0,-234.0,52,52
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,0,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,2865.0,1083.0,88,88
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,1,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,2819.0,813.0,92,92
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,2,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,2340.0,641.0,60,60
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,3,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,2903.0,1199.0,92,92
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,4,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,2691.0,849.0,104,104
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,5,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,2506.0,1170.0,84,84
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,6,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,2919.0,1017.0,96,96
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,7,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,2756.0,753.0,66,66
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,8,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,2849.0,1479.0,95,95
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,9,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,2605.0,955.0,84,84
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,10,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,2543.0,968.0,84,84
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,11,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,2622.0,884.0,94,94
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,12,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,2585.0,1185.0,88,88
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,13,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,2684.0,1222.0,83,83
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,14,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,2752.0,699.0,72,72
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,15,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,2835.0,915.0,84,84
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,16,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,2748.0,682.0,82,82
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,17,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,2555.0,947.0,94,94
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,18,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,2511.0,864.0,88,88
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,19,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,order_blend_50,order_blend_50,2445.0,956.0,86,86
+lzw_calibration_endpoint,reference,0,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,reference,1,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,326.0,24.0,4,4
+lzw_calibration_endpoint,reference,2,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,168.0,0.0,2,2
+lzw_calibration_endpoint,reference,3,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,reference,4,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,reference,5,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,reference,6,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,reference,7,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,reference,8,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,reference,9,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,reference,10,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,reference,11,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,reference,12,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,reference,13,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,333.0,0.0,8,8
+lzw_calibration_endpoint,reference,14,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,345.0,8.0,4,4
+lzw_calibration_endpoint,reference,15,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,321.0,5.0,1,1
+lzw_calibration_endpoint,reference,16,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,reference,17,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,340.0,12.0,3,3
+lzw_calibration_endpoint,reference,18,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,reference,19,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,0,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,97.0,-27.0,6,6
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,1,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,0.0,1.0,0,0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,2,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,3,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,5.0,0.0,0,0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,4,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,45.0,2.0,4,4
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,5,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,25.0,-80.0,4,4
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,6,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,74.0,-32.0,8,8
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,7,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,85.0,-21.0,4,4
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,8,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,134.0,25.0,8,8
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,9,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,5.0,7.0,0,0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,10,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,11,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,45.0,-83.0,4,4
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,12,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,46.0,4.0,4,4
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,13,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,201.0,2.0,13,13
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,14,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,25.0,-152.0,4,4
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,15,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,19.0,-2.0,2,2
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,16,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,0.0,0.0,0,0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,17,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,34.0,-27.0,2,2
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,18,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,24.0,-1.0,2,2
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_2,19,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,order_blend_50,162.0,55.0,4,4
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,0,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,fixed_pair,0.0,0.0,0,0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,1,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,fixed_pair,0.0,0.0,0,0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,2,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,fixed_pair,0.0,0.0,0,0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,3,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,fixed_pair,0.0,0.0,0,0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,4,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,fixed_pair,0.0,0.0,0,0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,5,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,fixed_pair,0.0,0.0,0,0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,6,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,fixed_pair,0.0,0.0,0,0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,7,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,fixed_pair,0.0,0.0,0,0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,8,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,fixed_pair,0.0,0.0,0,0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,9,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,fixed_pair,0.0,0.0,0,0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,10,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,fixed_pair,0.0,0.0,0,0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,11,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,fixed_pair,0.0,0.0,0,0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,12,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,fixed_pair,0.0,0.0,0,0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,13,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,fixed_pair,0.0,0.0,0,0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,14,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,fixed_pair,0.0,0.0,0,0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,15,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,fixed_pair,0.0,0.0,0,0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,16,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,fixed_pair,0.0,0.0,0,0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,17,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,fixed_pair,0.0,0.0,0,0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,18,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,fixed_pair,0.0,0.0,0,0
+lzw_calibration_endpoint,heterogeneity_gp_re_increased_perm_3,19,LZW endpoint,0,9.353028530555555,1.0,False,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_5pct_voltage_loss,reference,0,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,734.0,122.0,30,30
+370a_5pct_voltage_loss,reference,1,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,526.0,210.0,26,26
+370a_5pct_voltage_loss,reference,2,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,398.0,232.0,23,23
+370a_5pct_voltage_loss,reference,3,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,697.0,116.0,10,10
+370a_5pct_voltage_loss,reference,4,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,685.0,108.0,34,34
+370a_5pct_voltage_loss,reference,5,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,608.0,91.0,23,23
+370a_5pct_voltage_loss,reference,6,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,633.0,140.0,28,28
+370a_5pct_voltage_loss,reference,7,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,664.0,5.0,25,25
+370a_5pct_voltage_loss,reference,8,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,696.0,31.0,11,11
+370a_5pct_voltage_loss,reference,9,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,397.0,-20.0,14,14
+370a_5pct_voltage_loss,reference,10,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,762.0,126.0,26,26
+370a_5pct_voltage_loss,reference,11,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,784.0,11.0,24,24
+370a_5pct_voltage_loss,reference,12,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,734.0,65.0,19,19
+370a_5pct_voltage_loss,reference,13,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,633.0,222.0,34,34
+370a_5pct_voltage_loss,reference,14,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,530.0,285.0,32,32
+370a_5pct_voltage_loss,reference,15,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,531.0,335.0,27,27
+370a_5pct_voltage_loss,reference,16,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,822.0,9.0,12,12
+370a_5pct_voltage_loss,reference,17,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,488.0,318.0,29,29
+370a_5pct_voltage_loss,reference,18,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,706.0,118.0,23,23
+370a_5pct_voltage_loss,reference,19,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,562.0,126.0,26,26
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,0,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,185.0,-70.0,18,18
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,1,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,335.0,-2.0,18,18
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,2,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,267.0,38.0,22,22
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,3,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,410.0,119.0,22,22
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,4,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,176.0,-110.0,22,22
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,5,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,322.0,-6.0,20,20
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,6,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,205.0,-8.0,18,18
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,7,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,324.0,-72.0,24,24
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,8,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,275.0,71.0,18,18
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,9,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,110.0,-28.0,10,10
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,10,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,103.0,-137.0,12,12
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,11,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,237.0,7.0,18,18
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,12,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,286.0,-4.0,22,22
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,13,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,518.0,97.0,32,32
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,14,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,248.0,-66.0,18,18
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,15,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,339.0,34.0,18,18
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,16,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,172.0,-7.0,16,16
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,17,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,133.0,-89.0,16,16
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,18,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,200.0,-93.0,22,22
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,19,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,order_blend_50,348.0,42.0,20,20
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,0,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,1,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,2,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,3,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,4,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,5,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,6,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,7,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,8,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,9,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,10,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,11,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,12,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,13,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,14,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,15,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,16,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,17,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,18,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,19,"370 A, 5% loss",1,12.192754336272548,1.3036156466795592,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+195a_5pct_voltage_loss,reference,0,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,1106.0,572.0,84,84
+195a_5pct_voltage_loss,reference,1,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,914.0,769.0,72,72
+195a_5pct_voltage_loss,reference,2,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,886.0,778.0,72,72
+195a_5pct_voltage_loss,reference,3,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,1235.0,541.0,56,56
+195a_5pct_voltage_loss,reference,4,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,1085.0,663.0,86,86
+195a_5pct_voltage_loss,reference,5,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,1012.0,749.0,79,79
+195a_5pct_voltage_loss,reference,6,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,1047.0,710.0,83,83
+195a_5pct_voltage_loss,reference,7,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,974.0,700.0,67,67
+195a_5pct_voltage_loss,reference,8,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,1086.0,522.0,61,61
+195a_5pct_voltage_loss,reference,9,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,1321.0,374.0,65,65
+195a_5pct_voltage_loss,reference,10,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,1143.0,476.0,84,84
+195a_5pct_voltage_loss,reference,11,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,1154.0,405.0,76,76
+195a_5pct_voltage_loss,reference,12,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,1155.0,401.0,68,68
+195a_5pct_voltage_loss,reference,13,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,1011.0,572.0,79,79
+195a_5pct_voltage_loss,reference,14,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,964.0,675.0,87,87
+195a_5pct_voltage_loss,reference,15,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,935.0,927.0,83,83
+195a_5pct_voltage_loss,reference,16,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,1274.0,598.0,55,55
+195a_5pct_voltage_loss,reference,17,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,835.0,795.0,78,78
+195a_5pct_voltage_loss,reference,18,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,1231.0,775.0,78,78
+195a_5pct_voltage_loss,reference,19,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,1075.0,673.0,73,73
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,0,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,714.0,70.0,50,50
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,1,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,924.0,188.0,50,50
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,2,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,516.0,-136.0,52,52
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,3,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,974.0,152.0,54,54
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,4,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,640.0,-100.0,56,56
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,5,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,846.0,89.0,52,52
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,6,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,731.0,0.0,58,58
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,7,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,681.0,31.0,50,50
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,8,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,714.0,-18.0,48,48
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,9,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,608.0,-13.0,48,48
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,10,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,458.0,5.0,34,34
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,11,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,762.0,61.0,50,50
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,12,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,516.0,-89.0,50,50
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,13,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,1121.0,142.0,62,62
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,14,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,730.0,-61.0,52,52
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,15,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,983.0,104.0,56,56
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,16,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,633.0,-50.0,46,46
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,17,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,712.0,57.0,48,48
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,18,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,670.0,-78.0,60,60
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,19,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,order_blend_50,651.0,-43.0,50,50
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,0,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,1,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,2,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,3,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,4,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,5,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,6,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,7,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,8,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,9,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,10,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,11,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,12,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,13,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,14,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,15,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,16,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,17,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,18,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+195a_5pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,19,"195 A, 5% loss",2,17.716327818434742,1.894180880616048,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_10pct_voltage_loss,reference,0,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,1161.0,593.0,90,90
+370a_10pct_voltage_loss,reference,1,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,992.0,870.0,79,79
+370a_10pct_voltage_loss,reference,2,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,999.0,987.0,82,82
+370a_10pct_voltage_loss,reference,3,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,1325.0,557.0,64,64
+370a_10pct_voltage_loss,reference,4,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,1208.0,760.0,93,93
+370a_10pct_voltage_loss,reference,5,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,1096.0,813.0,88,88
+370a_10pct_voltage_loss,reference,6,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,1113.0,808.0,91,91
+370a_10pct_voltage_loss,reference,7,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,974.0,772.0,73,73
+370a_10pct_voltage_loss,reference,8,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,1197.0,706.0,71,71
+370a_10pct_voltage_loss,reference,9,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,1436.0,513.0,75,75
+370a_10pct_voltage_loss,reference,10,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,1200.0,541.0,92,92
+370a_10pct_voltage_loss,reference,11,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,1260.0,494.0,84,84
+370a_10pct_voltage_loss,reference,12,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,1249.0,490.0,75,75
+370a_10pct_voltage_loss,reference,13,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,1076.0,646.0,86,86
+370a_10pct_voltage_loss,reference,14,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,951.0,788.0,92,92
+370a_10pct_voltage_loss,reference,15,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,1017.0,1000.0,91,91
+370a_10pct_voltage_loss,reference,16,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,1362.0,618.0,64,64
+370a_10pct_voltage_loss,reference,17,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,964.0,794.0,83,83
+370a_10pct_voltage_loss,reference,18,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,1316.0,794.0,86,86
+370a_10pct_voltage_loss,reference,19,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,1183.0,734.0,82,82
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,0,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,772.0,-38.0,54,54
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,1,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,992.0,209.0,54,54
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,2,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,535.0,-131.0,56,56
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,3,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,975.0,217.0,56,56
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,4,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,655.0,-159.0,62,62
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,5,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,811.0,16.0,56,56
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,6,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,743.0,-20.0,60,60
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,7,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,909.0,24.0,60,60
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,8,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,828.0,-53.0,56,56
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,9,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,666.0,35.0,52,52
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,10,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,545.0,-30.0,38,38
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,11,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,882.0,131.0,56,56
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,12,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,667.0,-133.0,58,58
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,13,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,1186.0,100.0,68,68
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,14,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,760.0,-56.0,56,56
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,15,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,1031.0,169.0,64,64
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,16,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,654.0,18.0,50,50
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,17,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,805.0,139.0,52,52
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,18,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,689.0,-84.0,64,64
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_2,19,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,order_blend_50,620.0,-234.0,52,52
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,0,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,1,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,2,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,3,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,4,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,5,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,6,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,7,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,8,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,9,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,10,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,11,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,12,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,13,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,14,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,15,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,16,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,17,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,18,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,fixed_pair,0.0,0.0,0,0
+370a_10pct_voltage_loss,heterogeneity_gp_re_increased_perm_3,19,"370 A, 10% loss",3,18.526280762103205,1.9807788142182403,True,guarded_blend,fixed_pair,0.0,0.0,0,0

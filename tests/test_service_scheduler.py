@@ -14,6 +14,7 @@ from fc_power.evaluation.service_scheduler import (
     evaluate_service_continuity_assignment,
     eligible_service_assignments,
     orient_service_pair,
+    select_guarded_blend_policy,
     stationary_service_exposure,
     transition_service_epoch,
 )
@@ -45,6 +46,49 @@ class ServiceSchedulerTest(unittest.TestCase):
         assignments = eligible_service_assignments(state, health_limit_pct=8.0)
         self.assertEqual(assignments, ((0, 1), (1, 0)))
         self.assertTrue(all(2 not in value for value in assignments))
+
+    def test_rate_bounded_guard_requires_alignment_and_nominal_rate_spread(self):
+        damage = (1.0, 4.0, 8.0)
+        nominal = (1.0, 1.05, 1.10)
+        strong_aligned = (0.9182075754, 0.4536568811, 1.6281355435)
+        strong_misaligned = (0.9182075754, 1.6281355435, 0.4536568811)
+
+        self.assertEqual(
+            select_guarded_blend_policy(
+                damage, nominal, max_rate_ratio=1.10
+            ),
+            "order_blend_50",
+        )
+        self.assertEqual(
+            select_guarded_blend_policy(damage, strong_aligned),
+            "order_blend_50",
+        )
+        self.assertEqual(
+            select_guarded_blend_policy(
+                damage, strong_aligned, max_rate_ratio=1.10
+            ),
+            "fixed_pair",
+        )
+        self.assertEqual(
+            select_guarded_blend_policy(
+                damage, strong_misaligned, max_rate_ratio=1.10
+            ),
+            "fixed_pair",
+        )
+        self.assertEqual(
+            select_guarded_blend_policy(
+                (4.0, 4.0, 4.0), nominal, max_rate_ratio=1.10
+            ),
+            "fixed_pair",
+        )
+
+    def test_rate_bounded_guard_rejects_invalid_rate_ratio(self):
+        with self.assertRaisesRegex(ValueError, "at least one"):
+            select_guarded_blend_policy(
+                (1.0, 4.0, 8.0),
+                (1.0, 1.05, 1.10),
+                max_rate_ratio=0.9,
+            )
 
     def test_second_boundary_leaves_no_n_plus_one_assignment(self):
         state = ServiceScheduleState((1.0, 8.0, 9.0))

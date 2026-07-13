@@ -1,0 +1,3 @@
+policy,scenarios,blend_enabled_scenarios,negative_n_plus_one_ci_scenarios,positive_first_gain_scenarios,minimum_n_plus_one_mean_h
+guarded_blend,41,,0,15,-0.5
+rate_bounded_blend,41,12.0,0,12,-0.5

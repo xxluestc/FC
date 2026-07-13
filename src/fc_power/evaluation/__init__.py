@@ -43,6 +43,7 @@ from fc_power.evaluation.service_scheduler import (
     evaluate_service_continuity_assignment,
     eligible_service_assignments,
     orient_service_pair,
+    select_guarded_blend_policy,
     stationary_service_exposure,
     transition_service_epoch,
 )
@@ -96,6 +97,7 @@ __all__ = [
     "evaluate_service_continuity_assignment",
     "eligible_service_assignments",
     "orient_service_pair",
+    "select_guarded_blend_policy",
     "blend_transition_matrices",
     "generate_event_load",
     "generate_real_block_bootstrap",

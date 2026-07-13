@@ -1,0 +1,11 @@
+scenario_id,policy,n_plus_one_weight,seeds,first_boundary_gain_mean_h,first_boundary_gain_ci95_low_h,first_boundary_gain_ci95_high_h,second_boundary_gain_mean_h,second_boundary_gain_ci95_low_h,second_boundary_gain_ci95_high_h,second_boundary_nonworse_share,start_count_delta_mean
+reference,order_blend_25,0.25,20,310.75,291.1,330.7,-0.1,-7.25,7.4,0.5,22.4
+heterogeneity_gp_re_increased_perm_2,order_blend_25,0.25,20,179.85,165.8,203.63243973023145,-2.0,-15.516402906671091,9.3,0.65,13.55
+reference,order_blend_50,0.5,20,91.65,34.05,166.25537103187898,2.45,0.65,6.572976176619613,1.0,1.1
+heterogeneity_gp_re_increased_perm_2,order_blend_50,0.5,20,51.3,31.25,83.2432900415336,-16.45,-41.786060528731426,-1.3143113156749677,0.55,3.45
+reference,order_blend_75,0.75,20,-736.05,-767.6353028841759,-710.55,7.85,0.7737220530237864,18.175532439810468,0.85,0.0
+heterogeneity_gp_re_increased_perm_2,order_blend_75,0.75,20,-230.45,-314.6792492378756,-144.8336328123589,-22.2,-49.83356604191867,-0.45,0.45,11.1
+reference,order_blend_90,0.9,20,-736.05,-765.7247740651092,-709.8,7.85,1.0,18.65,0.85,0.0
+heterogeneity_gp_re_increased_perm_2,order_blend_90,0.9,20,-1555.8,-1600.0483348984835,-1510.1,-220.95,-242.45,-196.92826036549513,0.0,0.0
+reference,order_blend_99,0.99,20,-736.05,-766.6,-710.85,7.85,0.95,18.647735735351215,0.85,0.0
+heterogeneity_gp_re_increased_perm_2,order_blend_99,0.99,20,-1555.8,-1600.5843632853016,-1508.7864123602674,-220.95,-242.85,-196.18615193904924,0.0,0.0

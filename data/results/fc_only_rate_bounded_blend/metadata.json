@@ -1,0 +1,11 @@
+{
+  "scope": "post hoc replay of a nominal-envelope applicability guard",
+  "rate_ratio_limit": 1.1,
+  "threshold_source": "predeclared nominal factors 1.00/1.05/1.10",
+  "threshold_tuned_on_outcomes": false,
+  "new_simulations": false,
+  "parameter_scenarios": 41,
+  "physical_boundaries": 4,
+  "cross_months": 13,
+  "future_demand_used": false
+}
