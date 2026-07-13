@@ -252,10 +252,6 @@ def main() -> None:
         dpi=320,
         bbox_inches="tight",
     )
-    fig.savefig(
-        FIGURES / "fig05_aggregate_gamma_sensitivity.pdf",
-        bbox_inches="tight",
-    )
     plt.close(fig)
 
     lines = [

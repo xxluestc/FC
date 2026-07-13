@@ -189,10 +189,6 @@ def main() -> None:
         dpi=320,
         bbox_inches="tight",
     )
-    fig.savefig(
-        FIGURES / "fig04_gamma_timescale_diagnostic.pdf",
-        bbox_inches="tight",
-    )
     plt.close(fig)
 
     short = summary[np.isclose(summary.horizon_h, 1 / 30)]

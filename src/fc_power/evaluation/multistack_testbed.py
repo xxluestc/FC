@@ -210,6 +210,15 @@ def run_policy(
                 + item.start_stop_increment_pct
                 for item in executed.stacks
             ),
+            "ramp_damage_increment_pct": sum(
+                item.ramp_increment_pct for item in executed.stacks
+            ),
+            "shift_damage_increment_pct": sum(
+                item.shift_increment_pct for item in executed.stacks
+            ),
+            "start_stop_damage_increment_pct": sum(
+                item.start_stop_increment_pct for item in executed.stacks
+            ),
             "constraint_feasible": executed.constraints.feasible,
             "safety_override": bool(executed.constraints.safety_overrides),
             "power_balance_error_kw": executed.constraints.power_balance_error_kw,
@@ -237,6 +246,11 @@ def run_policy(
                 after.ramp_increment_pct
                 + after.shift_increment_pct
                 + after.start_stop_increment_pct
+            )
+            row[f"{prefix}_ramp_increment_pct"] = after.ramp_increment_pct
+            row[f"{prefix}_shift_increment_pct"] = after.shift_increment_pct
+            row[f"{prefix}_start_stop_increment_pct"] = (
+                after.start_stop_increment_pct
             )
             row[f"{prefix}_damage_after_pct"] = after.degradation_after_pct
             row[f"{prefix}_theta_i0"] = after.theta_reported[0]
@@ -349,6 +363,11 @@ def summarize_run(model, scenario, strategy, trajectory, final_state):
         "main_discrete_damage_pct": float(
             main.discrete_damage_increment_pct.sum()
         ),
+        "main_ramp_damage_pct": float(main.ramp_damage_increment_pct.sum()),
+        "main_shift_damage_pct": float(main.shift_damage_increment_pct.sum()),
+        "main_start_stop_damage_pct": float(
+            main.start_stop_damage_increment_pct.sum()
+        ),
         "expected_damage_increment_pct": float(
             trajectory.expected_damage_increment_pct.sum()
         ),
@@ -448,6 +467,24 @@ def summarize_run(model, scenario, strategy, trajectory, final_state):
         **{
             f"stack_{index}_final_damage_pct": float(value)
             for index, value in enumerate(final_damage)
+        },
+        **{
+            f"stack_{index}_main_continuous_damage_pct": float(
+                main[f"stack_{index}_expected_continuous_increment_pct"].sum()
+            )
+            for index in range(model.n_stacks)
+        },
+        **{
+            f"stack_{index}_main_shift_damage_pct": float(
+                main[f"stack_{index}_shift_increment_pct"].sum()
+            )
+            for index in range(model.n_stacks)
+        },
+        **{
+            f"stack_{index}_main_start_stop_damage_pct": float(
+                main[f"stack_{index}_start_stop_increment_pct"].sum()
+            )
+            for index in range(model.n_stacks)
         },
         **{
             f"stack_{index}_online_steps": int(online[:, index].sum())

@@ -167,6 +167,12 @@ class MultiStackTestbedTest(unittest.TestCase):
         self.assertFalse(run.metrics["soc_metrics_applicable"])
         self.assertTrue(np.isnan(run.metrics["hydrogen_soc_corrected_g"]))
         self.assertTrue(np.isnan(run.metrics["battery_throughput_kwh"]))
+        self.assertAlmostEqual(
+            run.metrics["main_discrete_damage_pct"],
+            run.metrics["main_ramp_damage_pct"]
+            + run.metrics["main_shift_damage_pct"]
+            + run.metrics["main_start_stop_damage_pct"],
+        )
 
     def test_fc_only_runner_rejects_soc_recovery_tail(self):
         model = load_lzw_multistack_world_model(

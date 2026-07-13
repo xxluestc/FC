@@ -1,0 +1,30 @@
+{
+  "scope": "frozen-policy coefficient attribution; closed-loop reruns required at ranking boundaries",
+  "strategies": [
+    "average",
+    "rotating",
+    "instant_health"
+  ],
+  "seeds": [
+    2026,
+    2027,
+    2028,
+    2029,
+    2030
+  ],
+  "length_s": 120,
+  "grid_points": 75,
+  "continuous_multipliers": [
+    0.5,
+    1.0,
+    2.0
+  ],
+  "event_multipliers": [
+    0.0,
+    0.1,
+    0.5,
+    1.0,
+    2.0
+  ],
+  "runtime_s": 216.8806804001797
+}
