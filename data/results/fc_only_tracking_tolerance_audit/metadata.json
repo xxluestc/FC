@@ -1,0 +1,15 @@
+{
+  "scope": "targeted replay of the frozen maximum-error 30 kW case",
+  "segment_id": 42,
+  "health_case": "oldest_stack_0",
+  "policy": "fixed_pair",
+  "assignment": [
+    1,
+    0
+  ],
+  "normalization_power_kw": 30.0,
+  "minimum_tested_success_kw": 4.95,
+  "static_healthy_grid_max_error_kw": 4.018,
+  "full_holdout_claim": false,
+  "interpretation": "Failure means this controller and action grid could not complete the targeted case at the tested tolerance; it is not a full-holdout sweep."
+}

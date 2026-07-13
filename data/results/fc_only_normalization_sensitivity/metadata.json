@@ -1,0 +1,80 @@
+{
+  "status": "post-hoc diagnostic; frozen 30 kW result remains primary",
+  "bootstrap_samples": 10000,
+  "bootstrap_seed": 2026,
+  "physical_rating_confirmed": false,
+  "sources": [
+    {
+      "path": "data\\results\\fc_only_full_holdout_replay\\per_run_metrics.csv",
+      "sha256": "2fc3a73e68d2cebf28715ebd4f72b308f8c3b0adfc501714b032d9777731fa0f"
+    },
+    {
+      "path": "data\\results\\fc_only_full_holdout_replay\\paired_policy_deltas.csv",
+      "sha256": "9c5748e3f9a9dd3c3215be24396e356528dbbc89700866b3b3ac011631a01dd9"
+    },
+    {
+      "path": "data\\results\\fc_only_full_holdout_replay\\aggregate_metrics.csv",
+      "sha256": "f7ef795cf40cd42ce69c47f1688b395e2f92daaacf51917fe62a467e5b7df673"
+    },
+    {
+      "path": "data\\results\\fc_only_full_holdout_replay\\summary.csv",
+      "sha256": "fcda125983e928e381f879f27db13d0ba4fb21379d8cd5eaca6758274bfdc215"
+    },
+    {
+      "path": "data\\results\\fc_only_full_holdout_replay\\segment_manifest.csv",
+      "sha256": "554958a452eb5e3615ba78faaa01888550a0437aeaebe5839d73a864acb6cd67"
+    },
+    {
+      "path": "data\\results\\fc_only_full_holdout_replay\\metadata.json",
+      "sha256": "03c1ef47df2c7a656b89aff27f3a1a0ac4a3698c28ce54925a8c12fd9ab66d5e"
+    },
+    {
+      "path": "data\\results\\fc_only_full_holdout_norm35\\per_run_metrics.csv",
+      "sha256": "8d24dbef89eb3b8718327160a7110ef84670584842156c655e5d32941f9c9566"
+    },
+    {
+      "path": "data\\results\\fc_only_full_holdout_norm35\\paired_policy_deltas.csv",
+      "sha256": "0f701f9083789475031541b8b4ae8e2d41fb17a48ae07b51368ca307ff1ac981"
+    },
+    {
+      "path": "data\\results\\fc_only_full_holdout_norm35\\aggregate_metrics.csv",
+      "sha256": "22c33b8f49c9a16f7bbaf1899d7793430a90599f30b5c76059d3f1c38d170b5d"
+    },
+    {
+      "path": "data\\results\\fc_only_full_holdout_norm35\\summary.csv",
+      "sha256": "7e60f977054c16d7cffdff4d789d2586d8d81f3b3e4d108da2215d7113e430e3"
+    },
+    {
+      "path": "data\\results\\fc_only_full_holdout_norm35\\segment_manifest.csv",
+      "sha256": "26f2209c342a0e3da2f830dc1580846fc7300bc8af11d46e0ee509e7e36b747e"
+    },
+    {
+      "path": "data\\results\\fc_only_full_holdout_norm35\\metadata.json",
+      "sha256": "276ae4baab90cd6049693701fe4f8a14070cf23bf2b641f1dd4fd8ec72038193"
+    },
+    {
+      "path": "data\\results\\fc_only_full_holdout_norm40\\per_run_metrics.csv",
+      "sha256": "03a62d069a94ddb617535cfef9195a4f0b7af65e8e768438858f1224d50fb131"
+    },
+    {
+      "path": "data\\results\\fc_only_full_holdout_norm40\\paired_policy_deltas.csv",
+      "sha256": "666b178eb0bda220cdb1b699e71542ff73b2b95df512d9672db795ba86da6f3b"
+    },
+    {
+      "path": "data\\results\\fc_only_full_holdout_norm40\\aggregate_metrics.csv",
+      "sha256": "ac9bcc3d7d971f6787914fb96abf4e3eefa42943c241c35ee8452f181dc6258a"
+    },
+    {
+      "path": "data\\results\\fc_only_full_holdout_norm40\\summary.csv",
+      "sha256": "eb9699b039656149ab12e850e60001091503a91c2519aca1e55d8f84f8447076"
+    },
+    {
+      "path": "data\\results\\fc_only_full_holdout_norm40\\segment_manifest.csv",
+      "sha256": "259807e79e608362e8f4c22ca25aacc76592bb71a279a6a731b2015729f65ea5"
+    },
+    {
+      "path": "data\\results\\fc_only_full_holdout_norm40\\metadata.json",
+      "sha256": "d88ac96828279fcfd8be7c46053ccaf95c6bfdb40d63d5ca42ceaec4aa2ad5ac"
+    }
+  ]
+}

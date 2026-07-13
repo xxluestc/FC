@@ -22,6 +22,18 @@ CAPACITY = RESULTS / "fc_only_holdout_capacity_audit/normalization_capacity_audi
 CAPACITY_METADATA = RESULTS / "fc_only_holdout_capacity_audit/metadata.json"
 SEGMENT_BOOTSTRAP = RESULTS / "fc_only_full_holdout_statistics/segment_bootstrap_summary.csv"
 SEGMENT_TESTS = RESULTS / "fc_only_full_holdout_statistics/primary_wilcoxon_tests.csv"
+SEGMENT_LEAVE_ONE_OUT = RESULTS / "fc_only_full_holdout_statistics/leave_one_segment_out.csv"
+SEGMENT_SIGN_REVERSAL = RESULTS / "fc_only_full_holdout_statistics/single_sign_reversal.csv"
+SEGMENT_INFLUENCE = RESULTS / "fc_only_full_holdout_statistics/influence_summary.json"
+NORMALIZATION_REFERENCE = RESULTS / "fc_only_normalization_sensitivity/reference_summary.csv"
+NORMALIZATION_EFFECTS = RESULTS / "fc_only_normalization_sensitivity/health_effects.csv"
+NORMALIZATION_STATISTICS = RESULTS / "fc_only_normalization_sensitivity/segment_statistics.csv"
+NORMALIZATION_METADATA = RESULTS / "fc_only_normalization_sensitivity/metadata.json"
+TRACKING_TOLERANCE = RESULTS / "fc_only_tracking_tolerance_audit/tolerance_sweep.csv"
+TRACKING_TOLERANCE_METADATA = RESULTS / "fc_only_tracking_tolerance_audit/metadata.json"
+SERVICE_OBJECTIVE_SUMMARY = RESULTS / "fc_only_service_objective_audit/summary.csv"
+SERVICE_OBJECTIVE_DETAIL = RESULTS / "fc_only_service_objective_audit/per_decision_regret.csv"
+SERVICE_OBJECTIVE_METADATA = RESULTS / "fc_only_service_objective_audit/metadata.json"
 STRONG_BASELINES = {
     "real_calibrated": RESULTS / "fc_only_service_scheduler_strong_baseline_real/summary.csv",
     "empirical_markov": RESULTS / "fc_only_service_scheduler_strong_baseline_markov/summary.csv",
@@ -112,6 +124,13 @@ def canonical_claims(
     capacity_meta,
     segment_bootstrap,
     segment_tests,
+    normalization_reference,
+    normalization_effects,
+    normalization_statistics,
+    influence_summary,
+    tracking_tolerance,
+    tracking_tolerance_meta,
+    service_objective,
 ):
     real = strong[strong.scenario == "real_calibrated"].set_index("policy")
     full_indexed = full.set_index(["health_case", "policy"])
@@ -217,6 +236,88 @@ def canonical_claims(
             }
             for health_case in ("oldest_stack_0", "oldest_stack_1")
         },
+        "segment_influence": {
+            "leave_one_out_all_holm_significant": bool(
+                influence_summary["leave_one_out_all_holm_significant"]
+            ),
+            "leave_one_out_max_holm_p": float(
+                influence_summary["leave_one_out_max_holm_p"]
+            ),
+            "single_reversal_cases": int(
+                influence_summary["single_reversal_cases"]
+            ),
+            "single_reversal_holm_failures": int(
+                influence_summary["single_reversal_holm_failures"]
+            ),
+        },
+        "normalization_sensitivity": {
+            "clipped_share_positive_by_reference": {
+                str(int(row.normalization_power_kw)): round(
+                    float(row.clipped_share_positive), 9
+                )
+                for row in normalization_reference.itertuples(index=False)
+            },
+            "all_constraint_violation_steps": int(
+                normalization_reference.constraint_violation_steps.sum()
+            ),
+            "terminal_max_delta_mean_pct": {
+                str(int(reference_kw)): {
+                    health_case: round(float(
+                        normalization_effects.loc[
+                            normalization_effects.normalization_power_kw.eq(reference_kw)
+                            & normalization_effects.health_case.eq(health_case),
+                            "terminal_max_delta_mean_pct",
+                        ].iloc[0]
+                    ), 9)
+                    for health_case in ("oldest_stack_0", "oldest_stack_1")
+                }
+                for reference_kw in (30.0, 35.0, 40.0)
+            },
+            "all_primary_segments_better": bool(
+                normalization_statistics.better_segments.eq(8).all()
+            ),
+            "all_primary_ci95_upper_below_zero": bool(
+                normalization_statistics.ci95_upper_pct.lt(0).all()
+            ),
+            "all_primary_holm_significant": bool(
+                normalization_statistics.reject_holm_0p05.all()
+            ),
+        },
+        "tracking_tolerance_targeted_audit": {
+            "segment_id": int(tracking_tolerance_meta["segment_id"]),
+            "minimum_tested_success_kw": float(
+                tracking_tolerance_meta["minimum_tested_success_kw"]
+            ),
+            "largest_tested_failure_kw": float(
+                tracking_tolerance.loc[
+                    ~tracking_tolerance.success, "tracking_tolerance_kw"
+                ].max()
+            ),
+            "frozen_tolerance_kw": 5.5,
+            "frozen_margin_over_minimum_tested_success_kw": round(
+                5.5 - tracking_tolerance_meta["minimum_tested_success_kw"], 6
+            ),
+            "full_holdout_claim": bool(
+                tracking_tolerance_meta["full_holdout_claim"]
+            ),
+        },
+        "service_objective_regret_audit": {
+            policy: {
+                "decision_points": int(row.decision_points),
+                "expected_regret_max": float(row.expected_regret_max),
+                "cvar_regret_max": float(row.cvar_regret_max),
+                "expected_online_set_match_share": float(
+                    row.expected_online_set_match_share
+                ),
+                "cvar_online_set_match_share": float(
+                    row.cvar_online_set_match_share
+                ),
+                "expected_assignment_match_share": float(
+                    row.expected_assignment_match_share
+                ),
+            }
+            for policy, row in service_objective.set_index("policy").iterrows()
+        },
         "capacity_boundary": {
             "holdout_clip_share_positive": round(float(frozen_capacity.holdout_clip_share_positive), 9),
             "holdout_strict_exceedance_share_positive": round(float(
@@ -244,6 +345,32 @@ def canonical_claims(
         for row in claims["full_holdout_segment_statistics"].values()
     ):
         raise AssertionError("segment-level primary evidence no longer supports C8")
+    if not (
+        claims["segment_influence"]["leave_one_out_all_holm_significant"]
+        and claims["segment_influence"]["single_reversal_cases"] == 16
+        and claims["normalization_sensitivity"]["all_constraint_violation_steps"] == 0
+        and claims["normalization_sensitivity"]["all_primary_segments_better"]
+        and claims["normalization_sensitivity"]["all_primary_ci95_upper_below_zero"]
+        and claims["normalization_sensitivity"]["all_primary_holm_significant"]
+    ):
+        raise AssertionError("sensitivity evidence no longer supports bounded C8 claim")
+    tolerance_claim = claims["tracking_tolerance_targeted_audit"]
+    if not (
+        tolerance_claim["largest_tested_failure_kw"] == 4.9
+        and tolerance_claim["minimum_tested_success_kw"] == 4.95
+        and not tolerance_claim["full_holdout_claim"]
+    ):
+        raise AssertionError("targeted tracking-tolerance boundary changed")
+    objective_claim = claims["service_objective_regret_audit"]
+    if not all(
+        row["decision_points"] == 12
+        and row["expected_regret_max"] == 0.0
+        and row["cvar_regret_max"] == 0.0
+        and row["expected_online_set_match_share"] == 1.0
+        and row["cvar_online_set_match_share"] == 1.0
+        for row in objective_claim.values()
+    ):
+        raise AssertionError("service objective regret audit changed")
     return claims
 
 
@@ -259,6 +386,14 @@ def main():
         "table06_capacity_audit.csv": pd.read_csv(CAPACITY),
         "table07_segment_bootstrap.csv": pd.read_csv(SEGMENT_BOOTSTRAP),
         "table08_segment_wilcoxon.csv": pd.read_csv(SEGMENT_TESTS),
+        "table09_segment_leave_one_out.csv": pd.read_csv(SEGMENT_LEAVE_ONE_OUT),
+        "table10_segment_sign_reversal.csv": pd.read_csv(SEGMENT_SIGN_REVERSAL),
+        "table11_normalization_reference.csv": pd.read_csv(NORMALIZATION_REFERENCE),
+        "table12_normalization_health_effects.csv": pd.read_csv(NORMALIZATION_EFFECTS),
+        "table13_normalization_segment_statistics.csv": pd.read_csv(NORMALIZATION_STATISTICS),
+        "table14_tracking_tolerance_targeted.csv": pd.read_csv(TRACKING_TOLERANCE),
+        "table15_service_objective_summary.csv": pd.read_csv(SERVICE_OBJECTIVE_SUMMARY),
+        "table16_service_objective_detail.csv": pd.read_csv(SERVICE_OBJECTIVE_DETAIL),
     }
     OUTPUT.mkdir(parents=True, exist_ok=True)
     for name, table in tables.items():
@@ -271,6 +406,15 @@ def main():
     capacity = tables["table06_capacity_audit.csv"]
     segment_bootstrap = tables["table07_segment_bootstrap.csv"]
     segment_tests = tables["table08_segment_wilcoxon.csv"]
+    normalization_reference = tables["table11_normalization_reference.csv"]
+    normalization_effects = tables["table12_normalization_health_effects.csv"]
+    normalization_statistics = tables["table13_normalization_segment_statistics.csv"]
+    influence_summary = json.loads(SEGMENT_INFLUENCE.read_text(encoding="utf-8"))
+    tracking_tolerance = tables["table14_tracking_tolerance_targeted.csv"]
+    tracking_tolerance_meta = json.loads(
+        TRACKING_TOLERANCE_METADATA.read_text(encoding="utf-8")
+    )
+    service_objective = tables["table15_service_objective_summary.csv"]
     claims = canonical_claims(
         strong,
         robustness,
@@ -280,6 +424,13 @@ def main():
         capacity_meta,
         segment_bootstrap,
         segment_tests,
+        normalization_reference,
+        normalization_effects,
+        normalization_statistics,
+        influence_summary,
+        tracking_tolerance,
+        tracking_tolerance_meta,
+        service_objective,
     )
     (OUTPUT / "claim_values.json").write_text(
         json.dumps(claims, ensure_ascii=False, indent=2), encoding="utf-8"
@@ -296,6 +447,18 @@ def main():
         CAPACITY_METADATA,
         SEGMENT_BOOTSTRAP,
         SEGMENT_TESTS,
+        SEGMENT_LEAVE_ONE_OUT,
+        SEGMENT_SIGN_REVERSAL,
+        SEGMENT_INFLUENCE,
+        NORMALIZATION_REFERENCE,
+        NORMALIZATION_EFFECTS,
+        NORMALIZATION_STATISTICS,
+        NORMALIZATION_METADATA,
+        TRACKING_TOLERANCE,
+        TRACKING_TOLERANCE_METADATA,
+        SERVICE_OBJECTIVE_SUMMARY,
+        SERVICE_OBJECTIVE_DETAIL,
+        SERVICE_OBJECTIVE_METADATA,
         *STRONG_BASELINES.values(),
     ]
     source_manifest = {
@@ -324,6 +487,10 @@ def main():
 - `table06`：归一化参考与N+1容量审计；
 - `table07`：完整留出segment bootstrap点估计与95%区间；
 - `table08`：预声明最差堆主检验与Holm校正；
+- `table09-10`：逐段删一与单段符号反转影响力审计；
+- `table11-13`：30/35/40 kW事后归一化敏感性；
+- `table14`：冻结最大误差案例的跟踪容差边界；
+- `table15-16`：12个慢层决策点的自身目标遗憾和分配明细；
 - `claim_values.json`：正文可引用的规范数值；
 - `source_manifest.json`：每个输入文件的SHA-256。
 

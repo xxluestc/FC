@@ -1,0 +1,8 @@
+{
+  "leave_one_out_all_holm_significant": true,
+  "leave_one_out_max_holm_p": 0.015625,
+  "single_reversal_cases": 16,
+  "single_reversal_holm_failures": 6,
+  "single_reversal_failure_share": 0.375,
+  "interpretation": "Leave-one-out uses observed data; sign reversal is a hypothetical fragility audit and is not additional experimental evidence."
+}

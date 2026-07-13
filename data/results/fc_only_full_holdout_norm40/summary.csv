@@ -1,0 +1,4 @@
+health_case,operating_segments,terminal_max_delta_mean_pct,terminal_max_delta_max_pct,health_greedy_better_share,health_greedy_nonworse_share
+oldest_stack_2,8,0.0,0.0,0.0,1.0
+oldest_stack_0,8,-0.009936294442573379,-0.0024654999999125238,1.0,1.0
+oldest_stack_1,8,-0.011331176356565886,-0.002586616666746977,1.0,1.0

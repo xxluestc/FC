@@ -42,6 +42,54 @@
       "sha256": "0b9f049b97d92ef98eccd695827e59d9368e305ccbebc307a83bb93e86669517"
     },
     {
+      "path": "data\\results\\fc_only_full_holdout_statistics\\leave_one_segment_out.csv",
+      "sha256": "2bb9d188c7c5e17cbc4c5510a6b596daf7637127a93aadcc86affaaa72bd1576"
+    },
+    {
+      "path": "data\\results\\fc_only_full_holdout_statistics\\single_sign_reversal.csv",
+      "sha256": "cd2b61b31c7ad43af6a98a45ba7f9defa1948e015e1aa05b37e42ae1bf9a95f7"
+    },
+    {
+      "path": "data\\results\\fc_only_full_holdout_statistics\\influence_summary.json",
+      "sha256": "dc22d32e3ac9a919458b46a47c2e67ff47b461814b96b8657ad51f5af6100f5f"
+    },
+    {
+      "path": "data\\results\\fc_only_normalization_sensitivity\\reference_summary.csv",
+      "sha256": "42157dc5b29e59f4906e6dfb5618af025580f1b5afc0a2643bede0b6eadb49e1"
+    },
+    {
+      "path": "data\\results\\fc_only_normalization_sensitivity\\health_effects.csv",
+      "sha256": "7c32454590b1c4039222b5ff36385072f5c3cd6f04cc1e4fa4455fdd0655a564"
+    },
+    {
+      "path": "data\\results\\fc_only_normalization_sensitivity\\segment_statistics.csv",
+      "sha256": "7afbe0f041f3c774f7552db04b9e007290a743a90a198ab3f83904889eb5857f"
+    },
+    {
+      "path": "data\\results\\fc_only_normalization_sensitivity\\metadata.json",
+      "sha256": "741a2e5eb75f51f85072891a7df7951110c93163773769e279990f02f574ea7b"
+    },
+    {
+      "path": "data\\results\\fc_only_tracking_tolerance_audit\\tolerance_sweep.csv",
+      "sha256": "e5bf655a66b24e9568fc811f0221fca1c95fa7d1655595be961ec1f9e5b5e48e"
+    },
+    {
+      "path": "data\\results\\fc_only_tracking_tolerance_audit\\metadata.json",
+      "sha256": "c559127648273550605f8c5c63bf14c6fafed192b5d40a4a82b9dfc4eaa9e098"
+    },
+    {
+      "path": "data\\results\\fc_only_service_objective_audit\\summary.csv",
+      "sha256": "3a638bc57d9278172480c6524bc2ec0ad217714b1362ec18c3a38a86d5445538"
+    },
+    {
+      "path": "data\\results\\fc_only_service_objective_audit\\per_decision_regret.csv",
+      "sha256": "920226b551b824902560ad34b1dcc9930af774fc8af96f90db17c990d29413c6"
+    },
+    {
+      "path": "data\\results\\fc_only_service_objective_audit\\metadata.json",
+      "sha256": "ce5de8ebec49a90bf6e34148330f69041b9245bab0d048aec6bdbda77f28a7c6"
+    },
+    {
       "path": "data\\results\\fc_only_service_scheduler_strong_baseline_real\\summary.csv",
       "sha256": "be25c73bc1bc37954210a992b45df7be331c43d014f18bcc424f61935fdc6339"
     },

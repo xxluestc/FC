@@ -1,0 +1,17 @@
+health_case,omitted_segment_id,n_segments,mean_delta_pct,wilcoxon_statistic,p_value_one_sided,p_value_holm,reject_holm_0p05
+oldest_stack_0,27,7,-0.009307162,0.0,0.0078125,0.015625,True
+oldest_stack_1,27,7,-0.009641345,0.0,0.0078125,0.015625,True
+oldest_stack_0,30,7,-0.010427283,0.0,0.0078125,0.015625,True
+oldest_stack_1,30,7,-0.010737448,0.0,0.0078125,0.015625,True
+oldest_stack_0,31,7,-0.0099522,0.0,0.0078125,0.015625,True
+oldest_stack_1,31,7,-0.010301215,0.0,0.0078125,0.015625,True
+oldest_stack_0,32,7,-0.007750896,0.0,0.0078125,0.015625,True
+oldest_stack_1,32,7,-0.007977744,0.0,0.0078125,0.015625,True
+oldest_stack_0,35,7,-0.008402073,0.0,0.0078125,0.015625,True
+oldest_stack_1,35,7,-0.008655729,0.0,0.0078125,0.015625,True
+oldest_stack_0,40,7,-0.010375842,0.0,0.0078125,0.015625,True
+oldest_stack_1,40,7,-0.010692608,0.0,0.0078125,0.015625,True
+oldest_stack_0,42,7,-0.010110897,0.0,0.0078125,0.015625,True
+oldest_stack_1,42,7,-0.01047631,0.0,0.0078125,0.015625,True
+oldest_stack_0,43,7,-0.010626895,0.0,0.0078125,0.015625,True
+oldest_stack_1,43,7,-0.010964861,0.0,0.0078125,0.015625,True

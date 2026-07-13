@@ -37,12 +37,13 @@
 | C2 | 实车负载标定与留出按完整segment时间隔离 | 标定125,215行，留出86,415行，间隔约4.98天 | `load_zuo_calibration/`、Fig.1 | 30 kW不是额定值 | 可用 |
 | C3 | 单秒Gamma样本不适合短时策略均值排序 | 120秒有效shape约$10^{-3}$，近零概率接近1 | `fc_only_gamma_timescale/`、Fig.4 | 不是否定Gamma长期建模 | 可用 |
 | C4 | 简单health-greedy是当前最强且稳健的慢层主方法 | 实车开发模板均值1680.80 h；固定1287.45 h；11组单因素均10/10正增益 | `fc_only_service_robustness/`、Fig.10-11 | 时间到LZW边界，不是真实寿命 | 可用 |
-| C5 | Expected-max/Gamma-CVaR没有稳定超过强health-greedy | Expected-max仅+1.5至+3.7 h，获胜率20%-30%；Gamma-CVaR更低 | `fc_only_service_scheduler_strong_baseline_*`、Fig.11 | 作为消融，不包装成主创新 | 可用 |
+| C5 | Expected-max/Gamma-CVaR没有稳定超过强health-greedy | Expected-max仅+1.5至+3.7 h，获胜率20%-30%；Gamma-CVaR更低；12个预声明决策点三者在线集合一致且两类目标遗憾均为0 | `fc_only_service_scheduler_strong_baseline_*`、`fc_only_service_objective_audit/`、Fig.11 | 自身目标最优只是实现一致性，不包装成性能创新 | 可用 |
 | C6 | 冻结慢层选择在未见窗口命中最优在线集合 | 18/18可行，health-greedy oracle集合命中100%，最大遗憾0 | `fc_only_service_holdout_assignment/`、Fig.13 | 只验证选择，不代替全段回放 | 可用 |
 | C7 | 冻结双时间尺度方法可执行于全部未见完整段 | 144/144例、518,490步、零违规、455个有审计驻留覆盖步、最大误差5.499 kW | `fc_only_full_holdout_replay/`、Fig.14 | 最长段7.543 h；验证入口选择和段内快层，不是动态24 h重调度；30 kW以上被截峰 | 可用 |
-| C8 | health-greedy降低最差堆健康代价而非Pareto支配 | 最老堆为0/1时均8/8段改善，均值-0.009619/-0.009931个百分点；95% segment-bootstrap区间均低于0；Holm校正$p=0.0078125$；总期望退化+0.005508/+0.006375 | `fc_only_full_holdout_statistics/`、`fc_only_full_holdout_replay/` | 统计单位仅8个完整运行段；同时报告跟踪和总退化代价 | 可用 |
-| C9 | 当前最终验证存在可量化容量外推边界 | 11.59%正功率样本截峰；最坏组合不截峰6.65%超物理容量；事后下界36.756 kW | `fc_only_holdout_capacity_audit/`、Fig.15 | 40 kW需外部额定资料确认 | 必须披露 |
+| C8 | health-greedy降低最差堆健康代价而非Pareto支配 | 冻结30 kW下最老堆为0/1时均8/8段改善；95% segment-bootstrap区间均低于0；Holm校正$p=0.0078125$。逐段删一全部保留显著，但16个单段符号反转压力情景有6个失去显著性 | `fc_only_full_holdout_statistics/`、`fc_only_full_holdout_replay/` | 统计单位仅8个完整运行段；同时报告跟踪和总退化代价 | 可用但样本少 |
+| C9 | 最差堆改善方向在30/35/40 kW事后参考下保持，但物理容量仍待确认 | 截峰11.585%/2.672%/0%；六个主比较均8/8改善、区间低于0、零硬违规；最坏组合30 kW不截峰仍6.65%超物理容量 | `fc_only_normalization_sensitivity/`、`fc_only_holdout_capacity_audit/`、Fig.15-16 | 35/40 kW是事后敏感性；40 kW需外部额定资料确认 | 必须披露 |
 | C10 | 当前健康观测闭环尚未完成 | 无可绑定21UBE0022的MAT健康观测链 | G6状态与数据审计 | 不得声称在线校正实测SOH | 阻塞项 |
+| C11 | 5.5 kW是有动态可行性依据的工程容差而非物理常数 | 冻结最大误差案例中4.90 kW失败、4.95 kW成功；5.5 kW余量0.55 kW | `fc_only_tracking_tolerance_audit/` | 仅最坏案例定向审计，不是全留出容差扫描 | 可用作边界解释 |
 
 ## 4. 结果表规划
 
@@ -56,6 +57,10 @@
 | Table 6 | 30/31.343/40 kW参考的截峰和容量超限 | `fc_only_holdout_capacity_audit/normalization_capacity_audit.csv` | 否 |
 | Table 7 | 三种健康身份的完整segment bootstrap点估计和95%区间 | `fc_only_full_holdout_statistics/segment_bootstrap_summary.csv` | 否 |
 | Table 8 | 两个预声明最差堆主检验及Holm校正 | `fc_only_full_holdout_statistics/primary_wilcoxon_tests.csv` | 否 |
+| Table 9-10 | 逐段删一和单段符号反转影响力审计 | `fc_only_full_holdout_statistics/` | 否 |
+| Table 11-13 | 30/35/40 kW参考的可行性、代价和segment统计 | `fc_only_normalization_sensitivity/` | 已完成事后诊断 |
+| Table 14 | 冻结最大误差案例的4.0-5.5 kW定向容差扫描 | `fc_only_tracking_tolerance_audit/` | 已完成定向诊断 |
+| Table 15-16 | 12个慢层决策点的自身目标遗憾汇总和分配明细 | `fc_only_service_objective_audit/` | 已完成决策诊断 |
 
 ## 5. 建议论文结构
 
@@ -75,8 +80,8 @@
 | 1 | 物理归一化/容量依据 | 缺21UBE0022额定净功率；40 kW仅候选 | 请求车辆或控制器资料；无资料则保留30 kW包络口径 |
 | 2 | 实车健康observer | 缺可绑定的MAT变量链 | 作为明确限制；取得变量后实现校正接口 |
 | 3 | 主方法新颖性表述 | 算法本身简单，集成与审计证据较强 | 以机制闭环和验证协议为贡献，不虚构复杂算法 |
-| 4 | 论文表格与数值追踪 | 8张规范表、主张值和源文件哈希已统一导出 | 上游结果变化时重跑脚本46 |
-| 5 | 正式稿 | Intro/Related Work/Methods/Experiments/Results/Discussion已有中文初稿 | 完成内部审稿后按意见修订 |
+| 4 | 论文表格与数值追踪 | 16张规范表、主张值和源文件哈希已统一导出 | 上游结果变化时重跑脚本46 |
+| 5 | 正式稿 | Intro/Related Work/Methods/Experiments/Results/Discussion已有中文初稿 | 已按首轮内部审稿修订容量与统计边界 |
 
 ## 7. 禁止写入摘要的表述
 

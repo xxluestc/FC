@@ -1,0 +1,10 @@
+normalization_power_kw,health_case,terminal_max_delta_mean_pct,better_share,expected_damage_delta_sum_pct,tracking_mae_delta_kw,hydrogen_intensity_delta_g_per_kwh
+30.0,oldest_stack_2,0.0,0.0,0.0,0.0,0.0
+30.0,oldest_stack_0,-0.009619156,1.0,0.005508464,0.035155077,-0.176544225
+30.0,oldest_stack_1,-0.009930907,1.0,0.006374698,0.035009157,-0.354566939
+35.0,oldest_stack_2,0.0,0.0,0.0,0.0,0.0
+35.0,oldest_stack_0,-0.009863891,1.0,0.000514801,0.046690199,-0.15066534
+35.0,oldest_stack_1,-0.010620821,1.0,-0.008883687,0.134311278,-0.462325992
+40.0,oldest_stack_2,0.0,0.0,0.0,0.0,0.0
+40.0,oldest_stack_0,-0.009936294,1.0,0.007934474,0.011766407,-0.090950133
+40.0,oldest_stack_1,-0.011331176,1.0,-0.007003158,0.003483986,-0.06694824

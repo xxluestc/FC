@@ -1,0 +1,31 @@
+{
+  "scope": "12 frozen development decision points; not long-horizon performance",
+  "scenarios": [
+    "real_calibration_window",
+    "empirical_markov_1s",
+    "zuo_fast_30s",
+    "zuo_slow_30s"
+  ],
+  "health_cases": {
+    "oldest_stack_2": [
+      0.1,
+      0.4,
+      0.8
+    ],
+    "oldest_stack_0": [
+      0.8,
+      0.1,
+      0.4
+    ],
+    "oldest_stack_1": [
+      0.4,
+      0.8,
+      0.1
+    ]
+  },
+  "assignments_enumerated_per_point": 6,
+  "risk_horizon_h": 100.0,
+  "risk_samples": 128,
+  "future_demand_used": false,
+  "interpretation": "Own-objective optimality is a consistency check. Only cross-objective regret and downstream boundary time can support comparative claims."
+}

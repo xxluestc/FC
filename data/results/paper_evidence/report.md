@@ -10,6 +10,10 @@
 - `table06`：归一化参考与N+1容量审计；
 - `table07`：完整留出segment bootstrap点估计与95%区间；
 - `table08`：预声明最差堆主检验与Holm校正；
+- `table09-10`：逐段删一与单段符号反转影响力审计；
+- `table11-13`：30/35/40 kW事后归一化敏感性；
+- `table14`：冻结最大误差案例的跟踪容差边界；
+- `table15-16`：12个慢层决策点的自身目标遗憾和分配明细；
 - `claim_values.json`：正文可引用的规范数值；
 - `source_manifest.json`：每个输入文件的SHA-256。
 

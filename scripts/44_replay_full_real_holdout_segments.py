@@ -291,7 +291,7 @@ def plot_results(per_run, paired, trace):
     plt.close(fig)
 
 
-def write_report(per_run, aggregate, manifest, out_dir):
+def write_report(per_run, aggregate, manifest, out_dir, normalization_power_kw):
     clipped_steps = int(manifest.clipped_high_steps.sum())
     positive_steps = int(manifest.positive_steps.sum())
     operating_segments = int(manifest.positive_steps.gt(0).sum())
@@ -317,7 +317,7 @@ def write_report(per_run, aggregate, manifest, out_dir):
 - 最小驻留为保证当前跟踪可行而触发{safety_overrides:,}个有审计安全覆盖步，占{evaluated_steps:,}个评估步的{safety_overrides / evaluated_steps:.3%}；它们不是未记录的约束违规。
 - 当固定集合包含最老堆时，health-greedy在8/8正功率段降低终端最大退化；但它优化的是最大健康而不是总退化，代价权衡如下。
 {chr(10).join(tradeoff_lines)}
-- 高于冻结30 kW参考的样本有{clipped_steps:,}步，占正功率步{clipped_steps / positive_steps:.2%}，回放将其截到归一化1.0。因此本结果是设计包络内全样本验证，不是留出峰值的全保真容量验证；容量缺口另见`fc_only_holdout_capacity_audit`。
+- 高于{normalization_power_kw:g} kW参考的样本有{clipped_steps:,}步，占正功率步{clipped_steps / positive_steps:.2%}，回放将其截到归一化1.0。因此本结果是该诊断包络内全样本验证，不是留出峰值的物理额定功率证明；容量缺口另见`fc_only_holdout_capacity_audit`。
 
 该结果验证冻结双时间尺度方法在所有未见完整连续块上的可执行性和健康均衡方向。段间存在未观测缺口，故不将24段拼接成一条虚构连续行程，也不据此声称实车寿命预测。
 """
@@ -328,18 +328,32 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--jobs", type=int, default=8)
     parser.add_argument("--out-dir", type=Path, default=OUTPUT)
+    parser.add_argument(
+        "--normalization-power-kw", type=float, default=NORMALIZATION_POWER_KW
+    )
+    parser.add_argument("--skip-plot", action="store_true")
     parser.add_argument("--summarize-only", action="store_true")
     args = parser.parse_args()
     if args.jobs <= 0:
         raise ValueError("jobs must be positive")
+    if args.normalization_power_kw <= 0:
+        raise ValueError("normalization power must be positive")
     if args.summarize_only:
         per_run = pd.read_csv(args.out_dir / "per_run_metrics.csv")
         paired = pd.read_csv(args.out_dir / "paired_policy_deltas.csv")
         aggregate = pd.read_csv(args.out_dir / "aggregate_metrics.csv")
         manifest = pd.read_csv(args.out_dir / "segment_manifest.csv")
         trace = pd.read_csv(args.out_dir / "representative_trace_60s.csv")
-        plot_results(per_run, paired, trace)
-        write_report(per_run, aggregate, manifest, args.out_dir)
+        if not args.skip_plot:
+            plot_results(per_run, paired, trace)
+        metadata = json.loads((args.out_dir / "metadata.json").read_text(encoding="utf-8"))
+        write_report(
+            per_run,
+            aggregate,
+            manifest,
+            args.out_dir,
+            float(metadata["normalization_power_kw"]),
+        )
         return
 
     frame = pd.read_csv(
@@ -382,7 +396,8 @@ def main():
     for segment_id, segment in holdout.groupby("segment_id", sort=True):
         segment = segment.reset_index(drop=True)
         normalized = np.clip(
-            segment.fc_input_power_kw.to_numpy(dtype=float) / NORMALIZATION_POWER_KW,
+            segment.fc_input_power_kw.to_numpy(dtype=float)
+            / args.normalization_power_kw,
             0.0,
             1.0,
         )
@@ -405,7 +420,7 @@ def main():
                 "raw_power_mean_kw": float(segment.fc_input_power_kw.mean()),
                 "raw_power_max_kw": float(segment.fc_input_power_kw.max()),
                 "clipped_high_steps": int(
-                    (segment.fc_input_power_kw > NORMALIZATION_POWER_KW).sum()
+                    (segment.fc_input_power_kw > args.normalization_power_kw).sum()
                 ),
             }
         )
@@ -467,7 +482,8 @@ def main():
     paired.to_csv(args.out_dir / "paired_policy_deltas.csv", index=False)
     aggregate.to_csv(args.out_dir / "aggregate_metrics.csv", index=False)
     trace.to_csv(args.out_dir / "representative_trace_60s.csv", index=False)
-    plot_results(per_run, paired, trace)
+    if not args.skip_plot:
+        plot_results(per_run, paired, trace)
 
     operating = paired[paired.positive_steps > 0]
     summary_rows = []
@@ -496,7 +512,7 @@ def main():
             "states are not bridged across unobserved timestamp gaps"
         ),
         "initial_state_assumption": "each independent segment starts from an actionable all-off control state",
-        "normalization_power_kw": NORMALIZATION_POWER_KW,
+        "normalization_power_kw": args.normalization_power_kw,
         "mapping_system_power_reference_kw": system_reference_kw,
         "capacity_reserve_fraction": CAPACITY_RESERVE_FRACTION,
         "tracking_tolerance_kw": TRACKING_TOLERANCE_KW,
@@ -511,7 +527,13 @@ def main():
     (args.out_dir / "metadata.json").write_text(
         json.dumps(metadata, ensure_ascii=False, indent=2), encoding="utf-8"
     )
-    write_report(per_run, aggregate, manifest, args.out_dir)
+    write_report(
+        per_run,
+        aggregate,
+        manifest,
+        args.out_dir,
+        args.normalization_power_kw,
+    )
     print(summary.to_string(index=False))
     print(aggregate.to_string(index=False))
 

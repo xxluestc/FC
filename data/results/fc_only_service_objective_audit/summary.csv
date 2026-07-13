@@ -1,0 +1,4 @@
+policy,decision_points,expected_regret_mean,expected_regret_max,expected_optimal_share,cvar_regret_mean,cvar_regret_max,cvar_optimal_share,expected_assignment_match_share,expected_online_set_match_share,cvar_assignment_match_share,cvar_online_set_match_share
+health_greedy,12,0.0,0.0,1.0,0.0,0.0,1.0,0.666666666667,1.0,0.666666666667,1.0
+expected_max,12,0.0,0.0,1.0,0.0,0.0,1.0,1.0,1.0,1.0,1.0
+gamma_cvar,12,0.0,0.0,1.0,0.0,0.0,1.0,1.0,1.0,1.0,1.0

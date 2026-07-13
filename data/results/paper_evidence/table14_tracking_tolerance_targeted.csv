@@ -1,0 +1,15 @@
+tracking_tolerance_kw,success,n_steps,tracking_max_abs_kw,tracking_mae_kw,safety_override_steps,expected_damage_increment_pct,error
+4.0,False,0,,,,,no feasible multi-stack action for the requested demand
+4.5,False,0,,,,,no feasible multi-stack action for the requested demand
+4.6,False,0,,,,,no feasible multi-stack action for the requested demand
+4.7,False,0,,,,,no feasible multi-stack action for the requested demand
+4.8,False,0,,,,,no feasible multi-stack action for the requested demand
+4.9,False,0,,,,,no feasible multi-stack action for the requested demand
+4.95,True,4164,4.941123733,1.818307278,9.0,0.012990597,
+5.0,True,4164,4.941123733,1.818307278,9.0,0.012990597,
+5.25,True,4164,5.207427255,1.813478358,9.0,0.012989973,
+5.4,True,4164,5.290046525,1.814338927,8.0,0.012868614,
+5.45,True,4164,5.290046525,1.814338927,8.0,0.012868614,
+5.49,True,4164,5.482971085,1.814535265,8.0,0.012868205,
+5.499,True,4164,5.498756126,1.814739184,8.0,0.012867797,
+5.5,True,4164,5.498756126,1.814739184,8.0,0.012867797,

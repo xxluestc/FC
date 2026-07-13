@@ -87,6 +87,71 @@
       "wilcoxon_p_holm": 0.0078125
     }
   },
+  "segment_influence": {
+    "leave_one_out_all_holm_significant": true,
+    "leave_one_out_max_holm_p": 0.015625,
+    "single_reversal_cases": 16,
+    "single_reversal_holm_failures": 6
+  },
+  "normalization_sensitivity": {
+    "clipped_share_positive_by_reference": {
+      "30": 0.115851021,
+      "35": 0.026720064,
+      "40": 0.0
+    },
+    "all_constraint_violation_steps": 0,
+    "terminal_max_delta_mean_pct": {
+      "30": {
+        "oldest_stack_0": -0.009619156,
+        "oldest_stack_1": -0.009930907
+      },
+      "35": {
+        "oldest_stack_0": -0.009863891,
+        "oldest_stack_1": -0.010620821
+      },
+      "40": {
+        "oldest_stack_0": -0.009936294,
+        "oldest_stack_1": -0.011331176
+      }
+    },
+    "all_primary_segments_better": true,
+    "all_primary_ci95_upper_below_zero": true,
+    "all_primary_holm_significant": true
+  },
+  "tracking_tolerance_targeted_audit": {
+    "segment_id": 42,
+    "minimum_tested_success_kw": 4.95,
+    "largest_tested_failure_kw": 4.9,
+    "frozen_tolerance_kw": 5.5,
+    "frozen_margin_over_minimum_tested_success_kw": 0.55,
+    "full_holdout_claim": false
+  },
+  "service_objective_regret_audit": {
+    "health_greedy": {
+      "decision_points": 12,
+      "expected_regret_max": 0.0,
+      "cvar_regret_max": 0.0,
+      "expected_online_set_match_share": 1.0,
+      "cvar_online_set_match_share": 1.0,
+      "expected_assignment_match_share": 0.666666666667
+    },
+    "expected_max": {
+      "decision_points": 12,
+      "expected_regret_max": 0.0,
+      "cvar_regret_max": 0.0,
+      "expected_online_set_match_share": 1.0,
+      "cvar_online_set_match_share": 1.0,
+      "expected_assignment_match_share": 1.0
+    },
+    "gamma_cvar": {
+      "decision_points": 12,
+      "expected_regret_max": 0.0,
+      "cvar_regret_max": 0.0,
+      "expected_online_set_match_share": 1.0,
+      "cvar_online_set_match_share": 1.0,
+      "expected_assignment_match_share": 1.0
+    }
+  },
   "capacity_boundary": {
     "holdout_clip_share_positive": 0.115851021,
     "holdout_strict_exceedance_share_positive": 0.066479776,

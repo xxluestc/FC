@@ -1,0 +1,4 @@
+normalization_power_kw,posthoc_diagnostic,cases,evaluated_steps,clipped_high_steps,clipped_share_positive,constraint_violation_steps,safety_override_steps,tracking_max_abs_kw
+30.0,False,144,518490,7232,0.115851021,0,455,5.498756126
+35.0,True,144,518490,1668,0.026720064,0,461,5.498188644
+40.0,True,144,518490,0,0.0,0,404,5.49872409

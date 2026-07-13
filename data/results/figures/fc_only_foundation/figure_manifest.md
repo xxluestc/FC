@@ -17,5 +17,6 @@
 | `fig13_holdout_assignment_validation` | 冻结慢层在未参与标定的真实中心窗口上的事后oracle验证。三个健康身份循环共18例；health-greedy与Expected-max均命中oracle在线集合且零最大退化遗憾，Expected-max的角色顺序命中未转化为额外健康收益。虚线为5.5 kW冻结跟踪容差。 |
 | `fig14_full_real_holdout_replay` | 冻结health-greedy在segment 22-45全部完整连续块上的回放。左图为最长留出段的60秒聚合需求与FC输出，中图为8个正功率段最大跟踪误差，右图为不同最老堆身份下相对固定双堆的终端最大退化变化。段内状态连续，段间不跨未知缺口。 |
 | `fig15_holdout_capacity_shift_audit` | 开发/留出单堆负载持续曲线、候选归一化参考的截峰比例，以及最坏健康/策略组合下不截峰时超过双堆容量的留出比例。36.76 kW为使用留出峰值计算的事后诊断下界；40 kW仅为待物理资料确认的控制目标候选。 |
+| `fig16_normalization_sensitivity` | 冻结30 kW主分析与35/40 kW事后全量诊断的截峰比例、最大跟踪误差、终端最大退化配对差及95% segment-bootstrap区间和总期望退化权衡。35/40 kW不用于确认物理额定功率。 |
 
 每张图保存为320 DPI PNG。图内`30 s*`表示工程时间基准假设，不是Zuo论文直接给定值。

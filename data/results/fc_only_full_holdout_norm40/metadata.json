@@ -1,0 +1,63 @@
+{
+  "scope": "all unseen real holdout samples, replayed as complete independent segments",
+  "holdout_segments": [
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+  ],
+  "holdout_rows": 86415,
+  "positive_rows": 62425,
+  "segment_boundary_handling": "health and control state are continuous within each complete segment; states are not bridged across unobserved timestamp gaps",
+  "initial_state_assumption": "each independent segment starts from an actionable all-off control state",
+  "normalization_power_kw": 40.0,
+  "mapping_system_power_reference_kw": 83.07850403180912,
+  "capacity_reserve_fraction": 0.05,
+  "tracking_tolerance_kw": 5.5,
+  "health_cases": {
+    "oldest_stack_2": [
+      0.1,
+      0.4,
+      0.8
+    ],
+    "oldest_stack_0": [
+      0.8,
+      0.1,
+      0.4
+    ],
+    "oldest_stack_1": [
+      0.4,
+      0.8,
+      0.1
+    ]
+  },
+  "policies": [
+    "fixed_pair",
+    "health_greedy"
+  ],
+  "decision_information": "development real-template mean and segment-entry health only",
+  "stochastic_health": false,
+  "future_demand_used": false,
+  "no_retuning": true,
+  "runtime_s": 4370.558278100099
+}
