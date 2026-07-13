@@ -1,0 +1,30 @@
+{
+  "scope": "separate external real-power trajectory cohort",
+  "archive_root": "G:\\大论文\\实车数据\\21UBE0022_苏E02625F",
+  "file_time_audit": "data\\results\\liu_21ube0022_identity_rating\\file_time_audit.csv",
+  "file_time_audit_sha256": "a35792a455630ce92c977cde316ca095950f929c876e6586977ab81f8f32aacb",
+  "months": [
+    "2025-06",
+    "2025-07",
+    "2025-08",
+    "2025-09",
+    "2025-10",
+    "2025-11",
+    "2025-12",
+    "2026-01",
+    "2026-02",
+    "2026-03",
+    "2026-04",
+    "2026-05",
+    "2026-06"
+  ],
+  "block_steps": 1800,
+  "blocks_per_month": 3,
+  "target_dt_s": 1,
+  "gap_threshold_s": 10,
+  "minimum_positive_share": 0.8,
+  "positive_threshold_kw": 0.5,
+  "selection_rule": "split each calendar month into equal time strata, then take the first chronological one-second block in every stratum with finite power at every step and the prespecified minimum positive-power share",
+  "separation": "months 2025-06 through 2026-06 are not concatenated with the original May 2025 seven-day modelling chain; every block resets health/control state",
+  "parameter_use_boundary": "the archive previously supported the scalar 40 kW operating reference, but these blocks did not tune controller weights, assignments or health parameters"
+}

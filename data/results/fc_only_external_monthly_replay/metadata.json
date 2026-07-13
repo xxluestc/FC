@@ -1,0 +1,46 @@
+{
+  "scope": "frozen control replay on a separate cross-month real-power cohort",
+  "block_input": "data\\results\\fc_only_external_monthly_blocks\\external_monthly_power_blocks.csv",
+  "block_input_sha256": "438ea8f51b3a56c3c94961113a7c2500633683224b2510ce4d9c38ece98e50dd",
+  "template_input": "data\\results\\fc_only_service_templates_norm40\\service_exposure_templates.csv",
+  "template_input_sha256": "32d722f65af624cc252cfc4ae460a02b00bbaf370d4d524b712f498591c63f8c",
+  "blocks": 39,
+  "months": 13,
+  "base_power_steps": 70200,
+  "evaluated_cases": 234,
+  "evaluated_steps": 421200,
+  "normalization_power_kw": 40.0,
+  "power_above_reference_handling": "not clipped; replayed against physical action/constraint model",
+  "negative_power_handling": "negative FC input is mapped to zero because the FC system cannot absorb regenerative power",
+  "representative_trace_block": "external_2025-08_s1",
+  "mapping_system_power_reference_kw": 83.07850403180912,
+  "capacity_reserve_fraction": 0.05,
+  "tracking_tolerance_kw": 5.5,
+  "health_cases": {
+    "oldest_stack_2": [
+      0.1,
+      0.4,
+      0.8
+    ],
+    "oldest_stack_0": [
+      0.8,
+      0.1,
+      0.4
+    ],
+    "oldest_stack_1": [
+      0.4,
+      0.8,
+      0.1
+    ]
+  },
+  "policies": [
+    "fixed_pair",
+    "health_greedy"
+  ],
+  "future_demand_used": false,
+  "controller_retuned": false,
+  "health_state_reset_per_block": true,
+  "bootstrap_samples": 20000,
+  "bootstrap_method": "BCa at calendar-month level",
+  "runtime_s": 1541.9664871999994
+}

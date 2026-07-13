@@ -24,6 +24,11 @@ from fc_power.evaluation.gamma_sensitivity import (
     exposure_from_trajectory,
     sample_repeated_exposure,
 )
+from fc_power.evaluation.external_validation import (
+    POWER_PACKET_COLUMNS,
+    canonicalize_power_packets,
+    select_first_operating_block,
+)
 from fc_power.evaluation.service_scheduler import (
     ServiceExposure,
     ServiceScheduleConfig,
@@ -61,6 +66,7 @@ __all__ = [
     "CalibrationWindow",
     "EVENT_NAMES",
     "GammaExposure",
+    "POWER_PACKET_COLUMNS",
     "SyntheticLoadConfig",
     "ServiceExposure",
     "ServiceScheduleConfig",
@@ -77,6 +83,7 @@ __all__ = [
     "append_soc_recovery_tail",
     "classify_power_events",
     "candidate_assignments",
+    "canonicalize_power_packets",
     "clip_profile_to_feasible_envelope",
     "choose_service_assignment",
     "evaluate_service_assignment",
@@ -95,6 +102,7 @@ __all__ = [
     "sample_repeated_exposure",
     "select_calibration_windows",
     "service_exposure_from_trajectory",
+    "select_first_operating_block",
     "split_at_largest_segment_gap",
     "summarize_run",
     "stationary_service_exposure",

@@ -33,14 +33,14 @@
 
 | ID | 可写主张 | 定量证据 | 生成脚本/结果 | 论文边界 | 状态 |
 |---|---|---|---|---|---|
-| C1 | 健康随每步实际动作单调更新并反馈IV/功率 | 104项测试含在线健康携带、老化功率下降、异质性和观测接口隔离 | `gamma_process.py`、`mechanistic.py`、`tests/` | 主实验为预测态代理，不是真实posterior | 可用 |
+| C1 | 健康随每步实际动作单调更新并反馈IV/功率 | 108项测试含在线健康携带、老化功率下降、异质性、观测接口隔离和外部块不跨缺口 | `gamma_process.py`、`mechanistic.py`、`external_validation.py`、`tests/` | 主实验为预测态代理，不是真实posterior | 可用 |
 | C2 | 实车负载标定与留出按完整segment时间隔离 | 标定125,215行，留出86,415行，间隔约4.98天 | `load_zuo_calibration/`、Fig.1 | 30 kW不是额定值 | 可用 |
 | C3 | 单秒Gamma样本不适合短时策略均值排序 | 120秒有效shape约$10^{-3}$，近零概率接近1 | `fc_only_gamma_timescale/`、Fig.4 | 不是否定Gamma长期建模 | 可用 |
 | C4 | 简单health-greedy是当前最强且稳健的慢层主方法 | 实车开发模板均值1680.80 h；固定1287.45 h；11组单因素均10/10正增益 | `fc_only_service_robustness/`、Fig.10-11 | 时间到LZW边界，不是真实寿命 | 可用 |
 | C5 | Expected-max/Gamma-CVaR没有稳定超过强health-greedy | Expected-max仅+1.5至+3.7 h，获胜率20%-30%；Gamma-CVaR更低；12个预声明决策点三者在线集合一致且两类目标遗憾均为0 | `fc_only_service_scheduler_strong_baseline_*`、`fc_only_service_objective_audit/`、Fig.11 | 自身目标最优只是实现一致性，不包装成性能创新 | 可用 |
 | C6 | 冻结慢层选择在未见窗口命中最优在线集合 | 18/18可行，health-greedy oracle集合命中100%，最大遗憾0 | `fc_only_service_holdout_assignment/`、Fig.13 | 只验证选择，不代替全段回放 | 可用 |
 | C7 | 冻结双时间尺度方法可执行于全部未见完整段 | 144/144例、518,490步、零违规、455个有审计驻留覆盖步、最大误差5.499 kW | `fc_only_full_holdout_replay/`、Fig.14 | 最长段7.543 h；验证入口选择和段内快层，不是动态24 h重调度；30 kW以上被截峰 | 可用 |
-| C8 | health-greedy降低最差堆健康代价而非Pareto支配 | 冻结30 kW下最老堆为0/1时均8/8段改善；95% segment-bootstrap区间均低于0；Holm校正$p=0.0078125$。逐段删一全部保留显著，但16个单段符号反转压力情景有6个失去显著性 | `fc_only_full_holdout_statistics/`、`fc_only_full_holdout_replay/` | 统计单位仅8个完整运行段；同时报告跟踪和总退化代价 | 可用但样本少 |
+| C8 | health-greedy降低最差堆健康代价而非Pareto支配 | 原留出最老堆为0/1时均8/8段改善；独立跨月回放13/13个月改善，月级BCa 95%区间[-0.004063830, -0.003848424]个百分点；总退化小幅增加 | `fc_only_full_holdout_statistics/`、`fc_only_external_monthly_replay/` | 跨月块仍来自同一车辆且逐块重置健康；同时报告总退化代价 | 可用 |
 | C9 | 最差堆改善方向在30/35/40 kW参考下保持；全年数据支持40 kW经验运行参考 | 截峰11.585%/2.672%/0%；目标40 kW出现291,209次，全年目标p99/p99.9均为40 kW；六个主比较均8/8改善 | `fc_only_normalization_sensitivity/`、`liu_21ube0022_identity_rating/`、Fig.15-16、18 | 40 kW不是铭牌额定净功率；30 kW保留冻结敏感性 | 可用，需限称谓 |
 | C10 | 健康观测软件接口严格，但实车信号尚不能辨识为累计退化 | 8项observer测试；合成RMSE降低81.288%；263.6万匹配电压行识别两个时期台阶；环境校正趋势95% CI含0 | `synthetic_health_observer/`、`liu_21ube0022_voltage_health_audit/`、Fig.17、19 | 旧MAT只作先验；实车电压只作性能残差，不得声称SOH posterior | 软件可用、实车回写否决 |
 | C11 | 5.5 kW是有动态可行性依据的工程容差而非物理常数 | 冻结最大误差案例中4.90 kW失败、4.95 kW成功；5.5 kW余量0.55 kW | `fc_only_tracking_tolerance_audit/` | 仅最坏案例定向审计，不是全留出容差扫描 | 可用作边界解释 |

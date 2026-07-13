@@ -1,0 +1,2 @@
+analysis_unit,months,trajectory_blocks,primary_metric,terminal_max_delta_mean_pct,terminal_max_delta_ci95_low_pct,terminal_max_delta_ci95_high_pct,better_months,nonworse_months,wilcoxon_one_sided_p,sign_test_one_sided_p
+calendar_month,13,39,month mean across three time strata and two informative health-identity rotations,-0.003938847795636038,-0.004063830448717691,-0.0038484241295957226,13,13,0.0001220703125,0.0001220703125

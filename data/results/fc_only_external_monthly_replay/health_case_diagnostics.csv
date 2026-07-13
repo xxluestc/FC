@@ -1,0 +1,4 @@
+health_case,months,trajectory_blocks,terminal_max_delta_mean_pct,terminal_max_delta_ci95_low_pct,terminal_max_delta_ci95_high_pct,better_share,nonworse_share,total_damage_delta_mean_pct,tracking_mae_delta_mean_kw,hydrogen_intensity_delta_mean_g_per_kwh
+oldest_stack_0,13,39,-0.0039053405267088994,-0.004049330911901971,-0.003787418908175888,1.0,1.0,0.00027552788461535484,-0.032069547978973496,-0.13882854116864138
+oldest_stack_1,13,39,-0.003972355064563177,-0.0041155959774885065,-0.003885465716269183,1.0,1.0,0.0002934996225070864,-0.06675410680778954,-0.09063668586091721
+oldest_stack_2,13,39,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0
