@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import time
+from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
 import numpy as np
@@ -102,16 +103,36 @@ def aggregate_metrics(per_run: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def run_case(task):
+    model, scenario, strategy, beam_horizon, beam_width, rotation_period = task
+    run = run_policy(
+        model,
+        scenario,
+        strategy,
+        beam_horizon=beam_horizon,
+        beam_width=beam_width,
+        rotation_period=rotation_period,
+    )
+    return scenario.name, strategy, run.metrics
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--length", type=int, default=60)
-    parser.add_argument("--seeds", nargs="+", type=int, default=[2026])
+    parser.add_argument("--length", type=int, default=120)
+    parser.add_argument("--seeds", nargs="+", type=int, default=[2026, 2027, 2028])
     parser.add_argument("--beam-horizon", type=int, default=2)
     parser.add_argument("--beam-width", type=int, default=2)
     parser.add_argument("--rotation-period", type=int, default=30)
+    parser.add_argument("--jobs", type=int, default=4)
     parser.add_argument("--out-dir", type=Path, default=DEFAULT_OUTPUT)
     args = parser.parse_args()
-    if min(args.length, args.beam_horizon, args.beam_width, args.rotation_period) <= 0:
+    if min(
+        args.length,
+        args.beam_horizon,
+        args.beam_width,
+        args.rotation_period,
+        args.jobs,
+    ) <= 0:
         raise ValueError("length and planner settings must be positive")
     if not args.seeds:
         raise ValueError("at least one load seed is required")
@@ -138,7 +159,7 @@ def main() -> None:
     }
 
     started = time.perf_counter()
-    rows = []
+    tasks = []
     for seed in args.seeds:
         for source, (matrix, decision_interval_s) in scenarios.items():
             demand = generate_zuo_markov_system_load(
@@ -158,16 +179,30 @@ def main() -> None:
                 stochastic_health=False,
             )
             for strategy in STRATEGIES:
-                run = run_policy(
-                    model,
-                    scenario,
-                    strategy,
-                    beam_horizon=args.beam_horizon,
-                    beam_width=args.beam_width,
-                    rotation_period=args.rotation_period,
+                tasks.append(
+                    (
+                        model,
+                        scenario,
+                        strategy,
+                        args.beam_horizon,
+                        args.beam_width,
+                        args.rotation_period,
+                    )
                 )
-                rows.append(run.metrics)
-                print(f"completed {source} seed={seed} strategy={strategy}", flush=True)
+
+    if args.jobs == 1:
+        completed = map(run_case, tasks)
+    else:
+        executor = ProcessPoolExecutor(max_workers=args.jobs)
+        completed = executor.map(run_case, tasks, chunksize=1)
+    rows = []
+    try:
+        for scenario_name, strategy, metrics in completed:
+            rows.append(metrics)
+            print(f"completed {scenario_name} strategy={strategy}", flush=True)
+    finally:
+        if args.jobs > 1:
+            executor.shutdown()
 
     args.out_dir.mkdir(parents=True, exist_ok=True)
     per_run = pd.DataFrame(rows)
@@ -195,6 +230,7 @@ def main() -> None:
         "beam_width": args.beam_width,
         "beam_preview": "current demand held constant; no future demand access",
         "rotation_period": args.rotation_period,
+        "parallel_jobs": args.jobs,
         "stochastic_health": False,
         "runtime_s": runtime_s,
         "scenario_intervals_s": {
@@ -236,7 +272,7 @@ def main() -> None:
 {chr(10).join(lines)}
 
 总氢耗必须与FC实际输出电量和跟踪误差联合解释，较低氢耗不能自动解释为较高效率。
-本报告是G4基础可执行性与方向检查，不是寿命结论；单种子不提供统计区间，规划时间受当前机器影响，Zuo时间尺度、动作网格和目标权重仍需后续消融。
+本报告是G4基础可执行性与方向检查，不是寿命结论；当前种子数和轨迹长度只支持初步配对区间，规划时间受当前机器影响，Zuo时间尺度、动作网格和目标权重仍需后续消融。
 """
     (args.out_dir / "report.md").write_text(report, encoding="utf-8")
 

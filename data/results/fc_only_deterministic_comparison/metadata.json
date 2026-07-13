@@ -7,9 +7,11 @@
     "beam_health"
   ],
   "load_seeds": [
-    2026
+    2026,
+    2027,
+    2028
   ],
-  "length_s": 60,
+  "length_s": 120,
   "initial_damage_fraction": [
     0.1,
     0.4,
@@ -26,8 +28,9 @@
   "beam_width": 2,
   "beam_preview": "current demand held constant; no future demand access",
   "rotation_period": 30,
+  "parallel_jobs": 4,
   "stochastic_health": false,
-  "runtime_s": 239.05885459994897,
+  "runtime_s": 403.8540721000172,
   "scenario_intervals_s": {
     "empirical_1s": 1,
     "zuo_slow_30s": 30,
