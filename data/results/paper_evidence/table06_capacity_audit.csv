@@ -1,0 +1,4 @@
+reference_source,reference_kw,interpretation,calibration_clip_share_positive,holdout_clip_share_positive,calibration_strict_capacity_exceedance_share_positive,holdout_strict_capacity_exceedance_share_positive,holdout_tracking_envelope_exceedance_share_positive,holdout_unclipped_peak_system_demand_kw
+frozen_calibration_target_max,30.0,frozen development reference; not a physical rating,0.12828885,0.115851021,0.043475222,0.066479776,0.027585102,105.547362376
+calibration_measured_max,31.3432,calibration-only diagnostic reference,0.0,0.028209852,0.0,0.027809371,0.026784141,101.024173386
+controller_40kw_candidate,40.0,post-hoc engineering candidate; requires external rating confirmation,0.0,0.0,0.0,0.0,0.0,79.160521782

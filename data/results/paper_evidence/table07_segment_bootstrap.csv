@@ -1,0 +1,13 @@
+health_case,n_segments,metric,estimate,bootstrap_mean,ci95_lower,ci95_upper
+oldest_stack_2,8,terminal_max_delta_mean_pct,0.0,0.0,0.0,0.0
+oldest_stack_2,8,expected_damage_delta_mean_pct,0.0,0.0,0.0,0.0
+oldest_stack_2,8,tracking_mae_delta_kw,0.0,0.0,0.0,0.0
+oldest_stack_2,8,hydrogen_intensity_delta_g_per_kwh,0.0,0.0,0.0,0.0
+oldest_stack_0,8,terminal_max_delta_mean_pct,-0.009619156,-0.009611533,-0.014610982,-0.005262698
+oldest_stack_0,8,expected_damage_delta_mean_pct,0.000688558,0.000687672,0.00024934,0.001186764
+oldest_stack_0,8,tracking_mae_delta_kw,0.037533525,0.038306188,0.007144319,0.081503985
+oldest_stack_0,8,hydrogen_intensity_delta_g_per_kwh,-0.176544225,-0.177016118,-0.210629116,-0.153461481
+oldest_stack_1,8,terminal_max_delta_mean_pct,-0.009930907,-0.009952695,-0.015212701,-0.005394733
+oldest_stack_1,8,expected_damage_delta_mean_pct,0.000796837,0.000798898,0.000313821,0.001304776
+oldest_stack_1,8,tracking_mae_delta_kw,0.037377733,0.038156599,-0.008739218,0.098042914
+oldest_stack_1,8,hydrogen_intensity_delta_g_per_kwh,-0.354566939,-0.355717196,-0.388170413,-0.334131901

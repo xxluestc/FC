@@ -1,0 +1,17 @@
+parameter,value,unit,interpretation
+n_stacks,3,count,three-stack N+1 system
+online_stacks_at_positive_demand,2,count,one stack rests
+fast_step,1.0,s,real-load sampling interval
+allowed_currents,0;25;90;120;160;195;270;370,A,discrete action grid
+tracking_tolerance,5.5,kW,frozen FC-only hard bound
+capacity_reserve,0.05,fraction,healthy pair mapping reserve
+load_normalization_reference,30.0,kW,development target maximum; not rating
+slow_reschedule_period,24.0,h,minimum health-greedy epoch
+health_boundary,9.353028530555555,%,LZW endpoint; not failure threshold
+gamma_scale,0.13417673000740873,%,terminal CV 10% assumption
+heterogeneity_factors,1.00;1.05;1.10,factor,predeclared stack factors
+start_damage,0.00196,%/start,Ghaderi/Pei structure
+high_load_damage,0.00147,%/h,370 A regime
+low_load_damage,0.00126,%/h,energized 0 A regime
+natural_on_damage,0.002,%/h,positive-current operation
+load_shift_damage,5.93e-05,%/shift,current-level change

@@ -1,0 +1,88 @@
+# 论文主张与证据矩阵
+
+更新时间：2026-07-13
+
+## 1. 论文定位
+
+研究问题：在不预测未来需求、暂不引入锂电池外层的条件下，如何把实车单堆负载、动作驱动
+健康演化和三堆N+1选择/分配组成可审计的双时间尺度闭环，并验证健康均衡是否能在强基线和
+未见真实连续块上成立。
+
+当前最稳妥的贡献表述不是“提出首个三堆健康EMS”，而是：
+
+1. 构建实车负载时间隔离的三堆N+1测试链，并显式审计归一化和容量外推；
+2. 建立每步动作驱动的 $D\rightarrow\theta\rightarrow IV/功率$闭环，避免健康只进入静态代价；
+3. 提出无未来预测的24小时health-greedy慢层与秒级Instant快层耦合，并区分运行启停与调度启停；
+4. 证明单秒Gamma采样不适合短时策略排序，把随机性移到小时级聚合风险层；
+5. 通过强基线、机制敏感性、冻结oracle窗口和全部未见完整segment验证，报告有效区间与失败边界。
+
+## 2. 与本地核心文献的边界
+
+| 文献 | 已有贡献 | 本项目不能声称 | 本项目差异 |
+|---|---|---|---|
+| Zuo et al., RESS 2024, DOI `10.1016/j.ress.2023.109660` | 三堆超容量、两堆同时运行、随机退化、事件负载分配和启停选择 | N+1三堆结构或随机退化EMS首创 | 实车时间隔离负载、动作到IV闭环、Gamma时间尺度诊断、强基线和冻结真实留出 |
+| Ghaderi et al., IEEE TVT 2022, DOI `10.1109/TVT.2022.3167319` | 三堆+电池、博弈EMS、在线系统辨识、健康感知 | 在线健康感知或多堆EMS首创 | 当前先解FC-only内层，强调每步机理健康闭环和未见连续块验证 |
+| Ghaderi et al., ECM 2023, DOI `10.1016/j.enconman.2023.117524` | 三层Q-learning多堆混动EMS、在线估计、双循环对照 | RL健康EMS首创 | 不用预测/RL，把复杂度放在可审计健康和时间尺度边界 |
+| Li et al., IEEE TTE 2025, DOI `10.1109/TTE.2024.3491107` | 多堆机车系统寿命与氢耗/电池等效成本集成、HIL | 系统寿命集成优化首创 | 当前健康边界更保守，不冒充失效寿命，且以实车单堆负载映射验证 |
+| Tümer et al., C&CE 2025, DOI `10.1016/j.compchemeng.2025.109142` | 双堆实时最优分配、RLS-KF电压参数在线估计、退化自适应 | 电压在线健康更新首创 | 当前实车observer尚未完成；贡献只能是动作预测态闭环和N+1双时间尺度验证 |
+
+本地文本：`G:/大论文/AI文献库/多模块功率调控/zuo2024.txt`、`ghaderi2022.txt`、
+`li2025iosl.txt`、`功率分配/qlearning2023.txt`、`功率分配/tumer2025.txt`。
+
+## 3. 主张-证据-边界
+
+| ID | 可写主张 | 定量证据 | 生成脚本/结果 | 论文边界 | 状态 |
+|---|---|---|---|---|---|
+| C1 | 健康随每步实际动作单调更新并反馈IV/功率 | 96项测试含在线健康携带、老化功率下降和异质性 | `gamma_process.py`、`mechanistic.py`、`tests/` | 预测态代理，不是真实posterior | 可用 |
+| C2 | 实车负载标定与留出按完整segment时间隔离 | 标定125,215行，留出86,415行，间隔约4.98天 | `load_zuo_calibration/`、Fig.1 | 30 kW不是额定值 | 可用 |
+| C3 | 单秒Gamma样本不适合短时策略均值排序 | 120秒有效shape约$10^{-3}$，近零概率接近1 | `fc_only_gamma_timescale/`、Fig.4 | 不是否定Gamma长期建模 | 可用 |
+| C4 | 简单health-greedy是当前最强且稳健的慢层主方法 | 实车开发模板均值1680.80 h；固定1287.45 h；11组单因素均10/10正增益 | `fc_only_service_robustness/`、Fig.10-11 | 时间到LZW边界，不是真实寿命 | 可用 |
+| C5 | Expected-max/Gamma-CVaR没有稳定超过强health-greedy | Expected-max仅+1.5至+3.7 h，获胜率20%-30%；Gamma-CVaR更低 | `fc_only_service_scheduler_strong_baseline_*`、Fig.11 | 作为消融，不包装成主创新 | 可用 |
+| C6 | 冻结慢层选择在未见窗口命中最优在线集合 | 18/18可行，health-greedy oracle集合命中100%，最大遗憾0 | `fc_only_service_holdout_assignment/`、Fig.13 | 只验证选择，不代替全段回放 | 可用 |
+| C7 | 冻结双时间尺度方法可执行于全部未见完整段 | 144/144例、518,490步、零违规、455个有审计驻留覆盖步、最大误差5.499 kW | `fc_only_full_holdout_replay/`、Fig.14 | 最长段7.543 h；验证入口选择和段内快层，不是动态24 h重调度；30 kW以上被截峰 | 可用 |
+| C8 | health-greedy降低最差堆健康代价而非Pareto支配 | 最老堆为0/1时均8/8段改善，均值-0.009619/-0.009931个百分点；95% segment-bootstrap区间均低于0；Holm校正$p=0.0078125$；总期望退化+0.005508/+0.006375 | `fc_only_full_holdout_statistics/`、`fc_only_full_holdout_replay/` | 统计单位仅8个完整运行段；同时报告跟踪和总退化代价 | 可用 |
+| C9 | 当前最终验证存在可量化容量外推边界 | 11.59%正功率样本截峰；最坏组合不截峰6.65%超物理容量；事后下界36.756 kW | `fc_only_holdout_capacity_audit/`、Fig.15 | 40 kW需外部额定资料确认 | 必须披露 |
+| C10 | 当前健康观测闭环尚未完成 | 无可绑定21UBE0022的MAT健康观测链 | G6状态与数据审计 | 不得声称在线校正实测SOH | 阻塞项 |
+
+## 4. 结果表规划
+
+| 表 | 内容 | 直接数据源 | 是否需要新实验 |
+|---|---|---|---|
+| Table 1 | 三堆、动作网格、退化系数、健康边界、负载参考、调度周期 | `lzw_gamma_calibration.json`和配置类 | 否 |
+| Table 2 | 固定、health-greedy、Expected-max、Gamma-CVaR四场景长期强基线 | `fc_only_service_scheduler_strong_baseline_*/summary.csv` | 否 |
+| Table 3 | 11组机制/边界稳健性最小-均值-最大配对增益 | `fc_only_service_robustness/` | 否 |
+| Table 4 | 冻结窗口oracle命中、遗憾和跟踪 | `fc_only_service_holdout_assignment/summary.csv` | 否 |
+| Table 5 | 全部留出段可行性、健康均衡、氢耗和跟踪权衡 | `fc_only_full_holdout_replay/` | 否 |
+| Table 6 | 30/31.343/40 kW参考的截峰和容量超限 | `fc_only_holdout_capacity_audit/normalization_capacity_audit.csv` | 否 |
+| Table 7 | 三种健康身份的完整segment bootstrap点估计和95%区间 | `fc_only_full_holdout_statistics/segment_bootstrap_summary.csv` | 否 |
+| Table 8 | 两个预声明最差堆主检验及Holm校正 | `fc_only_full_holdout_statistics/primary_wilcoxon_tests.csv` | 否 |
+
+## 5. 建议论文结构
+
+1. Introduction：多堆冗余价值、健康闭环缺口、真实负载与时间尺度问题；列出五项贡献。
+2. Related Work：多堆分配、健康感知EMS、随机退化、在线observer；明确不争夺已有首创。
+3. Problem Formulation：三堆两运行、FC-only边界、负载映射、状态/动作和评价边界。
+4. Method：动作健康转移、$D\rightarrow\theta\rightarrow IV$、Instant快层、health-greedy慢层、Gamma聚合层。
+5. Experimental Protocol：时间切分、120开发模板、强基线、配对统计、冻结留出和容量审计。
+6. Results：先开发稳健性，再oracle选择，最后完整真实段与代价权衡。
+7. Discussion：为什么复杂风险目标无稳定增益、Gamma时间尺度、30 kW容量限制、observer缺口。
+8. Conclusion：只总结已证实范围，不提前引入电池和需求预测。
+
+## 6. 当前发表门槛
+
+| 优先级 | 门槛 | 当前状态 | 处理 |
+|---:|---|---|---|
+| 1 | 物理归一化/容量依据 | 缺21UBE0022额定净功率；40 kW仅候选 | 请求车辆或控制器资料；无资料则保留30 kW包络口径 |
+| 2 | 实车健康observer | 缺可绑定的MAT变量链 | 作为明确限制；取得变量后实现校正接口 |
+| 3 | 主方法新颖性表述 | 算法本身简单，集成与审计证据较强 | 以机制闭环和验证协议为贡献，不虚构复杂算法 |
+| 4 | 论文表格与数值追踪 | 8张规范表、主张值和源文件哈希已统一导出 | 上游结果变化时重跑脚本46 |
+| 5 | 正式稿 | Intro/Related Work/Methods/Experiments/Results/Discussion已有中文初稿 | 完成内部审稿后按意见修订 |
+
+## 7. 禁止写入摘要的表述
+
+- “首次提出三堆两运行架构”或“首次健康感知多堆EMS”；
+- “显著延长真实燃料电池寿命”或“准确预测RUL”；
+- “真实健康在线观测校正已完成”；
+- “在完整原始峰值轨迹上零违规”，除非物理额定参考确认并重跑；
+- “同时优化燃料电池和锂电池”或“利用未来需求预测”；
+- “所提方法在全部成本指标上优于基线”。

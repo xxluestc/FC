@@ -1,0 +1,12 @@
+policy,reference_policy,mean_gain_h,minimum_gain_h,maximum_gain_h,win_share,nonworse_share,case,setting,multiplier
+health_greedy,fixed_pair,407.0,400.0,418.0,1.0,1.0,assignment_start_0p5,assignment_start,0.5
+health_greedy,fixed_pair,384.5,370.0,392.0,1.0,1.0,assignment_start_2,assignment_start,2.0
+health_greedy,fixed_pair,400.7,397.0,408.0,1.0,1.0,base,base,1.0
+health_greedy,fixed_pair,521.9,510.0,534.0,1.0,1.0,continuous_0p5,continuous,0.5
+health_greedy,fixed_pair,270.2,259.0,276.0,1.0,1.0,continuous_2,continuous,2.0
+health_greedy,fixed_pair,317.3,306.0,328.0,1.0,1.0,health_limit_0p8,health_limit,0.8
+health_greedy,fixed_pair,479.5,469.0,488.0,1.0,1.0,health_limit_1p2,health_limit,1.2
+health_greedy,fixed_pair,436.9,426.0,450.0,1.0,1.0,load_shift_0p5,load_shift,0.5
+health_greedy,fixed_pair,339.8,329.0,356.0,1.0,1.0,load_shift_2,load_shift,2.0
+health_greedy,fixed_pair,491.5,484.0,498.0,1.0,1.0,operational_start_0p434,operational_start,0.434191595
+health_greedy,fixed_pair,266.6,263.0,274.0,1.0,1.0,operational_start_2p396,operational_start,2.395711124

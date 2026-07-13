@@ -1,0 +1,11 @@
+{
+  "resampling_unit": "complete positive-power holdout segment",
+  "bootstrap_samples": 10000,
+  "bootstrap_seed": 2026,
+  "interval": "percentile 95%",
+  "primary_metric": "health_greedy minus fixed terminal maximum damage",
+  "primary_alternative": "less than zero",
+  "multiplicity": "Holm correction across two predeclared nontrivial health identities",
+  "oldest_stack_2_handling": "zero-effect control; excluded from significance testing",
+  "independence_boundary": "time steps are not treated as independent observations"
+}

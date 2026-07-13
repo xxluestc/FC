@@ -1,0 +1,4 @@
+policy,cases,feasible_share,exact_assignment_hit_share,online_set_hit_share,regret_mean_pct,regret_max_pct,delta_vs_fixed_mean_pct,delta_vs_fixed_improvement_share,tracking_mae_mean_kw,tracking_max_abs_kw
+fixed_pair,18,1.0,0.333333333,0.333333333,9.3165e-05,0.000439705,0.0,0.0,0.846677118,5.498408171
+health_greedy,18,1.0,0.666666667,1.0,0.0,0.0,-9.3165e-05,0.666666667,0.750586355,5.171681308
+expected_max,18,1.0,1.0,1.0,0.0,0.0,-9.3165e-05,0.666666667,0.750586355,5.171681308

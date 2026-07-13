@@ -1,0 +1,97 @@
+{
+  "service_real_mean_boundary_h": {
+    "fixed_pair": 1287.45,
+    "health_greedy": 1680.8,
+    "expected_max": 1682.4,
+    "gamma_cvar": 1646.1
+  },
+  "expected_max_minus_health_greedy_mean_h_by_scenario": {
+    "empirical_markov": 1.5,
+    "real_calibrated": 1.6,
+    "zuo_fast": 3.7,
+    "zuo_slow": 2.6
+  },
+  "health_greedy_minus_fixed_by_scenario": {
+    "empirical_markov": {
+      "gain_h": 376.8,
+      "relative_gain_pct": 23.798
+    },
+    "real_calibrated": {
+      "gain_h": 393.35,
+      "relative_gain_pct": 30.553
+    },
+    "zuo_fast": {
+      "gain_h": 231.45,
+      "relative_gain_pct": 27.531
+    },
+    "zuo_slow": {
+      "gain_h": 401.6,
+      "relative_gain_pct": 25.521
+    }
+  },
+  "robustness": {
+    "cases": 11,
+    "minimum_paired_gain_h": 259.0,
+    "all_nonworse": true
+  },
+  "holdout_assignment": {
+    "fixed_pair": {
+      "cases": 18,
+      "online_set_hit_share": 0.333333,
+      "regret_max_pct": 0.000439705,
+      "tracking_max_abs_kw": 5.498408
+    },
+    "health_greedy": {
+      "cases": 18,
+      "online_set_hit_share": 1.0,
+      "regret_max_pct": 0.0,
+      "tracking_max_abs_kw": 5.171681
+    },
+    "expected_max": {
+      "cases": 18,
+      "online_set_hit_share": 1.0,
+      "regret_max_pct": 0.0,
+      "tracking_max_abs_kw": 5.171681
+    }
+  },
+  "full_holdout": {
+    "segments": 24,
+    "rows": 86415,
+    "positive_rows": 62425,
+    "evaluated_steps": 518490,
+    "constraint_violations": 0,
+    "audited_safety_override_steps": 455,
+    "tracking_max_abs_kw": 5.498756,
+    "oldest_stack_0_terminal_max_delta_mean_pct": -0.009619156,
+    "oldest_stack_1_terminal_max_delta_mean_pct": -0.009930907,
+    "oldest_stack_0_total_expected_damage_delta_pct": 0.005508464,
+    "oldest_stack_1_total_expected_damage_delta_pct": 0.006374698
+  },
+  "full_holdout_segment_statistics": {
+    "oldest_stack_0": {
+      "n_segments": 8,
+      "terminal_max_delta_mean_pct": -0.009619156,
+      "bootstrap_ci95_lower_pct": -0.014610982,
+      "bootstrap_ci95_upper_pct": -0.005262698,
+      "better_segments": 8,
+      "wilcoxon_p_one_sided": 0.00390625,
+      "wilcoxon_p_holm": 0.0078125
+    },
+    "oldest_stack_1": {
+      "n_segments": 8,
+      "terminal_max_delta_mean_pct": -0.009930907,
+      "bootstrap_ci95_lower_pct": -0.015212701,
+      "bootstrap_ci95_upper_pct": -0.005394733,
+      "better_segments": 8,
+      "wilcoxon_p_one_sided": 0.00390625,
+      "wilcoxon_p_holm": 0.0078125
+    }
+  },
+  "capacity_boundary": {
+    "holdout_clip_share_positive": 0.115851021,
+    "holdout_strict_exceedance_share_positive": 0.066479776,
+    "holdout_tracking_envelope_exceedance_share_positive": 0.027585102,
+    "posthoc_strict_reference_lower_bound_kw": 36.756035,
+    "controller_candidate_kw": 40.0
+  }
+}

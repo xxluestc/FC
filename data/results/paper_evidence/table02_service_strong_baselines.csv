@@ -1,0 +1,14 @@
+scenario,policy,n_runs,health_limit_crossing_share,time_to_limit_mean_h,time_to_limit_std_h,time_to_limit_q10_h,time_to_limit_median_h,time_to_limit_q90_h,start_count_mean,assignment_change_mean,delta_vs_health_greedy_mean_h
+real_calibrated,expected_max,20,1.0,1682.4,179.045539635,1437.2,1731.5,1875.0,24.8,22.8,1.6
+real_calibrated,fixed_pair,20,1.0,1287.45,163.338355633,1054.7,1320.0,1487.7,2.0,0.0,-393.35
+real_calibrated,gamma_cvar,20,1.0,1646.1,170.46959908,1406.6,1668.0,1830.2,23.05,21.05,-34.7
+real_calibrated,health_greedy,20,1.0,1680.8,179.935251512,1437.7,1734.0,1875.0,25.7,23.7,0.0
+empirical_markov,expected_max,20,1.0,1961.65,216.332900143,1687.4,1943.0,2222.2,23.1,21.1,1.5
+empirical_markov,fixed_pair,20,1.0,1583.35,213.201973675,1299.8,1629.5,1825.4,2.0,0.0,-376.8
+empirical_markov,health_greedy,20,1.0,1960.15,216.225095919,1687.5,1943.0,2219.5,25.65,23.65,0.0
+zuo_slow,expected_max,20,1.0,1977.8,221.454664482,1696.4,1946.0,2247.5,24.8,22.8,2.6
+zuo_slow,fixed_pair,20,1.0,1573.6,208.460623569,1303.4,1608.5,1826.6,2.0,0.0,-401.6
+zuo_slow,health_greedy,20,1.0,1975.2,227.083012876,1688.1,1949.5,2254.0,25.85,23.85,0.0
+zuo_fast,expected_max,20,1.0,1075.85,98.476433195,953.9,1076.0,1197.2,15.65,13.65,3.7
+zuo_fast,fixed_pair,20,1.0,840.7,111.469183846,663.7,845.0,948.0,2.0,0.0,-231.45
+zuo_fast,health_greedy,20,1.0,1072.15,109.851706261,954.1,1075.5,1198.8,16.75,14.75,0.0

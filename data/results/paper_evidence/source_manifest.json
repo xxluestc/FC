@@ -1,0 +1,61 @@
+{
+  "generator": "scripts\\46_build_paper_evidence_tables.py",
+  "sources": [
+    {
+      "path": "data\\results\\health\\lzw_gamma_calibration.json",
+      "sha256": "6871ab03512986ae93ed0c8c13f9b07e5fdf0268a8fd52617a2a8b93a84c904b"
+    },
+    {
+      "path": "data\\results\\fc_only_service_robustness\\robustness_summary.csv",
+      "sha256": "b737aae5a2bf5012b327f7124a310bf95008dd355914691861c76a1eac390b16"
+    },
+    {
+      "path": "data\\results\\fc_only_service_holdout_assignment\\summary.csv",
+      "sha256": "bae56b304cab954f75126af7d4460e1cf49af57ed96c81d0850f68776cae0687"
+    },
+    {
+      "path": "data\\results\\fc_only_full_holdout_replay\\aggregate_metrics.csv",
+      "sha256": "f7ef795cf40cd42ce69c47f1688b395e2f92daaacf51917fe62a467e5b7df673"
+    },
+    {
+      "path": "data\\results\\fc_only_full_holdout_replay\\summary.csv",
+      "sha256": "fcda125983e928e381f879f27db13d0ba4fb21379d8cd5eaca6758274bfdc215"
+    },
+    {
+      "path": "data\\results\\fc_only_full_holdout_replay\\segment_manifest.csv",
+      "sha256": "554958a452eb5e3615ba78faaa01888550a0437aeaebe5839d73a864acb6cd67"
+    },
+    {
+      "path": "data\\results\\fc_only_holdout_capacity_audit\\normalization_capacity_audit.csv",
+      "sha256": "3be70f842ab404ae92e42e5b96a49f61f570769cbc88fe0f15c68a6e3bc7ded8"
+    },
+    {
+      "path": "data\\results\\fc_only_holdout_capacity_audit\\metadata.json",
+      "sha256": "285da20dbfea4393634a7a4d6121ee04b0fbeb3179e1d72cb25adaf3ae93e840"
+    },
+    {
+      "path": "data\\results\\fc_only_full_holdout_statistics\\segment_bootstrap_summary.csv",
+      "sha256": "09c7258eac7b073537d4e5b4feba07098caac84b80fe157b55b40295fc6e8c06"
+    },
+    {
+      "path": "data\\results\\fc_only_full_holdout_statistics\\primary_wilcoxon_tests.csv",
+      "sha256": "0b9f049b97d92ef98eccd695827e59d9368e305ccbebc307a83bb93e86669517"
+    },
+    {
+      "path": "data\\results\\fc_only_service_scheduler_strong_baseline_real\\summary.csv",
+      "sha256": "be25c73bc1bc37954210a992b45df7be331c43d014f18bcc424f61935fdc6339"
+    },
+    {
+      "path": "data\\results\\fc_only_service_scheduler_strong_baseline_markov\\summary.csv",
+      "sha256": "162144ea3c85b9f5c888e465954933d2a4cc4b5b4d5e9ee0af1c1ba480b1c6c0"
+    },
+    {
+      "path": "data\\results\\fc_only_service_scheduler_strong_baseline_zuo_slow\\summary.csv",
+      "sha256": "954c02c32bf38e88a4654852c44c8cee60d43689308e72df9bff7fb19c930d83"
+    },
+    {
+      "path": "data\\results\\fc_only_service_scheduler_strong_baseline_zuo_fast\\summary.csv",
+      "sha256": "5ecab9107e5672ff6ca33b86b57771ddfa41e3b18c3d2f26432248d30ed06dfe"
+    }
+  ]
+}

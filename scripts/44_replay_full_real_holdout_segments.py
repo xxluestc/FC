@@ -295,6 +295,8 @@ def write_report(per_run, aggregate, manifest, out_dir):
     clipped_steps = int(manifest.clipped_high_steps.sum())
     positive_steps = int(manifest.positive_steps.sum())
     operating_segments = int(manifest.positive_steps.gt(0).sum())
+    safety_overrides = int(per_run.safety_override_steps.sum())
+    evaluated_steps = int(per_run.n_steps.sum())
     indexed = aggregate.set_index(["health_case", "policy"])
     tradeoff_lines = []
     for health_case in ("oldest_stack_0", "oldest_stack_1"):
@@ -312,6 +314,7 @@ def write_report(per_run, aggregate, manifest, out_dir):
 - 每个完整segment内部逐秒携带动作、驻留和确定性健康状态；未知时间缺口之间不桥接状态，因此不虚构缺口内负载或退化。
 - 仅比较冻结固定双堆与24小时慢层的health-greedy入口选择；快层均为Instant，未使用未来需求。
 - 3种健康身份循环、24段、2策略共{len(per_run)}例全部完成；约束违规总数为0，最大跟踪误差为{per_run.tracking_max_abs_kw.max():.3f} kW。
+- 最小驻留为保证当前跟踪可行而触发{safety_overrides:,}个有审计安全覆盖步，占{evaluated_steps:,}个评估步的{safety_overrides / evaluated_steps:.3%}；它们不是未记录的约束违规。
 - 当固定集合包含最老堆时，health-greedy在8/8正功率段降低终端最大退化；但它优化的是最大健康而不是总退化，代价权衡如下。
 {chr(10).join(tradeoff_lines)}
 - 高于冻结30 kW参考的样本有{clipped_steps:,}步，占正功率步{clipped_steps / positive_steps:.2%}，回放将其截到归一化1.0。因此本结果是设计包络内全样本验证，不是留出峰值的全保真容量验证；容量缺口另见`fc_only_holdout_capacity_audit`。
