@@ -24,6 +24,17 @@ from fc_power.evaluation.gamma_sensitivity import (
     exposure_from_trajectory,
     sample_repeated_exposure,
 )
+from fc_power.evaluation.service_scheduler import (
+    ServiceExposure,
+    ServiceScheduleConfig,
+    ServiceScheduleDecision,
+    ServiceScheduleState,
+    ServiceScheduleTransition,
+    candidate_assignments,
+    choose_service_assignment,
+    stationary_service_exposure,
+    transition_service_epoch,
+)
 from fc_power.evaluation.zuo_load_calibration import (
     TemporalSegmentSplit,
     TransitionEstimate,
@@ -42,6 +53,11 @@ __all__ = [
     "EVENT_NAMES",
     "GammaExposure",
     "SyntheticLoadConfig",
+    "ServiceExposure",
+    "ServiceScheduleConfig",
+    "ServiceScheduleDecision",
+    "ServiceScheduleState",
+    "ServiceScheduleTransition",
     "TemporalSegmentSplit",
     "TestRun",
     "TestScenario",
@@ -51,7 +67,9 @@ __all__ = [
     "ZUO_SLOW_TRANSITION",
     "append_soc_recovery_tail",
     "classify_power_events",
+    "candidate_assignments",
     "clip_profile_to_feasible_envelope",
+    "choose_service_assignment",
     "blend_transition_matrices",
     "generate_event_load",
     "generate_real_block_bootstrap",
@@ -65,4 +83,6 @@ __all__ = [
     "sample_repeated_exposure",
     "split_at_largest_segment_gap",
     "summarize_run",
+    "stationary_service_exposure",
+    "transition_service_epoch",
 ]

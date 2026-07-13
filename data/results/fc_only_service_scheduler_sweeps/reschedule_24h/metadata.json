@@ -1,0 +1,34 @@
+{
+  "scope": "development screen using real-calibrated Markov exposure templates; not holdout validation",
+  "policies": [
+    "fixed_pair",
+    "periodic_rotation",
+    "expected_max",
+    "gamma_cvar"
+  ],
+  "seeds": [
+    2026,
+    2027,
+    2028,
+    2029,
+    2030,
+    2031,
+    2032,
+    2033,
+    2034,
+    2035
+  ],
+  "epoch_h": 1.0,
+  "max_hours": 2000.0,
+  "rotation_hours": 24.0,
+  "reschedule_hours": 24.0,
+  "risk_horizon_h": 100.0,
+  "risk_samples": 64,
+  "health_limit_pct": 9.353028530555555,
+  "health_limit_interpretation": "LZW calibrated trajectory endpoint, not an identified failure threshold",
+  "gamma_scale_pct": 0.13417673000740873,
+  "gamma_terminal_cv": 0.1,
+  "template_count": 5,
+  "decision_information": "stationary mean of development templates; no upcoming epoch exposure",
+  "health_pairing": "common inverse-CDF uniforms by seed, epoch and online role"
+}

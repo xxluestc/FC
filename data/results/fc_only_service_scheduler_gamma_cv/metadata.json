@@ -1,0 +1,22 @@
+{
+  "scope": "development Gamma-CV sensitivity",
+  "gamma_terminal_cvs": [
+    0.05,
+    0.1,
+    0.2
+  ],
+  "seeds": [
+    2026,
+    2027,
+    2028,
+    2029,
+    2030,
+    2031,
+    2032,
+    2033,
+    2034,
+    2035
+  ],
+  "reschedule_hours": 24,
+  "risk_samples": 64
+}

@@ -1,0 +1,28 @@
+{
+  "scope": "development rescheduling-period screen",
+  "reschedule_hours": [
+    6,
+    12,
+    24,
+    48
+  ],
+  "load_health_seeds": [
+    2026,
+    2027,
+    2028,
+    2029,
+    2030,
+    2031,
+    2032,
+    2033,
+    2034,
+    2035
+  ],
+  "risk_samples": 64,
+  "source_directories": [
+    "fc_only_service_scheduler_sweeps/reschedule_6h",
+    "fc_only_service_scheduler_sweeps/reschedule_12h",
+    "fc_only_service_scheduler_sweeps/reschedule_24h",
+    "fc_only_service_scheduler_sweeps/reschedule_48h"
+  ]
+}

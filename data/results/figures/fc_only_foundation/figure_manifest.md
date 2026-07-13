@@ -8,5 +8,8 @@
 | `fig04_gamma_timescale_diagnostic` | 当前Gamma标定在不同聚合暴露时长下的有效shape，以及采样增量低于条件均值1%的概率。120秒尺度几乎必然近零，说明短时在线样本不适合估计Gamma均值。 |
 | `fig05_aggregate_gamma_sensitivity` | 历史诊断图。冻结120秒动作暴露重复至1000小时会同步放大启停事件，不能作为寿命预测或方法效果证据。仅用于说明Gamma聚合时间尺度。 |
 | `fig06_mechanism_ablation` | 冻结策略动作路径下的75点机制消融。上行为Instant相对Average，下行为Instant相对Rotating；负值表示总退化降低。独立色标用于分别显示小幅脆弱差异和事件主导差异。 |
+| `fig07_service_horizon_screen` | 小时级N+1调度开发筛查。左图为20个配对开发种子的健康边界生存曲线，右图为中位数及P10-P90。健康边界是LZW标定轨迹终点，不是失效阈值。 |
+| `fig08_reschedule_sensitivity` | Expected-max与Gamma-CVaR在6/12/24/48小时最小重调度周期下的健康边界时间和平均启动次数。延长周期显著减少启动而没有消除相对固定双堆的收益。 |
+| `fig09_service_gamma_cv_sensitivity` | Gamma终点CV 5%/10%/20%开发敏感性。左图为策略健康边界时间均值与标准差，右图为相对固定双堆的配对增益均值及最小-最大范围。 |
 
 每张图保存为320 DPI PNG。图内`30 s*`表示工程时间基准假设，不是Zuo论文直接给定值。
