@@ -1,0 +1,3 @@
+policy,months,first_boundary_gain_mean_h,first_boundary_gain_ci95_low_h,first_boundary_gain_ci95_high_h,second_boundary_gain_mean_h,second_boundary_gain_ci95_low_h,second_boundary_gain_ci95_high_h,second_boundary_gain_median_h,second_boundary_better_months,second_boundary_tied_months,second_boundary_worse_months,second_boundary_sign_p_one_sided,seed_level_nonworse_share
+order_blend_50,13,71.06923076923076,46.253886497374914,100.30532901125704,4.076923076923077,1.6038461538461537,7.438461538461539,0.2,9,1,3,0.072998046875,0.9115384615384615
+expected_n_plus_one,13,-563.8192307692307,-653.9473510052753,-499.2495326874386,3.4153846153846144,1.1615384615384614,6.673590146590782,3.3,11,0,2,0.01123046875,0.6423076923076924

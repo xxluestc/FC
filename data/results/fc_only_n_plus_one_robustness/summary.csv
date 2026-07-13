@@ -1,0 +1,4 @@
+policy,runs,first_boundary_mean_h,second_boundary_mean_h,second_boundary_q10_h,second_boundary_median_h,second_boundary_q90_h,post_first_reserve_mean_h,first_boundary_total_damage_mean_pct,start_count_mean,assignment_change_mean
+fixed_pair,200,1069.94,1396.455,1272.8,1394.0,1523.4,326.515,23.542298118617214,3.0,1.0
+order_blend_50,200,1144.58,1401.245,1272.8,1402.0,1528.4,256.665,24.363405499546126,4.635,2.635
+expected_n_plus_one,200,341.895,1398.46,1270.6,1403.5,1523.1,1056.565,15.873320663839909,3.0,1.0

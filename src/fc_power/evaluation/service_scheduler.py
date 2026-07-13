@@ -43,6 +43,7 @@ class ServiceScheduleConfig:
     cvar_alpha: float = 0.95
     risk_samples: int = 512
     risk_seed: int = 2026
+    n_plus_one_weight: float = 0.5
 
     def __post_init__(self) -> None:
         positive = {
@@ -62,6 +63,8 @@ class ServiceScheduleConfig:
             raise ValueError("cvar_alpha must lie in (0, 1)")
         if self.risk_samples < 20:
             raise ValueError("risk_samples must be at least 20")
+        if not 0 <= self.n_plus_one_weight <= 1:
+            raise ValueError("n_plus_one_weight must lie in [0, 1]")
 
 
 @dataclass(frozen=True)
@@ -91,6 +94,8 @@ class ServiceScheduleDecision:
     assignment: tuple[int, int]
     objective: float
     expected_max_health_fraction: float
+    expected_n_plus_one_health_fraction: float
+    expected_mean_health_fraction: float
     cvar_max_health_fraction: float | None
     new_starts: int
 
@@ -108,6 +113,24 @@ def candidate_assignments(n_stacks: int) -> tuple[tuple[int, int], ...]:
     if n_stacks < 3:
         raise ValueError("N+1 scheduling requires at least three stacks")
     return tuple(permutations(range(n_stacks), 2))
+
+
+def eligible_service_assignments(
+    state: ServiceScheduleState,
+    health_limit_pct: float,
+) -> tuple[tuple[int, int], ...]:
+    """Return ordered two-stack assignments below a declared service boundary."""
+
+    if not np.isfinite(health_limit_pct) or health_limit_pct <= 0:
+        raise ValueError("health_limit_pct must be finite and positive")
+    eligible = tuple(
+        index
+        for index, damage in enumerate(state.damage_pct)
+        if damage < health_limit_pct
+    )
+    if len(eligible) < 2:
+        return ()
+    return tuple(permutations(eligible, 2))
 
 
 def stationary_service_exposure(
@@ -185,8 +208,15 @@ def choose_service_assignment(
 
     if len(state.damage_pct) != len(config.heterogeneity_factors):
         raise ValueError("state and heterogeneity_factors must have equal length")
-    if objective not in {"expected_max", "gamma_cvar"}:
-        raise ValueError("objective must be expected_max or gamma_cvar")
+    valid_objectives = {
+        "expected_max",
+        "expected_n_plus_one",
+        "expected_order_blend",
+        "expected_total",
+        "gamma_cvar",
+    }
+    if objective not in valid_objectives:
+        raise ValueError(f"objective must be one of {sorted(valid_objectives)}")
 
     best = None
     for assignment in candidate_assignments(len(state.damage_pct)):
@@ -211,23 +241,45 @@ def evaluate_service_assignment(
 
     if assignment not in candidate_assignments(len(state.damage_pct)):
         raise ValueError("assignment is not a valid two-stack role mapping")
-    if objective not in {"expected_max", "gamma_cvar"}:
-        raise ValueError("objective must be expected_max or gamma_cvar")
+    valid_objectives = {
+        "expected_max",
+        "expected_n_plus_one",
+        "expected_order_blend",
+        "expected_total",
+        "gamma_cvar",
+    }
+    if objective not in valid_objectives:
+        raise ValueError(f"objective must be one of {sorted(valid_objectives)}")
     expected_damage, starts = _project_expected_damage(
         state, exposure, config, assignment
     )
     expected_max = float(expected_damage.max() / config.health_limit_pct)
+    expected_n_plus_one = float(
+        np.partition(expected_damage, -2)[-2] / config.health_limit_pct
+    )
+    expected_mean = float(expected_damage.mean() / config.health_limit_pct)
     cvar = None
     if objective == "gamma_cvar":
         uniforms = _common_uniforms(
             config.risk_samples, len(state.damage_pct), config.risk_seed
         )
         cvar = _project_cvar(state, exposure, config, assignment, uniforms)
-    score = expected_max if cvar is None else cvar
+    score = {
+        "expected_max": expected_max,
+        "expected_n_plus_one": expected_n_plus_one,
+        "expected_order_blend": (
+            (1 - config.n_plus_one_weight) * expected_max
+            + config.n_plus_one_weight * expected_n_plus_one
+        ),
+        "expected_total": expected_mean,
+        "gamma_cvar": cvar,
+    }[objective]
     return ServiceScheduleDecision(
         assignment=assignment,
         objective=float(score),
         expected_max_health_fraction=expected_max,
+        expected_n_plus_one_health_fraction=expected_n_plus_one,
+        expected_mean_health_fraction=expected_mean,
         cvar_max_health_fraction=cvar,
         new_starts=starts,
     )

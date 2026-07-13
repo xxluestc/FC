@@ -1,4 +1,5 @@
 import unittest
+from dataclasses import replace
 
 import numpy as np
 
@@ -9,6 +10,7 @@ from fc_power.evaluation.service_scheduler import (
     candidate_assignments,
     choose_service_assignment,
     evaluate_service_assignment,
+    eligible_service_assignments,
     orient_service_pair,
     stationary_service_exposure,
     transition_service_epoch,
@@ -35,6 +37,19 @@ class ServiceSchedulerTest(unittest.TestCase):
         assignments = candidate_assignments(3)
         self.assertEqual(len(assignments), 6)
         self.assertTrue(all(len(set(value)) == 2 for value in assignments))
+
+    def test_service_boundary_removes_crossed_stack_from_n_plus_one_pairs(self):
+        state = ServiceScheduleState((1.0, 5.0, 9.0))
+        assignments = eligible_service_assignments(state, health_limit_pct=8.0)
+        self.assertEqual(assignments, ((0, 1), (1, 0)))
+        self.assertTrue(all(2 not in value for value in assignments))
+
+    def test_second_boundary_leaves_no_n_plus_one_assignment(self):
+        state = ServiceScheduleState((1.0, 8.0, 9.0))
+        self.assertEqual(
+            eligible_service_assignments(state, health_limit_pct=8.0),
+            (),
+        )
 
     def test_expected_scheduler_rests_most_damaged_stack(self):
         state = ServiceScheduleState((1.0, 4.0, 8.0))
@@ -82,6 +97,64 @@ class ServiceSchedulerTest(unittest.TestCase):
             objective="expected_max",
         )
         self.assertEqual(selected, evaluated)
+
+    def test_n_plus_one_objective_targets_second_largest_projected_damage(self):
+        state = ServiceScheduleState((1.0, 4.0, 8.0))
+        selected = choose_service_assignment(
+            state,
+            self.exposure,
+            self.config,
+            objective="expected_n_plus_one",
+        )
+        evaluated = [
+            evaluate_service_assignment(
+                state,
+                self.exposure,
+                self.config,
+                assignment,
+                objective="expected_n_plus_one",
+            )
+            for assignment in candidate_assignments(3)
+        ]
+        self.assertEqual(selected.objective, min(item.objective for item in evaluated))
+        self.assertGreaterEqual(
+            selected.expected_max_health_fraction,
+            selected.expected_n_plus_one_health_fraction,
+        )
+
+    def test_expected_total_objective_reports_mean_health_fraction(self):
+        state = ServiceScheduleState((1.0, 4.0, 8.0))
+        selected = choose_service_assignment(
+            state,
+            self.exposure,
+            self.config,
+            objective="expected_total",
+        )
+        self.assertGreater(selected.expected_mean_health_fraction, 0.0)
+        self.assertEqual(selected.objective, selected.expected_mean_health_fraction)
+
+    def test_order_blend_interpolates_between_first_and_second_boundaries(self):
+        state = ServiceScheduleState((1.0, 4.0, 8.0))
+        assignment = (0, 1)
+        maximum = evaluate_service_assignment(
+            state, self.exposure, self.config, assignment, objective="expected_max"
+        )
+        second = evaluate_service_assignment(
+            state,
+            self.exposure,
+            self.config,
+            assignment,
+            objective="expected_n_plus_one",
+        )
+        blended = evaluate_service_assignment(
+            state,
+            self.exposure,
+            replace(self.config, n_plus_one_weight=0.25),
+            assignment,
+            objective="expected_order_blend",
+        )
+        expected = 0.75 * maximum.objective + 0.25 * second.objective
+        self.assertAlmostEqual(blended.objective, expected)
 
     def test_role_orientation_maps_heavier_exposure_to_healthier_stack(self):
         state = ServiceScheduleState((1.0, 4.0, 8.0))

@@ -1,0 +1,21 @@
+{
+  "scope": "held-out cross-month N+1 long-horizon validation",
+  "months": 13,
+  "templates": 39,
+  "seeds_per_month": 20,
+  "evaluated_runs": 780,
+  "policies": [
+    "fixed_pair",
+    "order_blend_50",
+    "expected_n_plus_one"
+  ],
+  "blend_weight": 0.5,
+  "blend_weight_retuned_on_external_data": false,
+  "decision_exposure": "frozen mean of 48 development templates",
+  "realized_exposure": "sampled only from each held-out month's three blocks",
+  "future_demand_used": false,
+  "health_boundary_interpretation": "LZW calibration trajectory endpoint, not a physical failure threshold",
+  "bootstrap_unit": "calendar month",
+  "bootstrap_samples": 20000,
+  "runtime_s": 155.19992559985258
+}

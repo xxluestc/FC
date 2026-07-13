@@ -1,0 +1,18 @@
+{
+  "scope": "held-out cross-month service exposure templates",
+  "block_input": "data\\results\\fc_only_external_monthly_blocks\\external_monthly_power_blocks.csv",
+  "block_input_sha256": "438ea8f51b3a56c3c94961113a7c2500633683224b2510ce4d9c38ece98e50dd",
+  "templates": 39,
+  "months": 13,
+  "templates_per_month": 3,
+  "normalization_power_kw": 40.0,
+  "mapping_system_power_reference_kw": 83.07850403180912,
+  "controller_policy": "instant_health",
+  "fixed_online_assignment": [
+    0,
+    1
+  ],
+  "controller_retuned": false,
+  "future_demand_used": false,
+  "runtime_s": 323.3618546000216
+}

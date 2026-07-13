@@ -1,0 +1,7 @@
+policy,runs,first_boundary_mean_h,second_boundary_mean_h,second_boundary_q10_h,second_boundary_median_h,second_boundary_q90_h,post_first_reserve_mean_h,first_boundary_total_damage_mean_pct,start_count_mean,assignment_change_mean
+fixed_pair,20,1066.35,1397.5,1283.5,1403.5,1505.5,331.15,23.529382232685197,3.0,1.0
+periodic_rotation,20,518.95,1213.85,1119.0,1214.0,1309.9,694.9,17.962567862532406,24.2,22.2
+health_greedy,20,1376.15,1397.55,1282.4,1393.5,1498.0,21.4,26.99217228701857,26.2,24.2
+expected_max,20,1379.4,1397.75,1282.5,1393.5,1496.5,18.35,27.02218892449672,25.6,23.6
+expected_total,20,1066.35,1396.85,1283.5,1403.5,1503.7,330.5,23.529382232685197,3.0,1.0
+expected_n_plus_one,20,330.3,1405.35,1285.4,1410.0,1506.8000000000002,1075.05,15.805546414151232,3.0,1.0

@@ -1,0 +1,6 @@
+policy,reference,first_boundary_gain_mean_h,second_boundary_gain_mean_h,second_boundary_gain_ci95_low_h,second_boundary_gain_ci95_high_h,second_boundary_gain_median_h,second_boundary_wins,second_boundary_ties,second_boundary_losses,second_boundary_sign_p_one_sided,second_boundary_win_share,second_boundary_nonworse_share,first_boundary_total_damage_delta_mean_pct
+periodic_rotation,fixed_pair,-547.4,-183.65,-211.3472920415509,-153.85,-193.0,0,0,20,1.0,0.0,0.0,-5.566814370152787
+health_greedy,fixed_pair,309.8,0.05,-7.05,8.5,-3.5,7,2,11,0.8810577392578125,0.35,0.45,3.4627900543333743
+expected_max,fixed_pair,313.05,0.25,-6.95,8.0,-2.0,7,3,10,0.8338470458984375,0.35,0.5,3.4928066918115244
+expected_total,fixed_pair,0.0,-0.65,-3.6,0.5,0.0,1,18,1,0.75,0.05,0.95,0.0
+expected_n_plus_one,fixed_pair,-736.05,7.85,0.85,18.1,2.5,12,5,3,0.017578125,0.6,0.85,-7.723835818533965
