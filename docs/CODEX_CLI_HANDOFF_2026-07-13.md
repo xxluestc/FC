@@ -321,6 +321,8 @@ python scripts/44_replay_full_real_holdout_segments.py --jobs 9 `
 
 1. 把40 kW称为铭牌额定净功率：需要铭牌、控制器标定表或车辆技术参数；
 2. 把长期电压变化称为同一只电堆的真实SOH：需要维护/换堆记录或电堆编号。
+3. 把Guarded Blend部署为真实三堆在线门控：需要每只堆独立电压、电流、温度、气体工况、
+   稳定`stack_id`和维护记录。完整字段见`docs/STACK_HETEROGENEITY_OBSERVABILITY_2026-07-14.md`。
 
 没有这些资料时，40 kW只称经验运行参考；旧MAT只作跨数据集先验；长期电压只作分时期性能残差。
 
