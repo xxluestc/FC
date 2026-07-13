@@ -1,0 +1,52 @@
+{
+  "source": "data\\processed\\liu_vehicle_canonical_1s.csv",
+  "holdout_segments": [
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+  ],
+  "selection_rule": "one temporal center window per complete holdout segment; short segments kept in full; selection does not inspect power values",
+  "window_length_s": 120,
+  "normalization_power_kw": 30.0,
+  "normalization_source": "frozen calibration-partition target-power maximum",
+  "mapping_system_power_reference_kw": 83.07850403180912,
+  "capacity_reserve_fraction": 0.05,
+  "tracking_tolerance_kw": 5.5,
+  "initial_damage_fraction": [
+    0.1,
+    0.4,
+    0.8
+  ],
+  "strategies": [
+    "average",
+    "rotating",
+    "instant_health",
+    "beam_health"
+  ],
+  "beam_preview": "current demand held constant; no future demand access",
+  "parallel_jobs": 8,
+  "stochastic_health": false,
+  "runtime_s": 775.6474029000383,
+  "no_retuning": true
+}

@@ -1,0 +1,8 @@
+load_source,strategy,reference_strategy,metric,n_pairs,mean_delta,ci95,mean_relative_pct,lower_is_better_win_share
+real_holdout_center_window,beam_health,instant_health,hydrogen_g_per_fc_kwh,6,-0.0354447407669376,0.0694716919031977,-0.0676131278010951,0.166666666666667
+real_holdout_center_window,beam_health,instant_health,main_expected_damage_increment_pct,6,-3.07345833333332e-05,6.0239783333333e-05,-0.657540865091042,0.166666666666667
+real_holdout_center_window,beam_health,instant_health,damage_increment_range_pct,6,-2.06470833334915e-05,4.04682833336434e-05,-0.868834149526974,0.166666666666667
+real_holdout_center_window,beam_health,instant_health,fc_tracking_mae_kw,6,-0.0162284368242568,0.0318077361755434,-1.39318538770038,0.166666666666667
+real_holdout_center_window,beam_health,instant_health,total_switch_count,6,0,0,0,0
+real_holdout_center_window,beam_health,instant_health,online_step_range,6,0,0,0,0
+real_holdout_center_window,beam_health,instant_health,planning_runtime_s,6,60.9580599000522,7.29225993889583,106.810400497496,0

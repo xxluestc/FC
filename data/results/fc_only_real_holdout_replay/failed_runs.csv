@@ -1,0 +1,3 @@
+scenario,segment_id,strategy,error
+holdout_segment_32,32,average,no feasible equal-load action
+holdout_segment_42,42,average,no feasible equal-load action
