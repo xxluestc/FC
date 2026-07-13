@@ -1,0 +1,92 @@
+{
+  "scope": "development-only fast-layer exposure templates",
+  "source": "data\\processed\\liu_vehicle_canonical_1s.csv",
+  "normalization_power_kw": 40.0,
+  "normalization_source": "40 kW repeated controller level from the independent recent-archive audit; empirical operating reference, not a nameplate rating",
+  "load_audit_dir": "data\\results\\load_zuo_calibration_norm40",
+  "unsupported_empirical_transition_rows": [
+    3
+  ],
+  "unsupported_row_handling": "one-second self-loop; no unsupported transition is claimed or sampled. Zuo slow/fast scenarios separately stress all literature states",
+  "calibration_segments": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+  ],
+  "forbidden_holdout_segments": [
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+  ],
+  "selection": "uniform without replacement over valid calibration-window starts",
+  "window_length_s": 300,
+  "real_window_count": 48,
+  "markov_count_per_source": 24,
+  "seed": 2026,
+  "fixed_fast_layer_assignment": [
+    0,
+    1
+  ],
+  "initial_damage_fraction": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "heterogeneity_factors": [
+    1.0,
+    1.0,
+    1.0
+  ],
+  "entry_start_handling": "block-entry starts are excluded from fast trajectories; real operational starts use the complete calibration-segment rate",
+  "calibration_start_events": 24,
+  "calibration_start_rate_per_observed_hour": 0.6900131773349839,
+  "calibration_start_rate_segment_bootstrap_ci95": [
+    0.29959792215274833,
+    1.6530722446548503
+  ],
+  "real_template_operational_start_model": "complete-calibration-segment mean rate applied to both assigned roles",
+  "fast_layer_results_reused_in_this_run": true,
+  "fast_layer_runtime_s": 172.0239367999602,
+  "source_pooling": "sources remain separate and must not be uniformly mixed for primary claims",
+  "postprocess_runtime_s": 0.03612440009601414
+}

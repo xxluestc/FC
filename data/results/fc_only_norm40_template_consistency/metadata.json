@@ -1,0 +1,17 @@
+{
+  "old_template": "data\\results\\fc_only_service_templates\\service_exposure_templates.csv",
+  "new_template": "data\\results\\fc_only_service_templates_norm40\\service_exposure_templates.csv",
+  "reused_replay": "data\\results\\fc_only_full_holdout_norm40",
+  "normalization_power_kw": 40.0,
+  "cases_checked": 6,
+  "identical_assignments": 6,
+  "old_role_damage_pct_per_hour": [
+    0.004474142494242051,
+    0.0040148376331309256
+  ],
+  "new_role_damage_pct_per_hour": [
+    0.0053819633275753,
+    0.005032298744241976
+  ],
+  "reuse_reason": "the existing norm40 replay already uses 40 kW demand mapping; the only template-dependent replay input is the frozen ordered assignment, which is identical for every predeclared health case and policy"
+}

@@ -18,6 +18,14 @@ from fc_power.health.dynamic_proxy import (
     DynamicPerformanceLossProxy,
     LzwIvConditions,
 )
+from fc_power.health.observer import (
+    DegradationObservation,
+    GaussianDegradationObserver,
+    HealthBelief,
+    HealthCorrectionAudit,
+    HealthObserver,
+    HealthObserverUpdate,
+)
 
 __all__ = [
     "GammaHealthModel",
@@ -32,4 +40,10 @@ __all__ = [
     "ghaderi_gamma_params",
     "DynamicPerformanceLossProxy",
     "LzwIvConditions",
+    "DegradationObservation",
+    "GaussianDegradationObserver",
+    "HealthBelief",
+    "HealthCorrectionAudit",
+    "HealthObserver",
+    "HealthObserverUpdate",
 ]

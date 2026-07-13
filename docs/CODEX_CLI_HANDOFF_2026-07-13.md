@@ -14,7 +14,7 @@
 
 研究代码检查点已通过：
 
-- `96`项unittest全部通过；
+- `104`项unittest全部通过；
 - baseline lightweight schema check通过；
 - `python -m compileall -q src scripts tests`通过；
 - `git diff --check`通过；
@@ -32,7 +32,7 @@
 - 不使用未来需求功率预测；
 - 暂不引入锂电池、SOC或外层氢电分配；
 - 不升级TD-MPC、Dreamer、EAWM等高级算法；
-- 先关闭物理容量和真实健康观测两个基础门槛。
+- 先完成40 kW经验参考的一致重建；实车健康观测保持否证后的边界。
 
 ## 3. 当前框架
 
@@ -46,8 +46,10 @@
 - 两者相隔约4.98天；
 - Zuo 2024慢变/快变矩阵只作独立压力场景，不与实车1秒矩阵混合。
 
-单堆归一化负载映射到健康双堆聚合参考的95%，保留5%健康容量余量。冻结主分析使用30 kW
-开发参考；30 kW只是开发分区目标最大值，不是已确认额定功率。
+七天源文件已确认是`21UBE0022_苏E02625F`：与`G:`长期归档7/7文件的时间、目标功率、DCDC输入
+电压/电流逐行一致；归档文件名比真实日期晚一天。全年400个CSV的6,129,950个运行样本显示目标
+功率p99和p99.9均为40 kW，40 kW档出现291,209次。最终链采用40 kW经验归一化参考；30 kW
+保留为冻结敏感性。40 kW不是已确认的铭牌额定净功率。
 
 ### 3.2 动作驱动健康闭环
 
@@ -58,6 +60,16 @@
 退化含连续运行、变载、运行启动和预声明异质性；健康映射到LZW参数
 `theta=[i0, ih, R_ohm]`，再进入半经验IV模型。该状态是跨数据链动作驱动预测态，尚不是
 21UBE0022同车同堆观测posterior。
+
+已新增纯`HealthObserver.predict/correct`协议和执行后校正包装器。规划器不读取观测，实际动作
+完成后才把同时间戳观测校正为下一步posterior；无观测路径与原模型完全一致。720小时合成直接
+退化代理诊断把预声明15%模型漂移RMSE由0.122200降至0.022866个百分点，但该结果只验收软件
+接口，不是实车SOH证据。详见`docs/HEALTH_OBSERVER_INTERFACE.md`。
+
+旧MAT已确认来自2022--2024、170节、约3000小时且换车运行的长期电堆链，不能与2025--2026
+车辆流逐行绑定。长期车辆流经195/270/340 A和65--70 C匹配后保留2,635,767行，识别两个时期
+台阶；最终时期原始趋势为-1.984%/100天，环境校正后为-0.182%/100天且95%区间包含0。因此
+实车电压只作执行后性能残差，不回写`D`。详见`docs/DATA_IDENTITY_POWER_HEALTH_AUDIT_2026-07-13.md`。
 
 ### 3.3 功率调控
 
@@ -140,13 +152,15 @@ Expected-max和Gamma-CVaR两类目标的最大遗憾均为0；health-greedy仅4/
 
 1. `docs/MASTER_RESEARCH_PLAN.md`
 2. `docs/PROJECT_STATUS_BOARD.md`
-3. `docs/METHOD_STRATEGY_DECISION_2026-07-13.md`
-4. `docs/METHOD_FORMULATION.md`
-5. `docs/PAPER_CLAIM_EVIDENCE_MATRIX.md`
-6. `docs/PAPER_INTERNAL_REVIEW.md`
-7. `docs/PAPER_INTRO_RELATED_WORK_DRAFT.md`
-8. `docs/PAPER_METHODS_RESULTS_DRAFT.md`
-9. `docs/PAPER_ABSTRACT_CONCLUSION_DRAFT.md`
+3. `docs/DATA_IDENTITY_POWER_HEALTH_AUDIT_2026-07-13.md`
+4. `docs/METHOD_STRATEGY_DECISION_2026-07-13.md`
+5. `docs/METHOD_FORMULATION.md`
+6. `docs/PAPER_CLAIM_EVIDENCE_MATRIX.md`
+7. `docs/HEALTH_OBSERVER_INTERFACE.md`
+8. `docs/PAPER_INTERNAL_REVIEW.md`
+9. `docs/PAPER_INTRO_RELATED_WORK_DRAFT.md`
+10. `docs/PAPER_METHODS_RESULTS_DRAFT.md`
+11. `docs/PAPER_ABSTRACT_CONCLUSION_DRAFT.md`
 
 规范证据：
 
@@ -157,9 +171,17 @@ Expected-max和Gamma-CVaR两类目标的最大遗憾均为0；health-greedy仅4/
 - `data/results/fc_only_normalization_sensitivity/`：30/35/40 kW诊断；
 - `data/results/fc_only_tracking_tolerance_audit/`：最坏案例容差边界；
 - `data/results/fc_only_service_objective_audit/`：风险目标遗憾。
+- `data/results/synthetic_health_observer/`：合成观测接口诊断，非实车证据。
+- `data/results/liu_21ube0022_identity_rating/`：七天身份、全年功率和通道审计；
+- `data/results/liu_21ube0022_voltage_health_audit/`：匹配电压、时期和环境混杂审计。
+- `data/results/load_zuo_calibration_norm40/`：40 kW一致状态/转移标定；
+- `data/results/fc_only_service_templates_norm40/`：40 kW一致120模板；
+- `data/results/fc_only_norm40_template_consistency/`：新旧入口角色6/6一致和全量回放复用证明。
 
-论文图统一位于`data/results/figures/fc_only_foundation/`。Fig.1-16均为PNG；Fig.16是
-30/35/40 kW归一化敏感性，图注见`figure_manifest.md`。不生成PDF图。
+论文图统一位于`data/results/figures/fc_only_foundation/`。Fig.1-19均为PNG；Fig.16是
+30/35/40 kW归一化敏感性，Fig.17是合成observer软件诊断，Fig.18-19是全年功率与电压时期
+审计，图注见`figure_manifest.md`。
+不生成PDF图。
 
 核心本地文献位于`G:/大论文/AI文献库`，本轮直接使用：
 
@@ -196,6 +218,16 @@ python scripts/49_summarize_normalization_sensitivity.py
 python scripts/50_audit_tracking_tolerance_boundary.py --resume
 python scripts/51_audit_service_objective_regret.py
 python scripts/46_build_paper_evidence_tables.py
+python scripts/52_validate_synthetic_health_observer.py
+python scripts/53_audit_21ube0022_identity_rating.py `
+  --recent-root 'G:\大论文\实车数据\21UBE0022_苏E02625F' `
+  --liu-half-month-root 'H:\其他\2026刘展玮\论文代码\半个月的数据\原始数据\原始数据\原始数据'
+python scripts/54_audit_21ube0022_voltage_health_signal.py `
+  --recent-root 'G:\大论文\实车数据\21UBE0022_苏E02625F'
+$env:PYTHONPATH='src'
+python scripts/26_audit_zuo_real_load_calibration.py
+python scripts/39_build_service_exposure_templates.py --jobs 8
+python scripts/55_audit_norm40_template_assignment_consistency.py
 ```
 
 若必须从头重跑归一化敏感性，先执行：
@@ -224,29 +256,22 @@ python scripts/44_replay_full_real_holdout_segments.py --jobs 9 `
 - 不称方法使用未来需求预测、锂电池或SOC优化。
 - 不把Gamma短时稀疏采样诊断写成21UBE0022本车独立辨识的普适定律。
 
-## 8. 当前阻塞输入
+## 8. 当前外部资料边界
 
-需要用户或车辆资料确认：
+当前基础方法不再等待用户输入。只有要增加以下物理声称时才需要资料：
 
-1. 21UBE0022燃料电池额定净功率，或控制器允许的FC目标/输出上限是否为40 kW；最好提供铭牌、
-   控制器标定表、车辆技术参数或原始字段说明。
-2. 可与21UBE0022时间轴和电堆身份绑定的MAT健康变量链：变量名、时间戳、车辆/堆编号、采样率、
-   单位及噪声/滤波来源。当前`x_est`来自另一条6104点链，不能直接逐行对齐。
+1. 把40 kW称为铭牌额定净功率：需要铭牌、控制器标定表或车辆技术参数；
+2. 把长期电压变化称为同一只电堆的真实SOH：需要维护/换堆记录或电堆编号。
 
-本地全文检索未找到上述两个物理证明。获得资料后：
-
-- 按确认额定参考重建负载映射，执行无截峰最终回放和容量审计；
-- 在现有动作驱动预测态上加入观测校正接口，报告预测-观测偏差和不确定性；
-- 再决定是否进入锂电池外层和未来需求预测。
+没有这些资料时，40 kW只称经验运行参考；旧MAT只作跨数据集先验；长期电压只作分时期性能残差。
 
 ## 9. 下一执行顺序
 
-1. 保持`1c90ebd...`研究代码检查点不变，先取得额定功率和MAT身份链。
-2. 若资料暂时无法取得，继续做期刊选择、正式中文/英文成稿、完整引用核查和图表排版，但所有
-   物理边界保持显式。
-3. 取得额定功率后重跑物理归一化主链，不用留出峰值反向调参。
-4. 取得MAT链后实现确定性预测+观测校正，再做Gamma观测不确定性。
-5. 两个基础门槛关闭后，才启动锂电池外层；未来需求预测作为更后面的独立优化点。
+1. 40 kW Markov标定和120模板已重建；无覆盖最高状态使用有记录的1秒自保持行。
+2. 新旧模板入口角色6/6一致，已有40 kW无截峰完整回放严格复用，不要重复运行一小时任务。
+3. 保持动作驱动预测态为主健康闭环；不要把混杂电压硬转成`D`。
+4. 基础回归和Git提交完成后，继续增强可验证的多堆控制效果。
+5. 锂电池外层和未来需求预测仍是后续独立优化点。
 
 ## 10. 代理协作
 

@@ -1,0 +1,4 @@
+current_point_a,daily_records,voltage_scale_v,huber_r2,features
+195.0,301,119.26952695269529,0.5926778971718003,actual_current_mean_a;coolant_in_mean_c;coolant_out_mean_c;air_in_pressure_mean_raw;h2_in_pressure_mean_raw
+270.0,303,117.86335403726709,0.6245798982640213,actual_current_mean_a;coolant_in_mean_c;coolant_out_mean_c;air_in_pressure_mean_raw;h2_in_pressure_mean_raw
+340.0,127,114.5222222222222,0.4690137812592947,actual_current_mean_a;coolant_in_mean_c;coolant_out_mean_c;air_in_pressure_mean_raw;h2_in_pressure_mean_raw

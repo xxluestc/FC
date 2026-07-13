@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 from pathlib import Path
 
@@ -19,11 +20,22 @@ from fc_power.evaluation.zuo_load_calibration import (
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "data/processed/liu_vehicle_canonical_1s.csv"
-OUTPUT = ROOT / "data/results/load_zuo_calibration"
+OUTPUT = ROOT / "data/results/load_zuo_calibration_norm40"
 STRIDES_S = (1, 5, 10, 30, 60)
+DEFAULT_NORMALIZATION_POWER_KW = 40.0
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--normalization-power-kw",
+        type=float,
+        default=DEFAULT_NORMALIZATION_POWER_KW,
+    )
+    parser.add_argument("--out-dir", type=Path, default=OUTPUT)
+    args = parser.parse_args()
+    if args.normalization_power_kw <= 0:
+        raise ValueError("normalization power must be positive")
     frame = pd.read_csv(
         SOURCE,
         usecols=["timestamp", "segment_id", "target_power_kw", "fc_input_power_kw"],
@@ -31,9 +43,7 @@ def main() -> None:
     split = split_at_largest_segment_gap(frame)
     calibration = frame[frame.segment_id.isin(split.calibration_segments)].copy()
     holdout = frame[frame.segment_id.isin(split.holdout_segments)].copy()
-    normalization_power_kw = float(calibration.target_power_kw.max())
-    if normalization_power_kw <= 0:
-        raise ValueError("calibration data has no positive target-power reference")
+    normalization_power_kw = float(args.normalization_power_kw)
     parsed_time = pd.to_datetime(calibration.timestamp, errors="raise")
     power = calibration.fc_input_power_kw
     missing_power_samples = int(power.isna().sum())
@@ -98,17 +108,18 @@ def main() -> None:
                     }
                 )
 
-    OUTPUT.mkdir(parents=True, exist_ok=True)
+    args.out_dir.mkdir(parents=True, exist_ok=True)
     transitions = pd.DataFrame(matrix_rows)
     states = pd.DataFrame(state_rows)
-    transitions.to_csv(OUTPUT / "transition_scale_audit.csv", index=False)
-    states.to_csv(OUTPUT / "state_coverage_audit.csv", index=False)
+    transitions.to_csv(args.out_dir / "transition_scale_audit.csv", index=False)
+    states.to_csv(args.out_dir / "state_coverage_audit.csv", index=False)
 
     metadata = {
         "source": str(SOURCE.relative_to(ROOT)),
         "power_column": "fc_input_power_kw",
         "normalization_reference_source": (
-            "maximum target_power_kw in calibration partition; not a physical rating"
+            "40 kW repeated controller level from the independent recent-archive "
+            "audit; empirical operating reference, not a nameplate rating"
         ),
         "normalization_reference_kw": normalization_power_kw,
         "split_rule": "largest timestamp gap between complete segment_id groups",
@@ -140,9 +151,12 @@ def main() -> None:
                 "transition from that source-state row"
             ),
         },
-        "holdout_usage": "reserved for final continuous-trajectory replay; not fitted",
+        "holdout_usage": (
+            "segment 22-45 values are not fitted; the normalization reference comes "
+            "from the separate full recent-archive identity/power audit"
+        ),
     }
-    (OUTPUT / "metadata.json").write_text(
+    (args.out_dir / "metadata.json").write_text(
         json.dumps(metadata, ensure_ascii=False, indent=2), encoding="utf-8"
     )
 
@@ -166,7 +180,7 @@ def main() -> None:
 
 ## 数据隔离
 
-- 单堆功率：`fc_input_power_kw`；标定归一化参考：{normalization_power_kw:.3f} kW（仅由标定分区`target_power_kw`最大值得到，不解释为物理额定功率）。
+- 单堆功率：`fc_input_power_kw`；标定归一化参考：{normalization_power_kw:.3f} kW。该值来自独立全年归档中重复出现的40 kW控制档，不解释为铭牌额定功率；segment 22-45的数值不参与选择。
 - 按完整`segment_id`之间最大时间间隔切分：标定段{split.calibration_segments[0]}-{split.calibration_segments[-1]}，共{len(calibration):,}行；留出段{split.holdout_segments[0]}-{split.holdout_segments[-1]}，共{len(holdout):,}行。
 - 间隔为{split.gap_seconds / 86400:.2f}天；留出段不参与状态、转移矩阵或归一化参数拟合。
 - 标定分区检查了{cadence_intervals:,}个段内采样间隔，非1秒间隔数为{cadence_violations}。
@@ -184,7 +198,7 @@ def main() -> None:
 
 当前输出只做尺度与覆盖审计，不选择最终转移矩阵，也不执行显著性检验。下一步应比较各步长的驻留概率、有效转移数和控制决策周期，再决定如何将实车统计与Zuo快变/慢变矩阵组合。
 """
-    (OUTPUT / "report.md").write_text(report, encoding="utf-8")
+    (args.out_dir / "report.md").write_text(report, encoding="utf-8")
 
 
 if __name__ == "__main__":

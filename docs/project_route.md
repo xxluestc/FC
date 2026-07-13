@@ -10,6 +10,7 @@
 ## Current source ownership
 
 - Liu 21UBE0022: canonical vehicle motion and power signals.
-- Liu `data_mark/x_est`: degradation-state chain; identity linkage to 21UBE0022 remains an explicit audit item.
+- Liu `data_mark/x_est`: 2022--2024 170-cell degradation prior. It has no auditable row-wise link to the 2025--2026 21UBE0022 stream and is intentionally kept separate.
+- 21UBE0022 recent archive: independent identity/power/voltage-epoch audit; 40 kW empirical operating reference, not a nameplate rating.
 - Han 21UBE0025: vehicle parameters, kinematic-fragment clustering and Markov methodology; independent vehicle, not row-wise merged.
 - Li engine datasets: multi-stack voltage/parameter-estimation reference; no vehicle speed.

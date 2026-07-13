@@ -27,10 +27,10 @@ from fc_power.world_model import WorldModelConfig, load_lzw_multistack_world_mod
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "data/processed/liu_vehicle_canonical_1s.csv"
-AUDIT = ROOT / "data/results/load_zuo_calibration"
+AUDIT = ROOT / "data/results/load_zuo_calibration_norm40"
 HEALTH_CALIBRATION = ROOT / "data/results/health/lzw_gamma_calibration.json"
-OUTPUT = ROOT / "data/results/fc_only_service_templates"
-NORMALIZATION_POWER_KW = 30.0
+OUTPUT = ROOT / "data/results/fc_only_service_templates_norm40"
+NORMALIZATION_POWER_KW = 40.0
 CAPACITY_RESERVE_FRACTION = 0.05
 TRACKING_TOLERANCE_KW = 5.5
 ASSIGNMENT = (0, 1)
@@ -54,14 +54,14 @@ def calibration_start_rate(frame, calibration_segments, *, samples=1000, seed=20
     return observed, tuple(float(value) for value in np.quantile(draws, (0.025, 0.975)))
 
 
-def load_empirical_inputs() -> tuple[np.ndarray, np.ndarray]:
-    transitions = pd.read_csv(AUDIT / "transition_scale_audit.csv")
+def load_empirical_inputs(audit_dir) -> tuple[np.ndarray, np.ndarray, list[int]]:
+    transitions = pd.read_csv(audit_dir / "transition_scale_audit.csv")
     matrix = transitions[transitions.stride_s == 1].pivot(
         index="source_state",
         columns="target_state",
         values="empirical_probability",
     ).to_numpy(dtype=float)
-    coverage = pd.read_csv(AUDIT / "state_coverage_audit.csv")
+    coverage = pd.read_csv(audit_dir / "state_coverage_audit.csv")
     probabilities = (
         coverage[coverage.stride_s == 1]
         .sort_values("state")
@@ -69,7 +69,17 @@ def load_empirical_inputs() -> tuple[np.ndarray, np.ndarray]:
     )
     if matrix.shape != (4, 4) or probabilities.shape != (4,):
         raise ValueError("empirical load audit is incomplete")
-    return matrix, probabilities
+    unsupported_rows = []
+    for row in range(4):
+        if not np.all(np.isfinite(matrix[row])):
+            unsupported_rows.append(row)
+            matrix[row] = 0.0
+            matrix[row, row] = 1.0
+    probabilities = np.nan_to_num(probabilities, nan=0.0)
+    if probabilities.sum() <= 0:
+        raise ValueError("empirical load audit has no occupied state")
+    probabilities /= probabilities.sum()
+    return matrix, probabilities, unsupported_rows
 
 
 def run_template(task):
@@ -121,7 +131,16 @@ def run_template(task):
     return row
 
 
-def real_tasks(frame, split, model, count, length_s, seed, power_reference):
+def real_tasks(
+    frame,
+    split,
+    model,
+    count,
+    length_s,
+    seed,
+    power_reference,
+    normalization_power_kw,
+):
     windows = select_calibration_windows(
         frame,
         split.calibration_segments,
@@ -133,7 +152,7 @@ def real_tasks(frame, split, model, count, length_s, seed, power_reference):
     for index, window_spec in enumerate(windows):
         window = materialize_calibration_window(frame, window_spec)
         normalized = np.clip(
-            window.fc_input_power_kw.to_numpy(dtype=float) / NORMALIZATION_POWER_KW,
+            window.fc_input_power_kw.to_numpy(dtype=float) / normalization_power_kw,
             0.0,
             1.0,
         )
@@ -229,6 +248,10 @@ def main() -> None:
     parser.add_argument("--jobs", type=int, default=8)
     parser.add_argument("--reuse-existing", action="store_true")
     parser.add_argument("--out-dir", type=Path, default=OUTPUT)
+    parser.add_argument("--audit-dir", type=Path, default=AUDIT)
+    parser.add_argument(
+        "--normalization-power-kw", type=float, default=NORMALIZATION_POWER_KW
+    )
     args = parser.parse_args()
     if min(args.length, args.real_count, args.markov_count, args.jobs) <= 0:
         raise ValueError("length, counts and jobs must be positive")
@@ -238,7 +261,16 @@ def main() -> None:
         usecols=["timestamp", "segment_id", "target_power_kw", "fc_input_power_kw"],
     )
     split = split_at_largest_segment_gap(frame)
-    audit_metadata = json.loads((AUDIT / "metadata.json").read_text(encoding="utf-8"))
+    if args.normalization_power_kw <= 0:
+        raise ValueError("normalization power must be positive")
+    audit_metadata = json.loads(
+        (args.audit_dir / "metadata.json").read_text(encoding="utf-8")
+    )
+    if not np.isclose(
+        float(audit_metadata["normalization_reference_kw"]),
+        args.normalization_power_kw,
+    ):
+        raise AssertionError("template normalization differs from load audit")
     if list(split.calibration_segments) != audit_metadata["calibration_segments"]:
         raise AssertionError("calibration segment boundary differs from audited metadata")
     if list(split.holdout_segments) != audit_metadata["holdout_segments"]:
@@ -260,7 +292,7 @@ def main() -> None:
         ),
     )
     power_reference = (1 - CAPACITY_RESERVE_FRACTION) * model.fc_power_reference_kw()
-    matrix, probabilities = load_empirical_inputs()
+    matrix, probabilities, unsupported_rows = load_empirical_inputs(args.audit_dir)
     tasks = real_tasks(
         frame,
         split,
@@ -269,6 +301,7 @@ def main() -> None:
         args.length,
         args.seed,
         power_reference,
+        args.normalization_power_kw,
     )
     tasks.extend(
         markov_tasks(
@@ -338,6 +371,14 @@ def main() -> None:
     metadata = {
         "scope": "development-only fast-layer exposure templates",
         "source": str(SOURCE.relative_to(ROOT)),
+        "normalization_power_kw": args.normalization_power_kw,
+        "normalization_source": audit_metadata["normalization_reference_source"],
+        "load_audit_dir": str(args.audit_dir.relative_to(ROOT)),
+        "unsupported_empirical_transition_rows": unsupported_rows,
+        "unsupported_row_handling": (
+            "one-second self-loop; no unsupported transition is claimed or sampled. "
+            "Zuo slow/fast scenarios separately stress all literature states"
+        ),
         "calibration_segments": list(split.calibration_segments),
         "forbidden_holdout_segments": list(split.holdout_segments),
         "selection": "uniform without replacement over valid calibration-window starts",
@@ -371,12 +412,18 @@ def main() -> None:
     )
     report = "# 快层服务暴露模板库\n\n"
     report += (
-        "主模板只从segment 0-21连续窗口抽取；segment 22-45未参与窗口选择、"
-        "归一化或控制参数调整。Instant快层被慢层角色固定为两个指定堆，"
+        "主模板只从segment 0-21连续窗口抽取；segment 22-45没有被单独用于窗口选择或"
+        "控制参数调整，40 kW参考由独立全年归档审计固定。Instant快层被慢层角色固定为两个指定堆，"
         "第三堆不得上线。块入口的人为启动不计入模板；实车运行启停使用完整"
         f"校准段统计的{start_rate:.3f}次/观测小时，segment重采样95%区间为"
         f"[{start_rate_ci95[0]:.3f}, {start_rate_ci95[1]:.3f}]。\n\n"
     )
+    if unsupported_rows:
+        report += (
+            f"40 kW归一化后经验状态{unsupported_rows}在开发分区没有来源转移；"
+            "对应1秒矩阵行设为自保持，不声称实车辨识，也不从其他时间尺度拼接概率。"
+            "Zuo slow/fast场景继续单独覆盖文献高状态。\n\n"
+        )
     report += summary.to_markdown(index=False) + "\n"
     (args.out_dir / "report.md").write_text(report, encoding="utf-8")
     print(summary.to_string(index=False))

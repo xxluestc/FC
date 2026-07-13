@@ -13,6 +13,12 @@ from fc_power.world_model.mechanistic import (
     WorldModelConfig,
     WorldStep,
 )
+from fc_power.world_model.observed_health import (
+    ObservedHealthExecutionLoop,
+    ObservedMultiStackState,
+    ObservedWorldStep,
+    StackObservedUpdate,
+)
 
 __all__ = [
     "ConstraintInfo",
@@ -25,5 +31,9 @@ __all__ = [
     "WorldCostWeights",
     "WorldModelConfig",
     "WorldStep",
+    "ObservedHealthExecutionLoop",
+    "ObservedMultiStackState",
+    "ObservedWorldStep",
+    "StackObservedUpdate",
     "load_lzw_multistack_world_model",
 ]

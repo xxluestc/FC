@@ -1,0 +1,31 @@
+{
+  "status": "synthetic interface validation only",
+  "real_vehicle_observer_complete": false,
+  "observation_semantics": "direct noisy degradation proxy; not measured voltage/current and not linked to 21UBE0022",
+  "truth_process": "deterministic conditional mean with a predeclared 15% stack heterogeneity; Gamma variance is propagated by the observer",
+  "random_seed": 20260713,
+  "parameters": {
+    "hours": 720,
+    "dt_s": 3600.0,
+    "observation_interval_h": 24,
+    "observation_std_pct": 0.03,
+    "truth_heterogeneity_factor": 1.15
+  },
+  "source_sha256": {
+    "data\\results\\health\\lzw_gamma_calibration.json": "6871ab03512986ae93ed0c8c13f9b07e5fdf0268a8fd52617a2a8b93a84c904b"
+  },
+  "metrics": {
+    "hours": 720,
+    "observation_interval_h": 24,
+    "observation_count": 30,
+    "synthetic_truth_heterogeneity_factor": 1.15,
+    "observation_std_pct": 0.03,
+    "open_loop_rmse_pct": 0.12219989773726733,
+    "posterior_rmse_pct": 0.02286641687842154,
+    "rmse_reduction_fraction": 0.812876955694473,
+    "open_loop_terminal_abs_error_pct": 0.21146999999998606,
+    "posterior_terminal_abs_error_pct": 0.008184287564204418,
+    "posterior_95pct_interval_coverage": 1.0,
+    "monotonic_projection_count": 16
+  }
+}

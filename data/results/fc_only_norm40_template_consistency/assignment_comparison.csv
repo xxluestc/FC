@@ -1,0 +1,7 @@
+health_case,policy,stack_for_role_0_norm30_template,stack_for_role_1_norm30_template,stack_for_role_0_norm40_template,stack_for_role_1_norm40_template,identical
+oldest_stack_0,fixed_pair,1,0,1,0,True
+oldest_stack_0,health_greedy,1,2,1,2,True
+oldest_stack_1,fixed_pair,0,1,0,1,True
+oldest_stack_1,health_greedy,2,0,2,0,True
+oldest_stack_2,fixed_pair,0,1,0,1,True
+oldest_stack_2,health_greedy,0,1,0,1,True

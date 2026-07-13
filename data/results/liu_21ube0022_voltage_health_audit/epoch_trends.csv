@@ -1,0 +1,4 @@
+epoch,start_month,end_month,months,slope_pct_per_100_days,slope_ci95_low_pct_per_100_days,slope_ci95_high_pct_per_100_days
+0,2025-04,2025-05,2,,,
+1,2025-06,2025-07,2,,,
+2,2025-08,2026-06,11,-1.9842186928736887,-2.732301990093955,-1.0643072023067384

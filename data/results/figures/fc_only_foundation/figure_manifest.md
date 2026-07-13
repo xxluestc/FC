@@ -16,7 +16,10 @@
 | `fig12_service_hysteresis_pareto` | 切换滞回的开发Pareto筛查。较大阈值可减少主动启动，但没有阈值通过冻结的逐种子非劣规则，因此不进入主方法。 |
 | `fig13_holdout_assignment_validation` | 冻结慢层在未参与标定的真实中心窗口上的事后oracle验证。三个健康身份循环共18例；health-greedy与Expected-max均命中oracle在线集合且零最大退化遗憾，Expected-max的角色顺序命中未转化为额外健康收益。虚线为5.5 kW冻结跟踪容差。 |
 | `fig14_full_real_holdout_replay` | 冻结health-greedy在segment 22-45全部完整连续块上的回放。左图为最长留出段的60秒聚合需求与FC输出，中图为8个正功率段最大跟踪误差，右图为不同最老堆身份下相对固定双堆的终端最大退化变化。段内状态连续，段间不跨未知缺口。 |
-| `fig15_holdout_capacity_shift_audit` | 开发/留出单堆负载持续曲线、候选归一化参考的截峰比例，以及最坏健康/策略组合下不截峰时超过双堆容量的留出比例。36.76 kW为使用留出峰值计算的事后诊断下界；40 kW仅为待物理资料确认的控制目标候选。 |
+| `fig15_holdout_capacity_shift_audit` | 开发/留出单堆负载持续曲线、候选归一化参考的截峰比例，以及最坏健康/策略组合下不截峰时超过双堆容量的留出比例。36.76 kW为使用留出峰值计算的事后诊断下界；后续全年独立审计支持40 kW作为经验运行参考，但不确认铭牌额定值。 |
 | `fig16_normalization_sensitivity` | 冻结30 kW主分析与35/40 kW事后全量诊断的截峰比例、最大跟踪误差、终端最大退化配对差及95% segment-bootstrap区间和总期望退化权衡。35/40 kW不用于确认物理额定功率。 |
+| `fig17_synthetic_health_observer` | 健康观测接口的合成诊断。预声明15%异质性条件均值作为合成真值，每24小时输入一次直接退化代理；校正belief减小注入的模型漂移。该图只验证predict/execute/correct时序和不确定性记录，不是21UBE0022实车posterior证据。 |
+| `fig18_21ube0022_power_envelope` | `21UBE0022_苏E02625F`全年400个CSV的运行功率包络和分月电堆侧上尾。目标功率p99/p99.9均为40 kW；最大值只作经验观测，不解释为铭牌额定净功率。 |
+| `fig19_21ube0022_voltage_health_signal` | 固定195/270/340 A和65--70 C后的总堆电压、跨电流档时期台阶，以及最终时期环境校正前后Theil--Sen趋势。环境校正后95%区间包含0，因此该图是健康信号可辨识性审计，不是SOH曲线。 |
 
 每张图保存为320 DPI PNG。图内`30 s*`表示工程时间基准假设，不是Zuo论文直接给定值。

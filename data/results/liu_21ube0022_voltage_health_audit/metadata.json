@@ -1,0 +1,48 @@
+{
+  "recent_root": "G:\\大论文\\实车数据\\21UBE0022_苏E02625F",
+  "files_found": 400,
+  "files_scanned": 400,
+  "raw_rows": 7684841,
+  "matched_rows": 2635767,
+  "matched_share": 0.34298263295232784,
+  "daily_records": 942,
+  "actual_start": "2025-04-30",
+  "actual_end": "2026-06-29",
+  "skipped_files": [],
+  "config": {
+    "current_tolerance_a": 2.0,
+    "target_tolerance_a": 5.0,
+    "coolant_min_c": 65.0,
+    "coolant_max_c": 70.0,
+    "minimum_daily_rows": 30,
+    "trim_fraction": 0.05,
+    "minimum_epoch_months": 4,
+    "minimum_jump_pct": 0.8,
+    "minimum_point_total_rows": 10000,
+    "minimum_point_month_coverage": 0.8
+  },
+  "discontinuities": 2,
+  "epochs": 3,
+  "daily_extraction_reused": true,
+  "eligible_current_points_a": [
+    195.0,
+    270.0,
+    340.0
+  ],
+  "environment_adjusted_final_epoch_trend": {
+    "epoch": 2,
+    "start_month": "2025-08",
+    "end_month": "2026-06",
+    "months": 11,
+    "slope_pct_per_100_days": -0.1817978393825267,
+    "slope_ci95_low_pct_per_100_days": -0.6387054869950128,
+    "slope_ci95_high_pct_per_100_days": 0.060306192999361935,
+    "covariates": [
+      "actual_current_mean_a",
+      "coolant_in_mean_c",
+      "coolant_out_mean_c",
+      "air_in_pressure_mean_raw",
+      "h2_in_pressure_mean_raw"
+    ]
+  }
+}
