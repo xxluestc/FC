@@ -162,6 +162,8 @@ class MultiStackTestbedTest(unittest.TestCase):
         self.assertEqual(run.metrics["fc_tracking_within_tolerance_share"], 1.0)
         self.assertLessEqual(run.metrics["online_stack_count_max"], 2)
         self.assertEqual(run.metrics["online_stack_count_mean"], 2.0)
+        self.assertGreater(run.metrics["fc_energy_kwh"], 0.0)
+        self.assertGreater(run.metrics["hydrogen_g_per_fc_kwh"], 0.0)
         self.assertFalse(run.metrics["soc_metrics_applicable"])
         self.assertTrue(np.isnan(run.metrics["hydrogen_soc_corrected_g"]))
         self.assertTrue(np.isnan(run.metrics["battery_throughput_kwh"]))
@@ -210,6 +212,49 @@ class MultiStackTestbedTest(unittest.TestCase):
         self.assertEqual(run.metrics["fc_tracking_within_tolerance_share"], 1.0)
         self.assertTrue((run.trajectory.soc == 0.58).all())
         self.assertTrue((run.trajectory.battery_power_kw == 0.0).all())
+        self.assertGreater(run.metrics["planning_expanded_nodes"], 0)
+        self.assertGreaterEqual(run.metrics["planning_runtime_s"], 0.0)
+
+    def test_beam_preview_uses_only_current_demand(self):
+        model = load_lzw_multistack_world_model(
+            ROOT,
+            n_stacks=3,
+            config=WorldModelConfig(
+                min_online_stacks=2,
+                max_online_stacks=2,
+                power_interface="fc_only",
+                fc_power_tracking_tolerance_kw=5.5,
+            ),
+        )
+        low_future = pd.DataFrame(
+            {"demand_power_kw": [40.0, 20.0], "event": "audit"}
+        )
+        high_future = pd.DataFrame(
+            {"demand_power_kw": [40.0, 80.0], "event": "audit"}
+        )
+        common = {
+            "initial_damage_fraction": (0.1, 0.4, 0.8),
+            "stochastic_health": False,
+        }
+        low = run_policy(
+            model,
+            TestScenario("low_future", low_future, **common),
+            "beam_health",
+            beam_horizon=2,
+            beam_width=2,
+        )
+        high = run_policy(
+            model,
+            TestScenario("high_future", high_future, **common),
+            "beam_health",
+            beam_horizon=2,
+            beam_width=2,
+        )
+        low_first = [low.trajectory[f"stack_{i}_current_a"].iloc[0] for i in range(3)]
+        high_first = [
+            high.trajectory[f"stack_{i}_current_a"].iloc[0] for i in range(3)
+        ]
+        self.assertEqual(low_first, high_first)
 
     def test_strategy_statistics_are_paired_by_load_and_health_seed(self):
         rows = []

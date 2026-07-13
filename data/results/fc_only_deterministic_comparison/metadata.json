@@ -1,0 +1,37 @@
+{
+  "scope": "deterministic FC-only three-stack N+1 inner allocation",
+  "strategies": [
+    "average",
+    "rotating",
+    "instant_health",
+    "beam_health"
+  ],
+  "load_seeds": [
+    2026
+  ],
+  "length_s": 60,
+  "initial_damage_fraction": [
+    0.1,
+    0.4,
+    0.8
+  ],
+  "heterogeneity_factors": [
+    1.0,
+    1.05,
+    1.1
+  ],
+  "capacity_reserve_fraction": 0.05,
+  "tracking_tolerance_kw": 5.5,
+  "beam_horizon": 2,
+  "beam_width": 2,
+  "beam_preview": "current demand held constant; no future demand access",
+  "rotation_period": 30,
+  "stochastic_health": false,
+  "runtime_s": 239.05885459994897,
+  "scenario_intervals_s": {
+    "empirical_1s": 1,
+    "zuo_slow_30s": 30,
+    "zuo_fast_30s": 30
+  },
+  "zuo_interval_status": "30 s engineering stress assumption, not a paper fact"
+}

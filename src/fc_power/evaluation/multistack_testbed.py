@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from time import perf_counter
 
 import numpy as np
 import pandas as pd
@@ -129,6 +130,7 @@ def run_policy(
             "is_soc_recovery" in scenario.demand
             and bool(scenario.demand.is_soc_recovery.iloc[step_index])
         )
+        planning_started = perf_counter()
         if is_recovery:
             planned = choose_terminal_soc_recovery(model, state, current_demand)
         elif strategy == "average":
@@ -139,7 +141,8 @@ def run_policy(
         elif strategy == "instant_health":
             planned = choose_instant(model, state, current_demand)
         elif strategy == "beam_health":
-            preview = demand[step_index : min(step_index + beam_horizon, len(demand))]
+            preview_length = min(beam_horizon, len(demand) - step_index)
+            preview = np.full(preview_length, current_demand, dtype=float)
             planned = choose_beam(
                 model,
                 state,
@@ -149,6 +152,7 @@ def run_policy(
             )
         else:
             raise ValueError(f"unknown strategy: {strategy}")
+        planning_elapsed_s = perf_counter() - planning_started
 
         executed = model.step(
             state,
@@ -212,6 +216,9 @@ def run_policy(
             "fc_power_tracking_error_kw": (
                 executed.cost.raw_power_tracking_error_kw
             ),
+            "planning_elapsed_s": planning_elapsed_s,
+            "planning_expanded_nodes": planned.expanded_nodes,
+            "planning_feasible_candidates": planned.feasible_candidates,
         }
         for index, (before, expected, after) in enumerate(
             zip(state.stacks, planned.step.stacks, executed.stacks)
@@ -237,6 +244,8 @@ def run_policy(
             row[f"{prefix}_theta_R_ohm"] = after.theta_reported[2]
             row[f"{prefix}_cell_voltage_v"] = after.cell_voltage_v
             row[f"{prefix}_power_kw"] = after.power_kw
+            row[f"{prefix}_switched"] = after.switched
+            row[f"{prefix}_shifted_load"] = after.shifted_load
         rows.append(row)
         state = executed.next_state
 
@@ -284,11 +293,25 @@ def summarize_run(model, scenario, strategy, trajectory, final_state):
         - soc_error * model.config.battery.energy_kwh * h2_g_per_kwh
     )
     tracking_error = trajectory.fc_power_tracking_error_kw.to_numpy(dtype=float)
+    fc_energy_kwh = float(
+        trajectory.stack_power_kw.sum() * model.config.dt_s / 3600.0
+    )
     online = np.column_stack(
         [
             trajectory[f"stack_{i}_on"].to_numpy(dtype=bool)
             for i in range(model.n_stacks)
         ]
+    )
+    switch_counts = np.asarray(
+        [trajectory[f"stack_{i}_switched"].sum() for i in range(model.n_stacks)],
+        dtype=int,
+    )
+    load_shift_counts = np.asarray(
+        [
+            trajectory[f"stack_{i}_shifted_load"].sum()
+            for i in range(model.n_stacks)
+        ],
+        dtype=int,
     )
     return {
         "scenario": scenario.name,
@@ -303,6 +326,10 @@ def summarize_run(model, scenario, strategy, trajectory, final_state):
         "health_seed": scenario.health_seed,
         "n_steps": len(trajectory),
         "hydrogen_g": float(trajectory.hydrogen_g.sum()),
+        "fc_energy_kwh": fc_energy_kwh,
+        "hydrogen_g_per_fc_kwh": float(
+            trajectory.hydrogen_g.sum() / max(fc_energy_kwh, 1e-12)
+        ),
         "hydrogen_soc_corrected_g": float(corrected_h2),
         "sampled_damage_increment_pct": float(
             trajectory.sampled_damage_increment_pct.sum()
@@ -370,8 +397,22 @@ def summarize_run(model, scenario, strategy, trajectory, final_state):
         ),
         "online_stack_count_mean": float(online.sum(axis=1).mean()),
         "online_stack_count_max": int(online.sum(axis=1).max()),
+        "online_step_range": int(online.sum(axis=0).max() - online.sum(axis=0).min()),
+        "total_switch_count": int(switch_counts.sum()),
+        "total_load_shift_count": int(load_shift_counts.sum()),
         "constraint_violation_steps": int((~trajectory.constraint_feasible).sum()),
         "safety_override_steps": int(trajectory.safety_override.sum()),
+        "planning_runtime_s": float(trajectory.planning_elapsed_s.sum()),
+        "planning_runtime_mean_ms": float(
+            1000.0 * trajectory.planning_elapsed_s.mean()
+        ),
+        "planning_runtime_max_ms": float(
+            1000.0 * trajectory.planning_elapsed_s.max()
+        ),
+        "planning_expanded_nodes": int(trajectory.planning_expanded_nodes.sum()),
+        "planning_feasible_candidates": int(
+            trajectory.planning_feasible_candidates.sum()
+        ),
         "max_power_balance_error_kw": float(
             trajectory.power_balance_error_kw.abs().max()
         ),
@@ -410,6 +451,24 @@ def summarize_run(model, scenario, strategy, trajectory, final_state):
         },
         **{
             f"stack_{index}_online_steps": int(online[:, index].sum())
+            for index in range(model.n_stacks)
+        },
+        **{
+            f"stack_{index}_switch_count": int(
+                trajectory[f"stack_{index}_switched"].sum()
+            )
+            for index in range(model.n_stacks)
+        },
+        **{
+            f"stack_{index}_load_shift_count": int(
+                trajectory[f"stack_{index}_shifted_load"].sum()
+            )
+            for index in range(model.n_stacks)
+        },
+        **{
+            f"stack_{index}_max_consecutive_online_steps": _max_consecutive_true(
+                online[:, index]
+            )
             for index in range(model.n_stacks)
         },
         **{
