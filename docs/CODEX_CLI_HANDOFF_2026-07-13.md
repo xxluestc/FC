@@ -6,7 +6,8 @@
 
 - 仓库：`H:/其他/2026刘展玮/FC`
 - 分支：`codex/gamma-health-foundation`
-- 研究代码检查点：`1c90ebd0de3f50439bf00f051d1b8f07d576d0ef`
+- 研究代码检查点：`90d411b4ac33c655c0e87050630321f2e4642458`
+- 前序归一化与证据检查点：`1c90ebd0de3f50439bf00f051d1b8f07d576d0ef`
 - 上一论文证据检查点：`f29eeeada607704d30b2246cad4d2d65c2354f8d`
 - 完整留出与容量检查点：`d2920cb64a0cc4916169d749cf9fb37193f8d8a5`
 - 远端/本地`main`：`7e71f396107751d9d0e93a19da60249e8c8a9122`
@@ -18,7 +19,7 @@
 - baseline lightweight schema check通过；
 - `python -m compileall -q src scripts tests`通过；
 - `git diff --check`通过；
-- Fig.16为`2321 x 1509`、约`320 DPI` PNG；
+- Fig.1--19均为PNG；本轮新增Fig.17--19并完成目视与源文件哈希核对；
 - `data/results/paper_evidence/`含16张规范CSV表、主张值和源文件SHA-256。
 
 ## 2. 当前研究目标与冻结范围
@@ -270,7 +271,7 @@ python scripts/44_replay_full_real_holdout_segments.py --jobs 9 `
 1. 40 kW Markov标定和120模板已重建；无覆盖最高状态使用有记录的1秒自保持行。
 2. 新旧模板入口角色6/6一致，已有40 kW无截峰完整回放严格复用，不要重复运行一小时任务。
 3. 保持动作驱动预测态为主健康闭环；不要把混杂电压硬转成`D`。
-4. 基础回归和Git提交完成后，继续增强可验证的多堆控制效果。
+4. 基础回归、图表核对和Git提交均已完成；下一阶段继续增强可验证的多堆控制效果。
 5. 锂电池外层和未来需求预测仍是后续独立优化点。
 
 ## 10. 代理协作
