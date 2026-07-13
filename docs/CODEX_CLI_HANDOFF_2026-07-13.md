@@ -1,12 +1,12 @@
 # Codex CLI交接：三堆PEMFC N+1退化感知功率控制
 
-更新时间：2026-07-13
+更新时间：2026-07-14
 
 ## 1. Git检查点
 
 - 仓库：`H:/其他/2026刘展玮/FC`
 - 分支：`codex/gamma-health-foundation`
-- 研究代码检查点：`8f3831634cac15a260f96634d8711c364b5c559c`
+- 研究代码检查点：`41ea4ef114d51e3c7dee3c0a813caaae76285635`
 - 前序归一化与证据检查点：`1c90ebd0de3f50439bf00f051d1b8f07d576d0ef`
 - 上一论文证据检查点：`f29eeeada607704d30b2246cad4d2d65c2354f8d`
 - 完整留出与容量检查点：`d2920cb64a0cc4916169d749cf9fb37193f8d8a5`
@@ -15,11 +15,11 @@
 
 研究代码检查点已通过：
 
-- `108`项unittest全部通过；
+- `113`项unittest全部通过；
 - baseline lightweight schema check通过；
 - `python -m compileall -q src scripts tests`通过；
 - `git diff --check`通过；
-- Fig.1--20均为PNG；本轮新增Fig.17--20并完成目视与源文件哈希核对；
+- Fig.1--22均为PNG；本轮新增Fig.21--22并完成目视检查；
 - `data/results/paper_evidence/`含16张规范CSV表、主张值和源文件SHA-256。
 
 ## 2. 当前研究目标与冻结范围
@@ -78,8 +78,9 @@
 
 ### 3.3 功率调控
 
-慢层主方法是24小时`health-greedy`：选择当前累计退化最小的两个堆，使最老堆休息，再把开发
-模板中暴露更重的角色分配给剩余健康裕度更大的堆。它只读取当前健康和开发暴露均值。
+慢层当前候选是24小时序统计量`Blend 0.50`：对每个有序双堆分配同时计算投影最大损伤和
+第二大损伤，各取0.5权重。前者保护首个堆边界，后者对应三堆N+1的第二个堆边界。它只读取
+当前健康和冻结的开发暴露均值；`health-greedy`与Expected-max保留为首边界基线。
 
 秒级快层为`Instant-health`：在慢层指定在线双堆中枚举离散电流
 `{0,25,90,120,160,195,270,370} A`，最小化氢耗代理、单步退化、性能损失、跟踪误差、启停和
@@ -88,6 +89,21 @@
 
 Expected-max和Gamma-CVaR保留为慢层消融；Gamma单秒样本不进入快层策略排序，随机性放在小时级
 聚合暴露和风险评价。
+
+### 3.4 N+1第二边界结果
+
+原长期脚本在第一个堆达到LZW标定终点时停止，只能回答“最差堆何时越界”。新链在第一堆越界
+后将其移出候选，由剩余两堆继续运行，直到第二堆越界；这与Zuo 2024的三堆N+1服务逻辑一致。
+该终点仍是标定边界，不是物理失效阈值。
+
+- 纯第二大损伤目标在200开发种子中使首边界平均提前728.045小时，第二边界仅增加2.005小时且
+  95%区间跨0，已否决；
+- 冻结Blend 0.50在200开发种子中使首边界平均增加74.640小时，第二边界增加4.790小时，
+  95%区间[2.730,7.952]；39胜147平14负；
+- 39个外部真实块经冻结快层生成月度服务暴露模板；零硬约束违规，最大跟踪误差5.472335 kW；
+- 在13个月、每月20个配对种子上，Blend首边界增加71.069小时，月级95%区间
+  [46.254,100.305]；第二边界增加4.077小时，区间[1.604,7.438]；9月改善、1月持平、3月下降；
+- 第二边界相对增益约0.3%，主要贡献是首边界明显延后且不牺牲N+1第二边界，不称寿命跃升。
 
 ## 4. 已完成结果
 
@@ -247,6 +263,11 @@ $env:PYTHONPATH='src'
 python scripts/26_audit_zuo_real_load_calibration.py
 python scripts/39_build_service_exposure_templates.py --jobs 8
 python scripts/55_audit_norm40_template_assignment_consistency.py
+python scripts/58_audit_n_plus_one_service_boundary.py `
+  --seeds (0..199) --policies fixed_pair order_blend_50 expected_n_plus_one --jobs 8 `
+  --out-dir data/results/fc_only_n_plus_one_robustness
+python scripts/59_build_external_service_templates.py --jobs 8
+python scripts/60_validate_n_plus_one_cross_month.py --seeds 20 --jobs 8
 ```
 
 若必须从头重跑归一化敏感性，先执行：
@@ -287,9 +308,9 @@ python scripts/44_replay_full_real_holdout_segments.py --jobs 9 `
 
 ## 9. 下一执行顺序
 
-1. 40 kW Markov标定、120模板和39个独立跨月功率块回放均已完成。
+1. 40 kW链、N+1第二边界、200种子稳健性和13个月外部验证均已完成。
 2. 保持动作驱动预测态为主健康闭环；不要把混杂电压或瞬态突降硬转成`D`。
-3. 下一阶段针对“最大退化稳定下降、总退化略升”的取舍优化方法，并继续用冻结跨月块验证。
+3. 下一阶段优先检验物理失效阈值、堆间异质性和维护成本下Blend 0.50是否仍有效。
 4. 锂电池外层、未来需求预测和高级世界模型仍是后续独立优化点。
 
 ## 10. 代理协作
