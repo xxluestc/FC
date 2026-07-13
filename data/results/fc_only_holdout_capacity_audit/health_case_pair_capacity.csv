@@ -1,0 +1,7 @@
+health_case,policy,assignment,maximum_pair_power_kw
+oldest_stack_2,fixed_pair,"(0, 1)",87.09609993170307
+oldest_stack_2,health_greedy,"(0, 1)",87.09609993170307
+oldest_stack_0,fixed_pair,"(0, 1)",86.43201599043968
+oldest_stack_0,health_greedy,"(1, 2)",87.09608062090877
+oldest_stack_1,fixed_pair,"(0, 1)",86.14696609608555
+oldest_stack_1,health_greedy,"(2, 0)",87.09610190679197

@@ -97,12 +97,14 @@ def choose_instant(
     *,
     allow_dwell_override: bool = True,
     online_assignment=None,
+    prune_fc_tracking: bool = True,
 ) -> PlanningResult:
     """Choose the minimum-cost feasible one-step action."""
 
     best = None
     expanded = 0
     feasible = 0
+    power_cache = {}
     passes = [(True, False)]
     if allow_dwell_override:
         passes.append((False, True))
@@ -113,6 +115,14 @@ def choose_instant(
             respect_dwell=respect_dwell,
             allowed_online_stacks=online_assignment,
         ):
+            if (
+                prune_fc_tracking
+                and model.config.power_interface == "fc_only"
+                and not _fc_action_tracks_demand(
+                    model, state, action, demand_power_kw, power_cache
+                )
+            ):
+                continue
             expanded += 1
             step = model.step(
                 state,
@@ -131,6 +141,52 @@ def choose_instant(
     if best is None:
         raise RuntimeError("no feasible multi-stack action for the requested demand")
     return PlanningResult(best[1], best[2], best[0][0], expanded, feasible)
+
+
+def _fc_action_tracks_demand(
+    model: MechanisticMultiStackWorldModel,
+    state: MultiStackState,
+    action: MultiStackAction,
+    demand_power_kw: float,
+    power_cache: dict,
+) -> bool:
+    """Reject actions that exactly fail the deterministic FC tracking bound."""
+
+    total_power_kw = 0.0
+    for index, (stack_state, requested_current, requested_on) in enumerate(
+        zip(state.stacks, action.current_a, action.is_on)
+    ):
+        on = bool(requested_on or requested_current > 0)
+        if not on or requested_current == 0:
+            continue
+        key = (index, float(requested_current), on)
+        if key not in power_cache:
+            previous = stack_state.health
+            ramp = abs(requested_current - previous.current_a)
+            shifted_load = (
+                previous.is_on
+                and on
+                and ramp > model.config.current_match_tolerance_a
+            )
+            transition = model.health_models[index].transition(
+                previous,
+                requested_current,
+                dt_s=model.config.dt_s,
+                stochastic=False,
+                next_on=on,
+                shift_event=shifted_load,
+            )
+            proxy = model.performance_proxies[index].evaluate(
+                transition.state.degradation,
+                [requested_current],
+                dt_s=model.config.dt_s,
+            )
+            power_cache[key] = float(proxy["stack_power_kw"][0])
+        total_power_kw += power_cache[key]
+    return (
+        abs(total_power_kw - demand_power_kw)
+        <= model.config.fc_power_tracking_tolerance_kw + 1e-12
+    )
 
 
 def choose_beam(

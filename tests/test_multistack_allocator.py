@@ -96,6 +96,78 @@ class MultiStackAllocatorTest(unittest.TestCase):
         self.assertEqual(sum(result.action.is_on), 2)
         self.assertTrue(result.step.constraints.feasible)
 
+    def test_fc_only_tracking_pruning_matches_exhaustive_instant(self):
+        model = load_lzw_multistack_world_model(
+            ROOT,
+            n_stacks=3,
+            heterogeneity_factors=(1.0, 1.05, 1.10),
+            config=WorldModelConfig(
+                min_online_stacks=2,
+                max_online_stacks=2,
+                power_interface="fc_only",
+                fc_power_tracking_tolerance_kw=5.5,
+            ),
+        )
+        reference = model.performance_proxies[0].mapping.damage_reference_pct
+        states = (
+            model.initial_state(degradation_pct=(0.1, 0.4, 0.8)),
+            model.initial_state(
+                degradation_pct=(0.1, 0.4, 0.8),
+                current_a=(90.0, 160.0, 0.0),
+                is_on=(True, True, False),
+            ),
+            model.initial_state(
+                degradation_pct=(0.2 * reference, 0.6 * reference, reference),
+            ),
+        )
+        for state_index, state in enumerate(states):
+            for demand in (0.0, 8.0, 24.0, 40.0, 58.0):
+                with self.subTest(state=state_index, demand=demand):
+                    pruned = choose_instant(
+                        model,
+                        state,
+                        demand,
+                        online_assignment=(0, 1),
+                    )
+                    exhaustive = choose_instant(
+                        model,
+                        state,
+                        demand,
+                        online_assignment=(0, 1),
+                        prune_fc_tracking=False,
+                    )
+                    self.assertEqual(pruned.action, exhaustive.action)
+                    self.assertAlmostEqual(pruned.objective, exhaustive.objective)
+                    self.assertEqual(
+                        pruned.step.constraints, exhaustive.step.constraints
+                    )
+                    self.assertLessEqual(
+                        pruned.expanded_nodes, exhaustive.expanded_nodes
+                    )
+
+    def test_fc_only_tracking_pruning_preserves_no_action_failure(self):
+        model = load_lzw_multistack_world_model(
+            ROOT,
+            n_stacks=3,
+            config=WorldModelConfig(
+                min_online_stacks=2,
+                max_online_stacks=2,
+                power_interface="fc_only",
+                fc_power_tracking_tolerance_kw=5.5,
+            ),
+        )
+        for prune in (False, True):
+            with self.subTest(prune=prune), self.assertRaisesRegex(
+                RuntimeError, "no feasible multi-stack action"
+            ):
+                choose_instant(
+                    model,
+                    model.initial_state(),
+                    1000.0,
+                    online_assignment=(0, 1),
+                    prune_fc_tracking=prune,
+                )
+
     def test_fc_only_beam_ignores_terminal_soc_and_tracks_power(self):
         model = load_lzw_multistack_world_model(
             ROOT,

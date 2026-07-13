@@ -1,0 +1,11 @@
+{
+  "frozen_reference_kw": 30.0,
+  "frozen_reference_origin": "frozen development reference; not a physical rating",
+  "holdout_target_power_max_kw": 40.0,
+  "holdout_measured_power_max_kw": 38.1136,
+  "mapping_system_power_reference_kw": 83.07850403180912,
+  "minimum_initial_pair_capacity_kw": 86.14696609608555,
+  "posthoc_minimum_reference_for_strict_capacity_kw": 36.75603465518491,
+  "posthoc_minimum_reference_with_tracking_tolerance_kw": 34.55019850790244,
+  "interpretation": "minimum references are holdout diagnostics, not admissible calibration parameters; a physical stack/controller rating is required"
+}
