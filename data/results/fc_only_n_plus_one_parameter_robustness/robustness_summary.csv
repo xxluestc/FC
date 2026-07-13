@@ -1,0 +1,4 @@
+policy,scenarios,positive_first_mean_scenarios,nonnegative_second_mean_scenarios,positive_second_ci_scenarios,negative_second_ci_scenarios,second_gain_mean_across_scenarios_h,second_gain_min_scenario_h,second_gain_min_scenario_id,minimum_seed_nonworse_share
+health_greedy,41,41,26,14,7,108.70731707317073,-28.35,heterogeneity_gp_re_increased_perm_3,0.05
+order_blend_50,41,31,33,19,1,111.27439024390245,-47.2,heterogeneity_gp_re_increased_perm_3,0.25
+guarded_blend,41,15,39,7,0,17.920731707317074,-0.5,boundary_scale_1.20,0.65

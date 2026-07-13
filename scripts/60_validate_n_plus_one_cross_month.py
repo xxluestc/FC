@@ -341,6 +341,7 @@ def main():
                 templates,
                 decision_exposure,
                 config,
+                tuple(float(value) for value in AUDIT.INITIAL_DAMAGE_FRACTION),
                 args.max_hours,
                 args.epoch_h,
                 rotation_epochs,

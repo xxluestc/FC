@@ -1,0 +1,23 @@
+{
+  "scope": "development screen of analytic two-stage RUL scheduling",
+  "target_scenarios": [
+    "reference",
+    "heterogeneity_current_perm_3",
+    "heterogeneity_gp_re_high_perm_1",
+    "heterogeneity_gp_re_high_perm_3",
+    "heterogeneity_gp_re_increased_perm_1",
+    "heterogeneity_gp_re_increased_perm_3",
+    "boundary_scale_0.80",
+    "boundary_scale_1.20"
+  ],
+  "seeds_per_scenario": 20,
+  "policies": [
+    "fixed_pair",
+    "order_blend_50",
+    "guarded_blend",
+    "protected_blend_50"
+  ],
+  "future_demand_used": false,
+  "continuity_projection": "stationary development exposure mean",
+  "runtime_s": 252.06483260006644
+}

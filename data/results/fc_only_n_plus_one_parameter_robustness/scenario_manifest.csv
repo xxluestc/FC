@@ -1,0 +1,42 @@
+scenario_id,category,initial_damage_fraction,heterogeneity_factors,boundary_scale,gamma_terminal_cv,risk_horizon_h,reschedule_h,evidence
+reference,reference,"(0.1, 0.4, 0.8)","(1.0, 1.05, 1.1)",1.0,0.1,100.0,24.0,predeclared project setting
+initial_stagger_perm_1,initial_health,"(0.1, 0.8, 0.4)","(1.0, 1.05, 1.1)",1.0,0.1,100.0,24.0,identity permutation of the predeclared stagger
+initial_stagger_perm_2,initial_health,"(0.4, 0.1, 0.8)","(1.0, 1.05, 1.1)",1.0,0.1,100.0,24.0,identity permutation of the predeclared stagger
+initial_stagger_perm_3,initial_health,"(0.4, 0.8, 0.1)","(1.0, 1.05, 1.1)",1.0,0.1,100.0,24.0,identity permutation of the predeclared stagger
+initial_stagger_perm_4,initial_health,"(0.8, 0.1, 0.4)","(1.0, 1.05, 1.1)",1.0,0.1,100.0,24.0,identity permutation of the predeclared stagger
+initial_stagger_perm_5,initial_health,"(0.8, 0.4, 0.1)","(1.0, 1.05, 1.1)",1.0,0.1,100.0,24.0,identity permutation of the predeclared stagger
+initial_zuo_one_aged_stack_0,initial_health,"(0.10235414534288635, 0.0, 0.0)","(1.0, 1.05, 1.1)",1.0,0.1,100.0,24.0,"Zuo 2024 Eq. 21 and Table 1, normalized to fresh-to-FT margin"
+initial_zuo_one_aged_stack_1,initial_health,"(0.0, 0.10235414534288635, 0.0)","(1.0, 1.05, 1.1)",1.0,0.1,100.0,24.0,"Zuo 2024 Eq. 21 and Table 1, normalized to fresh-to-FT margin"
+initial_zuo_one_aged_stack_2,initial_health,"(0.0, 0.0, 0.10235414534288635)","(1.0, 1.05, 1.1)",1.0,0.1,100.0,24.0,"Zuo 2024 Eq. 21 and Table 1, normalized to fresh-to-FT margin"
+initial_equal_fresh,initial_health,"(0.0, 0.0, 0.0)","(1.0, 1.05, 1.1)",1.0,0.1,100.0,24.0,symmetry control
+initial_equal_midlife,initial_health,"(0.4, 0.4, 0.4)","(1.0, 1.05, 1.1)",1.0,0.1,100.0,24.0,symmetry control at nonzero damage
+heterogeneity_current_perm_1,heterogeneity,"(0.1, 0.4, 0.8)","(1.0, 1.1, 1.05)",1.0,0.1,100.0,24.0,identity permutation of predeclared deterministic factors
+heterogeneity_current_perm_2,heterogeneity,"(0.1, 0.4, 0.8)","(1.05, 1.0, 1.1)",1.0,0.1,100.0,24.0,identity permutation of predeclared deterministic factors
+heterogeneity_current_perm_3,heterogeneity,"(0.1, 0.4, 0.8)","(1.05, 1.1, 1.0)",1.0,0.1,100.0,24.0,identity permutation of predeclared deterministic factors
+heterogeneity_current_perm_4,heterogeneity,"(0.1, 0.4, 0.8)","(1.1, 1.0, 1.05)",1.0,0.1,100.0,24.0,identity permutation of predeclared deterministic factors
+heterogeneity_current_perm_5,heterogeneity,"(0.1, 0.4, 0.8)","(1.1, 1.05, 1.0)",1.0,0.1,100.0,24.0,identity permutation of predeclared deterministic factors
+heterogeneity_identical,heterogeneity,"(0.1, 0.4, 0.8)","(1.0, 1.0, 1.0)",1.0,0.1,100.0,24.0,no-heterogeneity control
+heterogeneity_gp_re_low_perm_0,heterogeneity,"(0.1, 0.4, 0.8)","(0.9143051069603236, 0.9983340383898074, 1.0873608546498688)",1.0,0.1,100.0,24.0,"Zuo 2025 GP-RE delta/phi sensitivity; normalized 10/50/90 percentiles, not fitted vehicle factors"
+heterogeneity_gp_re_low_perm_1,heterogeneity,"(0.1, 0.4, 0.8)","(1.0873608546498688, 0.9983340383898074, 0.9143051069603236)",1.0,0.1,100.0,24.0,"Zuo 2025 GP-RE delta/phi sensitivity; normalized 10/50/90 percentiles, not fitted vehicle factors"
+heterogeneity_gp_re_base_perm_0,heterogeneity,"(0.1, 0.4, 0.8)","(0.8113149050312337, 0.9916818150634422, 1.1970032799053236)",1.0,0.1,100.0,24.0,"Zuo 2025 GP-RE delta/phi sensitivity; normalized 10/50/90 percentiles, not fitted vehicle factors"
+heterogeneity_gp_re_base_perm_1,heterogeneity,"(0.1, 0.4, 0.8)","(1.1970032799053236, 0.9916818150634422, 0.8113149050312337)",1.0,0.1,100.0,24.0,"Zuo 2025 GP-RE delta/phi sensitivity; normalized 10/50/90 percentiles, not fitted vehicle factors"
+heterogeneity_gp_re_high_perm_0,heterogeneity,"(0.1, 0.4, 0.8)","(0.5965525916564761, 0.9587083612791494, 1.4447390470643742)",1.0,0.1,100.0,24.0,"Zuo 2025 GP-RE delta/phi sensitivity; normalized 10/50/90 percentiles, not fitted vehicle factors"
+heterogeneity_gp_re_high_perm_1,heterogeneity,"(0.1, 0.4, 0.8)","(0.5965525916564761, 1.4447390470643742, 0.9587083612791494)",1.0,0.1,100.0,24.0,"Zuo 2025 GP-RE delta/phi sensitivity; normalized 10/50/90 percentiles, not fitted vehicle factors"
+heterogeneity_gp_re_high_perm_2,heterogeneity,"(0.1, 0.4, 0.8)","(0.9587083612791494, 0.5965525916564761, 1.4447390470643742)",1.0,0.1,100.0,24.0,"Zuo 2025 GP-RE delta/phi sensitivity; normalized 10/50/90 percentiles, not fitted vehicle factors"
+heterogeneity_gp_re_high_perm_3,heterogeneity,"(0.1, 0.4, 0.8)","(0.9587083612791494, 1.4447390470643742, 0.5965525916564761)",1.0,0.1,100.0,24.0,"Zuo 2025 GP-RE delta/phi sensitivity; normalized 10/50/90 percentiles, not fitted vehicle factors"
+heterogeneity_gp_re_high_perm_4,heterogeneity,"(0.1, 0.4, 0.8)","(1.4447390470643742, 0.5965525916564761, 0.9587083612791494)",1.0,0.1,100.0,24.0,"Zuo 2025 GP-RE delta/phi sensitivity; normalized 10/50/90 percentiles, not fitted vehicle factors"
+heterogeneity_gp_re_high_perm_5,heterogeneity,"(0.1, 0.4, 0.8)","(1.4447390470643742, 0.9587083612791494, 0.5965525916564761)",1.0,0.1,100.0,24.0,"Zuo 2025 GP-RE delta/phi sensitivity; normalized 10/50/90 percentiles, not fitted vehicle factors"
+heterogeneity_gp_re_increased_perm_0,heterogeneity,"(0.1, 0.4, 0.8)","(0.45365688105154717, 0.9182075754193537, 1.6281355435290994)",1.0,0.1,100.0,24.0,"Zuo 2025 GP-RE delta/phi sensitivity; normalized 10/50/90 percentiles, not fitted vehicle factors"
+heterogeneity_gp_re_increased_perm_1,heterogeneity,"(0.1, 0.4, 0.8)","(0.45365688105154717, 1.6281355435290994, 0.9182075754193537)",1.0,0.1,100.0,24.0,"Zuo 2025 GP-RE delta/phi sensitivity; normalized 10/50/90 percentiles, not fitted vehicle factors"
+heterogeneity_gp_re_increased_perm_2,heterogeneity,"(0.1, 0.4, 0.8)","(0.9182075754193537, 0.45365688105154717, 1.6281355435290994)",1.0,0.1,100.0,24.0,"Zuo 2025 GP-RE delta/phi sensitivity; normalized 10/50/90 percentiles, not fitted vehicle factors"
+heterogeneity_gp_re_increased_perm_3,heterogeneity,"(0.1, 0.4, 0.8)","(0.9182075754193537, 1.6281355435290994, 0.45365688105154717)",1.0,0.1,100.0,24.0,"Zuo 2025 GP-RE delta/phi sensitivity; normalized 10/50/90 percentiles, not fitted vehicle factors"
+heterogeneity_gp_re_increased_perm_4,heterogeneity,"(0.1, 0.4, 0.8)","(1.6281355435290994, 0.45365688105154717, 0.9182075754193537)",1.0,0.1,100.0,24.0,"Zuo 2025 GP-RE delta/phi sensitivity; normalized 10/50/90 percentiles, not fitted vehicle factors"
+heterogeneity_gp_re_increased_perm_5,heterogeneity,"(0.1, 0.4, 0.8)","(1.6281355435290994, 0.9182075754193537, 0.45365688105154717)",1.0,0.1,100.0,24.0,"Zuo 2025 GP-RE delta/phi sensitivity; normalized 10/50/90 percentiles, not fitted vehicle factors"
+boundary_scale_0.80,boundary,"(0.1, 0.4, 0.8)","(1.0, 1.05, 1.1)",0.8,0.1,100.0,24.0,predeclared +/-20% calibration-boundary sensitivity
+boundary_scale_1.20,boundary,"(0.1, 0.4, 0.8)","(1.0, 1.05, 1.1)",1.2,0.1,100.0,24.0,predeclared +/-20% calibration-boundary sensitivity
+gamma_cv_0.05,stochasticity,"(0.1, 0.4, 0.8)","(1.0, 1.05, 1.1)",1.0,0.05,100.0,24.0,predeclared aggregate Gamma CV sensitivity
+gamma_cv_0.20,stochasticity,"(0.1, 0.4, 0.8)","(1.0, 1.05, 1.1)",1.0,0.2,100.0,24.0,predeclared aggregate Gamma CV sensitivity
+risk_horizon_24h,scheduler,"(0.1, 0.4, 0.8)","(1.0, 1.05, 1.1)",1.0,0.1,24.0,24.0,one-day and ten-day projection sensitivity
+risk_horizon_240h,scheduler,"(0.1, 0.4, 0.8)","(1.0, 1.05, 1.1)",1.0,0.1,240.0,24.0,one-day and ten-day projection sensitivity
+reschedule_12h,scheduler,"(0.1, 0.4, 0.8)","(1.0, 1.05, 1.1)",1.0,0.1,100.0,12.0,half-day and two-day rescheduling sensitivity
+reschedule_48h,scheduler,"(0.1, 0.4, 0.8)","(1.0, 1.05, 1.1)",1.0,0.1,100.0,48.0,half-day and two-day rescheduling sensitivity

@@ -109,6 +109,16 @@ class ServiceScheduleTransition:
     start_damage_pct: tuple[float, ...]
 
 
+@dataclass(frozen=True)
+class ServiceContinuityDecision:
+    assignment: tuple[int, int]
+    objective_h: float
+    expected_first_boundary_h: float
+    expected_second_boundary_h: float
+    expected_post_first_reserve_h: float
+    new_starts: int
+
+
 def candidate_assignments(n_stacks: int) -> tuple[tuple[int, int], ...]:
     if n_stacks < 3:
         raise ValueError("N+1 scheduling requires at least three stacks")
@@ -229,6 +239,53 @@ def choose_service_assignment(
     return best[1]
 
 
+def choose_baseline_protected_assignment(
+    state: ServiceScheduleState,
+    exposure: ServiceExposure,
+    config: ServiceScheduleConfig,
+    baseline_assignment: tuple[int, int],
+    *,
+    assignments: tuple[tuple[int, int], ...] | None = None,
+    n_plus_one_margin: float = 0.0,
+) -> ServiceScheduleDecision:
+    """Minimize the blend without worsening either baseline boundary proxy."""
+
+    if not np.isfinite(n_plus_one_margin) or n_plus_one_margin < 0:
+        raise ValueError("n_plus_one_margin must be finite and nonnegative")
+    eligible = (
+        eligible_service_assignments(state, config.health_limit_pct)
+        if assignments is None
+        else tuple(assignments)
+    )
+    if baseline_assignment not in eligible:
+        raise ValueError("baseline_assignment must be an eligible candidate")
+    decisions = [
+        evaluate_service_assignment(
+            state,
+            exposure,
+            config,
+            assignment,
+            objective="expected_order_blend",
+        )
+        for assignment in eligible
+    ]
+    baseline = next(
+        item for item in decisions if item.assignment == baseline_assignment
+    )
+    feasible = [
+        item
+        for item in decisions
+        if item.expected_n_plus_one_health_fraction
+        <= baseline.expected_n_plus_one_health_fraction + n_plus_one_margin
+        and item.expected_max_health_fraction
+        <= baseline.expected_max_health_fraction + n_plus_one_margin
+    ]
+    return min(
+        feasible,
+        key=lambda item: (item.objective, item.new_starts, item.assignment),
+    )
+
+
 def evaluate_service_assignment(
     state: ServiceScheduleState,
     exposure: ServiceExposure,
@@ -282,6 +339,119 @@ def evaluate_service_assignment(
         expected_mean_health_fraction=expected_mean,
         cvar_max_health_fraction=cvar,
         new_starts=starts,
+    )
+
+
+def evaluate_service_continuity_assignment(
+    state: ServiceScheduleState,
+    exposure: ServiceExposure,
+    config: ServiceScheduleConfig,
+    assignment: tuple[int, int],
+    *,
+    first_boundary_weight: float = 0.5,
+) -> ServiceContinuityDecision:
+    """Project the first and N+1 second boundaries under stationary exposure."""
+
+    if len(state.damage_pct) != 3:
+        raise ValueError("two-stage N+1 continuity requires exactly three stacks")
+    if assignment not in candidate_assignments(len(state.damage_pct)):
+        raise ValueError("assignment is not a valid two-stack role mapping")
+    if not 0 <= first_boundary_weight <= 1:
+        raise ValueError("first_boundary_weight must lie in [0, 1]")
+    eligible = {
+        index
+        for index, damage in enumerate(state.damage_pct)
+        if damage < config.health_limit_pct
+    }
+    if not set(assignment).issubset(eligible):
+        raise ValueError("assignment contains a stack beyond the service boundary")
+    if len(eligible) < 2:
+        raise ValueError("fewer than two stacks remain below the service boundary")
+
+    damage = np.asarray(state.damage_pct, dtype=float).copy()
+    factors = np.asarray(config.heterogeneity_factors, dtype=float)
+    previous = set() if state.online_assignment is None else set(state.online_assignment)
+    new_starts = 0
+    for stack in assignment:
+        if stack not in previous:
+            damage[stack] += config.start_damage_pct * factors[stack]
+            new_starts += 1
+
+    role_rate = _stationary_role_damage_rate(exposure)
+    assigned_rates = {
+        stack: role_rate[role] * factors[stack]
+        for role, stack in enumerate(assignment)
+    }
+    if len(eligible) == 2:
+        next_boundary = min(
+            _time_to_boundary(
+                damage[stack], assigned_rates[stack], config.health_limit_pct
+            )
+            for stack in assignment
+        )
+        return ServiceContinuityDecision(
+            assignment=assignment,
+            objective_h=next_boundary,
+            expected_first_boundary_h=0.0,
+            expected_second_boundary_h=next_boundary,
+            expected_post_first_reserve_h=next_boundary,
+            new_starts=new_starts,
+        )
+
+    first_times = {
+        stack: _time_to_boundary(
+            damage[stack], assigned_rates[stack], config.health_limit_pct
+        )
+        for stack in assignment
+    }
+    first_boundary_h = min(first_times.values())
+    failed = min(
+        assignment,
+        key=lambda stack: (first_times[stack], stack),
+    )
+    if np.isclose(first_times[assignment[0]], first_times[assignment[1]]):
+        second_boundary_h = first_boundary_h
+    else:
+        damage_after_first = damage.copy()
+        for stack, rate in assigned_rates.items():
+            damage_after_first[stack] += first_boundary_h * rate
+        survivors = tuple(index for index in range(3) if index != failed)
+        post_first_times = []
+        for continuation in (survivors, (survivors[1], survivors[0])):
+            continued_damage = damage_after_first.copy()
+            for stack in continuation:
+                if stack not in assignment:
+                    continued_damage[stack] += (
+                        config.start_damage_pct * factors[stack]
+                    )
+            rates = {
+                stack: role_rate[role] * factors[stack]
+                for role, stack in enumerate(continuation)
+            }
+            post_first_times.append(
+                min(
+                    _time_to_boundary(
+                        continued_damage[stack],
+                        rates[stack],
+                        config.health_limit_pct,
+                    )
+                    for stack in continuation
+                )
+            )
+        second_boundary_h = first_boundary_h + max(post_first_times)
+
+    reserve_h = max(0.0, second_boundary_h - first_boundary_h)
+    objective_h = (
+        first_boundary_weight * first_boundary_h
+        + (1 - first_boundary_weight) * second_boundary_h
+    )
+    return ServiceContinuityDecision(
+        assignment=assignment,
+        objective_h=float(objective_h),
+        expected_first_boundary_h=float(first_boundary_h),
+        expected_second_boundary_h=float(second_boundary_h),
+        expected_post_first_reserve_h=float(reserve_h),
+        new_starts=new_starts,
     )
 
 
@@ -375,6 +545,24 @@ def _project_expected_damage(state, exposure, config, assignment):
             projected[stack] += config.start_damage_pct * heterogeneity[stack]
             starts += 1
     return projected, starts
+
+
+def _stationary_role_damage_rate(exposure):
+    damage = (
+        np.asarray(exposure.continuous_mean_pct, dtype=float)
+        + np.asarray(exposure.load_shift_damage_pct, dtype=float)
+        + np.asarray(exposure.operational_start_damage_pct, dtype=float)
+    )
+    rate = damage / exposure.duration_h
+    if np.any(~np.isfinite(rate)) or np.any(rate <= 0):
+        raise ValueError("stationary service exposure must have positive role damage")
+    return rate
+
+
+def _time_to_boundary(damage, rate, health_limit):
+    if damage >= health_limit:
+        return 0.0
+    return float((health_limit - damage) / rate)
 
 
 def _project_cvar(state, exposure, config, assignment, uniforms):

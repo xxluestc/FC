@@ -1,0 +1,29 @@
+{
+  "scope": "held-out cross-month validation of the Guarded Blend fallback",
+  "scenario_ids": [
+    "reference",
+    "heterogeneity_gp_re_increased_perm_2",
+    "heterogeneity_gp_re_increased_perm_3"
+  ],
+  "scenario_guard_sources": {
+    "reference": "order_blend_50",
+    "heterogeneity_gp_re_increased_perm_2": "order_blend_50",
+    "heterogeneity_gp_re_increased_perm_3": "fixed_pair"
+  },
+  "months": 13,
+  "templates": 39,
+  "seeds_per_month": 20,
+  "policies": [
+    "fixed_pair",
+    "order_blend_50",
+    "guarded_blend"
+  ],
+  "decision_exposure": "frozen mean of 48 development templates",
+  "realized_exposure": "held-out monthly three-block bootstrap",
+  "future_demand_used": false,
+  "heterogeneity_status": "literature-driven stress factors, not vehicle-fitted",
+  "health_boundary_interpretation": "LZW calibration trajectory endpoint, not a physical failure threshold",
+  "bootstrap_unit": "calendar month",
+  "bootstrap_samples": 20000,
+  "runtime_s": 378.922801699955
+}

@@ -18,8 +18,10 @@ from fc_power.evaluation import (
     ServiceExposure,
     ServiceScheduleConfig,
     ServiceScheduleState,
+    choose_baseline_protected_assignment,
     eligible_service_assignments,
     evaluate_service_assignment,
+    evaluate_service_continuity_assignment,
     orient_service_pair,
     stationary_service_exposure,
     transition_service_epoch,
@@ -50,7 +52,18 @@ BLEND_WEIGHTS = {
     "order_blend_90": 0.90,
     "order_blend_99": 0.99,
 }
-AVAILABLE_POLICIES = POLICIES + tuple(BLEND_WEIGHTS)
+CONTINUITY_THRESHOLDS_H = {
+    "continuity_second_0": 0.0,
+    "continuity_second_24": 24.0,
+    "continuity_second_48": 48.0,
+    "continuity_second_100": 100.0,
+}
+AVAILABLE_POLICIES = (
+    POLICIES
+    + tuple(BLEND_WEIGHTS)
+    + ("continuity_rul", "guarded_blend", "protected_blend_50")
+    + tuple(CONTINUITY_THRESHOLDS_H)
+)
 HETEROGENEITY = np.asarray((1.0, 1.05, 1.10))
 INITIAL_DAMAGE_FRACTION = np.asarray((0.10, 0.40, 0.80))
 BOOTSTRAP_SAMPLES = 20_000
@@ -108,8 +121,13 @@ def aggregate_epoch(templates, rng, epoch_h: float) -> ServiceExposure:
     )
 
 
-def orient_pair(pair, state, exposure):
-    return orient_service_pair(pair, state, exposure, HETEROGENEITY)
+def orient_pair(pair, state, exposure, config):
+    return orient_service_pair(
+        pair,
+        state,
+        exposure,
+        config.heterogeneity_factors,
+    )
 
 
 def choose_assignment(
@@ -137,18 +155,23 @@ def choose_assignment(
             "expected_max",
             "expected_total",
             "expected_n_plus_one",
+            "continuity_rul",
+            "protected_blend_50",
             *BLEND_WEIGHTS,
+            *CONTINUITY_THRESHOLDS_H,
         }
         and current_set in eligible_sets
         and epoch % reschedule_epochs != 0
     ):
-        return orient_pair(state.online_assignment, state, exposure)
+        if policy == "continuity_rul" or policy in CONTINUITY_THRESHOLDS_H:
+            return state.online_assignment
+        return orient_pair(state.online_assignment, state, exposure, config)
 
     alive = sorted({index for assignment in eligible for index in assignment})
     if policy == "fixed_pair":
         preferred = (0, 1)
         pair = preferred if frozenset(preferred) in eligible_sets else tuple(alive[:2])
-        return orient_pair(pair, state, exposure)
+        return orient_pair(pair, state, exposure, config)
     if policy == "periodic_rotation":
         cycle = ((0, 1), (1, 2), (2, 0))
         start = (epoch // rotation_epochs) % len(cycle)
@@ -158,12 +181,86 @@ def choose_assignment(
             if frozenset(value := cycle[(start + offset) % len(cycle)])
             in eligible_sets
         )
-        return orient_pair(pair, state, exposure)
+        return orient_pair(pair, state, exposure, config)
     if policy == "health_greedy":
         pair = tuple(
             sorted(alive, key=lambda index: (state.damage_pct[index], index))[:2]
         )
-        return orient_pair(pair, state, exposure)
+        return orient_pair(pair, state, exposure, config)
+    if policy == "protected_blend_50":
+        preferred = (0, 1)
+        baseline_pair = (
+            preferred if frozenset(preferred) in eligible_sets else tuple(alive[:2])
+        )
+        baseline_assignment = orient_pair(
+            baseline_pair,
+            state,
+            exposure,
+            config,
+        )
+        return choose_baseline_protected_assignment(
+            state,
+            exposure,
+            replace(config, n_plus_one_weight=0.50),
+            baseline_assignment,
+            assignments=eligible,
+        ).assignment
+    if policy == "continuity_rul":
+        decisions = [
+            evaluate_service_continuity_assignment(
+                state,
+                exposure,
+                config,
+                assignment,
+                first_boundary_weight=0.5,
+            )
+            for assignment in eligible
+        ]
+        return min(
+            decisions,
+            key=lambda item: (
+                -item.objective_h,
+                -item.expected_second_boundary_h,
+                -item.expected_first_boundary_h,
+                item.new_starts,
+                item.assignment,
+            ),
+        ).assignment
+    if policy in CONTINUITY_THRESHOLDS_H:
+        decisions = [
+            evaluate_service_continuity_assignment(
+                state,
+                exposure,
+                config,
+                assignment,
+                first_boundary_weight=0.0,
+            )
+            for assignment in eligible
+        ]
+        best = min(
+            decisions,
+            key=lambda item: (
+                -item.expected_second_boundary_h,
+                item.new_starts,
+                item.assignment,
+            ),
+        )
+        current = next(
+            (
+                item
+                for item in decisions
+                if item.assignment == state.online_assignment
+            ),
+            None,
+        )
+        threshold = CONTINUITY_THRESHOLDS_H[policy]
+        if (
+            current is not None
+            and best.expected_second_boundary_h
+            <= current.expected_second_boundary_h + threshold
+        ):
+            return current.assignment
+        return best.assignment
     if policy in {
         "expected_max",
         "expected_total",
@@ -203,12 +300,34 @@ def simulate_case(task):
         decision_exposure,
         uniforms,
         config,
+        initial_damage_fraction,
         max_hours,
         rotation_epochs,
         reschedule_epochs,
         capture_trace,
     ) = task
-    initial = INITIAL_DAMAGE_FRACTION * config.health_limit_pct
+    initial_fraction = np.asarray(initial_damage_fraction, dtype=float)
+    if initial_fraction.shape != (len(config.heterogeneity_factors),):
+        raise ValueError("initial_damage_fraction must match the stack count")
+    if np.any(~np.isfinite(initial_fraction)) or np.any(
+        (initial_fraction < 0) | (initial_fraction >= 1)
+    ):
+        raise ValueError("initial damage fractions must lie in [0, 1)")
+    initial = initial_fraction * config.health_limit_pct
+    effective_policy = policy
+    if policy == "guarded_blend":
+        has_health_separation = not np.allclose(
+            initial_fraction,
+            initial_fraction[0],
+        )
+        aligned = int(np.argmax(initial_fraction)) == int(
+            np.argmax(config.heterogeneity_factors)
+        )
+        effective_policy = (
+            "order_blend_50"
+            if has_health_separation and aligned
+            else "fixed_pair"
+        )
     state = ServiceScheduleState(tuple(float(value) for value in initial))
     crossing_times = np.full(len(initial), np.nan)
     assignments = []
@@ -217,7 +336,7 @@ def simulate_case(task):
     first_range = np.nan
     for epoch, exposure in enumerate(exposures):
         assignment = choose_assignment(
-            policy,
+            effective_policy,
             state,
             decision_exposure,
             config,
@@ -256,6 +375,7 @@ def simulate_case(task):
             trace_rows.append(
                 {
                     "policy": policy,
+                    "effective_policy": effective_policy,
                     "seed": seed,
                     "elapsed_h": state.elapsed_h,
                     "assignment": str(assignment),
@@ -280,6 +400,7 @@ def simulate_case(task):
     )
     row = {
         "policy": policy,
+        "effective_policy": effective_policy,
         "seed": seed,
         "first_boundary_crossed": first_crossed,
         "second_boundary_crossed": second_crossed,
@@ -313,6 +434,7 @@ def simulate_seed(task):
         templates,
         decision_exposure,
         config,
+        initial_damage_fraction,
         max_hours,
         epoch_h,
         rotation_epochs,
@@ -336,6 +458,7 @@ def simulate_seed(task):
                 decision_exposure,
                 uniforms,
                 config,
+                initial_damage_fraction,
                 max_hours,
                 rotation_epochs,
                 reschedule_epochs,
@@ -444,6 +567,13 @@ def plot_results(per_run, summary, paired, output_path):
         "order_blend_75": "#2E86AB",
         "order_blend_90": "#008F95",
         "order_blend_99": "#00A676",
+        "continuity_rul": "#C44E52",
+        "continuity_second_0": "#B56576",
+        "continuity_second_24": "#A44A3F",
+        "continuity_second_48": "#8C3B32",
+        "continuity_second_100": "#6F2D28",
+        "guarded_blend": "#D55E00",
+        "protected_blend_50": "#0072B2",
     }
     labels = {
         "fixed_pair": "Fixed pair",
@@ -457,6 +587,13 @@ def plot_results(per_run, summary, paired, output_path):
         "order_blend_75": "Blend 0.75",
         "order_blend_90": "Blend 0.90",
         "order_blend_99": "Blend 0.99",
+        "continuity_rul": "Two-stage RUL",
+        "continuity_second_0": "Continuity h=0",
+        "continuity_second_24": "Continuity h=24",
+        "continuity_second_48": "Continuity h=48",
+        "continuity_second_100": "Continuity h=100",
+        "guarded_blend": "Guarded Blend",
+        "protected_blend_50": "Protected Blend",
     }
     plt.rcParams.update(
         {
@@ -672,6 +809,7 @@ def main():
                 templates,
                 decision_exposure,
                 config,
+                tuple(float(value) for value in INITIAL_DAMAGE_FRACTION),
                 args.max_hours,
                 args.epoch_h,
                 rotation_epochs,

@@ -8,8 +8,10 @@ from fc_power.evaluation.service_scheduler import (
     ServiceScheduleConfig,
     ServiceScheduleState,
     candidate_assignments,
+    choose_baseline_protected_assignment,
     choose_service_assignment,
     evaluate_service_assignment,
+    evaluate_service_continuity_assignment,
     eligible_service_assignments,
     orient_service_pair,
     stationary_service_exposure,
@@ -58,6 +60,48 @@ class ServiceSchedulerTest(unittest.TestCase):
         )
         self.assertNotIn(2, decision.assignment)
         self.assertEqual(decision.new_starts, 2)
+
+    def test_baseline_protection_never_worsens_expected_n_plus_one(self):
+        state = ServiceScheduleState((1.0, 4.0, 8.0))
+        baseline_assignment = orient_service_pair(
+            (0, 1),
+            state,
+            self.exposure,
+            self.config.heterogeneity_factors,
+        )
+        baseline = evaluate_service_assignment(
+            state,
+            self.exposure,
+            self.config,
+            baseline_assignment,
+            objective="expected_order_blend",
+        )
+        protected = choose_baseline_protected_assignment(
+            state,
+            self.exposure,
+            self.config,
+            baseline_assignment,
+        )
+        self.assertLessEqual(
+            protected.expected_n_plus_one_health_fraction,
+            baseline.expected_n_plus_one_health_fraction,
+        )
+        self.assertLessEqual(
+            protected.expected_max_health_fraction,
+            baseline.expected_max_health_fraction,
+        )
+        self.assertLessEqual(protected.objective, baseline.objective)
+
+    def test_baseline_protection_rejects_negative_margin(self):
+        state = ServiceScheduleState((1.0, 4.0, 8.0))
+        with self.assertRaises(ValueError):
+            choose_baseline_protected_assignment(
+                state,
+                self.exposure,
+                self.config,
+                (0, 1),
+                n_plus_one_margin=-0.01,
+            )
 
     def test_stationary_exposure_uses_template_mean_only(self):
         second = ServiceExposure(
@@ -155,6 +199,61 @@ class ServiceSchedulerTest(unittest.TestCase):
         )
         expected = 0.75 * maximum.objective + 0.25 * second.objective
         self.assertAlmostEqual(blended.objective, expected)
+
+    def test_two_stage_continuity_projects_both_n_plus_one_boundaries(self):
+        state = ServiceScheduleState((1.0, 4.0, 8.0))
+        decision = evaluate_service_continuity_assignment(
+            state,
+            self.exposure,
+            self.config,
+            (0, 1),
+        )
+        self.assertGreater(decision.expected_first_boundary_h, 0.0)
+        self.assertGreaterEqual(
+            decision.expected_second_boundary_h,
+            decision.expected_first_boundary_h,
+        )
+        self.assertAlmostEqual(
+            decision.expected_post_first_reserve_h,
+            decision.expected_second_boundary_h
+            - decision.expected_first_boundary_h,
+        )
+
+    def test_two_stage_continuity_responds_to_rate_health_misalignment(self):
+        state = ServiceScheduleState((1.0, 4.0, 8.0))
+        config = replace(
+            self.config,
+            heterogeneity_factors=(0.9182075754, 1.6281355435, 0.4536568811),
+        )
+        decisions = [
+            evaluate_service_continuity_assignment(
+                state, self.exposure, config, assignment
+            )
+            for assignment in candidate_assignments(3)
+        ]
+        selected = max(
+            decisions,
+            key=lambda item: (
+                item.objective_h,
+                item.expected_second_boundary_h,
+                -item.new_starts,
+            ),
+        )
+        self.assertEqual(selected.assignment, (2, 0))
+
+    def test_two_stage_continuity_after_first_crossing_targets_next_boundary(self):
+        state = ServiceScheduleState((1.0, 4.0, 10.0), (0, 1))
+        decision = evaluate_service_continuity_assignment(
+            state,
+            self.exposure,
+            self.config,
+            (0, 1),
+        )
+        self.assertEqual(decision.expected_first_boundary_h, 0.0)
+        self.assertEqual(
+            decision.objective_h,
+            decision.expected_second_boundary_h,
+        )
 
     def test_role_orientation_maps_heavier_exposure_to_healthier_stack(self):
         state = ServiceScheduleState((1.0, 4.0, 8.0))

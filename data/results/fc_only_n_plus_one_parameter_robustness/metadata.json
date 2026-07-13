@@ -1,0 +1,19 @@
+{
+  "scope": "frozen N+1 objective parameter robustness",
+  "scenarios": 41,
+  "seeds_per_scenario": 20,
+  "evaluated_runs": 3280,
+  "policies": [
+    "fixed_pair",
+    "health_greedy",
+    "order_blend_50",
+    "guarded_blend"
+  ],
+  "blend_weight": 0.5,
+  "blend_weight_retuned": false,
+  "heterogeneity_interpretation": "literature-driven normalized quantile stress cases; not fitted vehicle factors",
+  "failure_boundary_interpretation": "LZW calibration endpoint and +/-20% sensitivity; not physical EOL",
+  "future_demand_used": false,
+  "bootstrap_samples": 10000,
+  "runtime_s": 1219.8861581999809
+}
