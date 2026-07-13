@@ -1,0 +1,11 @@
+literature_matrix,empirical_weight,assumed_common_interval_s,event_rate_per_hour,time_base_warning
+zuo_fast,0.0,30,108.0,convex blend assumes a common Markov interval; not selected as the calibrated baseline
+zuo_fast,0.25,30,83.75065059345816,convex blend assumes a common Markov interval; not selected as the calibrated baseline
+zuo_fast,0.5,30,59.06765971861141,convex blend assumes a common Markov interval; not selected as the calibrated baseline
+zuo_fast,0.75,30,33.38543371670472,convex blend assumes a common Markov interval; not selected as the calibrated baseline
+zuo_fast,1.0,30,4.618159951894154,convex blend assumes a common Markov interval; not selected as the calibrated baseline
+zuo_slow,0.0,30,26.57142857142857,convex blend assumes a common Markov interval; not selected as the calibrated baseline
+zuo_slow,0.25,30,22.25959342822397,convex blend assumes a common Markov interval; not selected as the calibrated baseline
+zuo_slow,0.5,30,17.050531528483763,convex blend assumes a common Markov interval; not selected as the calibrated baseline
+zuo_slow,0.75,30,11.061274989278589,convex blend assumes a common Markov interval; not selected as the calibrated baseline
+zuo_slow,1.0,30,4.618159951894154,convex blend assumes a common Markov interval; not selected as the calibrated baseline

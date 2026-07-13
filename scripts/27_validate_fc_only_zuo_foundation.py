@@ -13,7 +13,6 @@ from fc_power.evaluation import (
     ZUO_FAST_TRANSITION,
     ZUO_LOAD_LEVEL_FRACTIONS,
     ZUO_SLOW_TRANSITION,
-    blend_transition_matrices,
     generate_zuo_markov_system_load,
     run_policy,
 )
@@ -25,46 +24,49 @@ from fc_power.world_model import WorldModelConfig, load_lzw_multistack_world_mod
 ROOT = Path(__file__).resolve().parents[1]
 AUDIT = ROOT / "data/results/load_zuo_calibration"
 OUTPUT = ROOT / "data/results/fc_only_zuo_foundation"
-DECISION_INTERVAL_S = 30
-EMPIRICAL_WEIGHT = 0.50
 CAPACITY_RESERVE_FRACTION = 0.05
 TRACKING_TOLERANCE_KW = 5.5
 INITIAL_DAMAGE_FRACTION = (0.10, 0.40, 0.80)
 HETEROGENEITY_FACTORS = (1.0, 1.05, 1.10)
 
 
-def load_empirical_matrix() -> np.ndarray:
+def load_empirical_matrix(stride_s: int) -> np.ndarray:
     table = pd.read_csv(AUDIT / "transition_scale_audit.csv")
-    selected = table[table.stride_s == DECISION_INTERVAL_S]
+    selected = table[table.stride_s == stride_s]
     matrix = selected.pivot(
         index="source_state",
         columns="target_state",
         values="empirical_probability",
     ).to_numpy(dtype=float)
     if matrix.shape != (4, 4) or np.any(~np.isfinite(matrix)):
-        raise ValueError("30-second empirical transition matrix is incomplete")
+        raise ValueError(f"{stride_s}-second empirical transition matrix is incomplete")
     return matrix
 
 
-def load_initial_probabilities() -> np.ndarray:
+def load_initial_probabilities(stride_s: int) -> np.ndarray:
     table = pd.read_csv(AUDIT / "state_coverage_audit.csv")
-    selected = table[table.stride_s == DECISION_INTERVAL_S].sort_values("state")
+    selected = table[table.stride_s == stride_s].sort_values("state")
     probabilities = selected.occupancy_fraction.to_numpy(dtype=float)
     if probabilities.shape != (4,) or not np.isclose(probabilities.sum(), 1.0):
-        raise ValueError("30-second state occupancy is incomplete")
+        raise ValueError(f"{stride_s}-second state occupancy is incomplete")
     return probabilities
 
 
 def main() -> None:
-    empirical = load_empirical_matrix()
-    initial_probabilities = load_initial_probabilities()
-    matrices = {
-        "fast_blend_50": blend_transition_matrices(
-            empirical, ZUO_FAST_TRANSITION, EMPIRICAL_WEIGHT
-        ),
-        "slow_blend_50": blend_transition_matrices(
-            empirical, ZUO_SLOW_TRANSITION, EMPIRICAL_WEIGHT
-        ),
+    initial_probabilities = load_initial_probabilities(1)
+    scenarios = {
+        "empirical_1s": {
+            "matrix": load_empirical_matrix(1),
+            "decision_interval_s": 1,
+        },
+        "zuo_slow_30s": {
+            "matrix": np.asarray(ZUO_SLOW_TRANSITION),
+            "decision_interval_s": 30,
+        },
+        "zuo_fast_30s": {
+            "matrix": np.asarray(ZUO_FAST_TRANSITION),
+            "decision_interval_s": 30,
+        },
     }
     model = load_lzw_multistack_world_model(
         ROOT,
@@ -121,11 +123,13 @@ def main() -> None:
             )
 
     run_rows = []
-    for index, (name, matrix) in enumerate(matrices.items()):
+    for index, (name, scenario_config) in enumerate(scenarios.items()):
+        matrix = scenario_config["matrix"]
+        decision_interval_s = scenario_config["decision_interval_s"]
         profile = generate_zuo_markov_system_load(
             2026 + index,
             length_s=120,
-            decision_interval_s=DECISION_INTERVAL_S,
+            decision_interval_s=decision_interval_s,
             system_power_reference_kw=system_power_reference_kw,
             transition_matrix=matrix,
             initial_probabilities=initial_probabilities,
@@ -142,6 +146,7 @@ def main() -> None:
             {
                 "load_source": name,
                 "load_seed": 2026 + index,
+                "decision_interval_s": decision_interval_s,
                 "n_steps": run.metrics["n_steps"],
                 "constraint_violation_steps": run.metrics[
                     "constraint_violation_steps"
@@ -174,10 +179,15 @@ def main() -> None:
             "109660, Appendix A, Eqs. A.5-A.6"
         ),
         "empirical_source": "data/results/load_zuo_calibration",
-        "decision_interval_s": DECISION_INTERVAL_S,
-        "decision_interval_status": "engineering candidate, not a Zuo paper fact",
-        "empirical_weight": EMPIRICAL_WEIGHT,
-        "empirical_weight_status": "candidate for sensitivity analysis",
+        "calibrated_baseline": {
+            "matrix": "empirical_1s",
+            "decision_interval_s": 1,
+        },
+        "literature_stress_scenarios": {
+            "zuo_slow_30s": "30 s is an engineering time-base candidate",
+            "zuo_fast_30s": "30 s is an engineering time-base candidate",
+        },
+        "matrix_blending": "not used because transition time bases differ",
         "capacity_reserve_fraction": CAPACITY_RESERVE_FRACTION,
         "tracking_tolerance_kw": TRACKING_TOLERANCE_KW,
         "positive_demand_online_stack_rule": "exactly two stacks online",
@@ -186,7 +196,13 @@ def main() -> None:
         "initial_damage_fraction": list(INITIAL_DAMAGE_FRACTION),
         "heterogeneity_factors": list(HETEROGENEITY_FACTORS),
         "stochastic_health": False,
-        "matrices": {name: matrix.tolist() for name, matrix in matrices.items()},
+        "scenarios": {
+            name: {
+                "decision_interval_s": values["decision_interval_s"],
+                "matrix": values["matrix"].tolist(),
+            }
+            for name, values in scenarios.items()
+        },
     }
     (OUTPUT / "metadata.json").write_text(
         json.dumps(metadata, ensure_ascii=False, indent=2), encoding="utf-8"
@@ -195,13 +211,13 @@ def main() -> None:
 
 - 功率接口：FC-only；三堆N+1，正需求时恰好两堆在线、一堆休息；确定性健康更新。
 - 两台健康堆容量：{model.fc_power_reference_kw():.3f} kW；预留{CAPACITY_RESERVE_FRACTION:.0%}后负载参考上限：{system_power_reference_kw:.3f} kW。
-- Markov决策间隔：{DECISION_INTERVAL_S} s；实车经验矩阵权重：{EMPIRICAL_WEIGHT:.0%}；跟踪容差：{TRACKING_TOLERANCE_KW:.1f} kW。
-- 以上三项均为候选工程设置，不是Zuo论文直接给定值。
+- 主标定场景：实车1秒经验矩阵；压力场景：Zuo慢变/快变矩阵，暂按30秒一个转移步解释。
+- Zuo场景的30秒时间基准、5%容量余量和{TRACKING_TOLERANCE_KW:.1f} kW跟踪容差均为显式工程候选，不是论文直接给定值。
 
 四个状态、四种基础策略共{len(coverage)}个静态动作检查均可行；最大绝对跟踪误差为{coverage.tracking_error_kw.abs().max():.3f} kW，在线堆数范围为{int(coverage.online_stacks.min())}-{int(coverage.online_stacks.max())}。
-快变/慢变融合候选各运行120步，硬约束违规总数为{int(runs.constraint_violation_steps.sum())}，最大绝对跟踪误差为{runs.fc_tracking_max_abs_kw.max():.3f} kW，平均/最大在线堆数均为{runs.online_stack_count_mean.mean():.1f}/{int(runs.online_stack_count_max.max())}。
+三个独立场景各运行120步，硬约束违规总数为{int(runs.constraint_violation_steps.sum())}，最大绝对跟踪误差为{runs.fc_tracking_max_abs_kw.max():.3f} kW，平均/最大在线堆数均为{runs.online_stack_count_mean.mean():.1f}/{int(runs.online_stack_count_max.max())}。
 
-该结果只证明基础接口和候选负载在短确定性轨迹上可执行，不证明30 s、50%融合权重或5%容量余量最优，也不构成策略延寿结论。
+该结果只证明基础接口和三个负载场景在短确定性轨迹上可执行，不证明Zuo场景30秒时间基准或5%容量余量最优，也不构成策略延寿结论。
 """
     (OUTPUT / "report.md").write_text(report, encoding="utf-8")
 

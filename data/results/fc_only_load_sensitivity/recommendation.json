@@ -1,0 +1,21 @@
+{
+  "calibrated_baseline": {
+    "matrix": "empirical_1s",
+    "decision_interval_s": 1,
+    "reason": "preserves the native one-second transition time base and observed state-change rate"
+  },
+  "literature_stress_scenarios": [
+    {
+      "matrix": "zuo_slow",
+      "candidate_interval_s": 30
+    },
+    {
+      "matrix": "zuo_fast",
+      "candidate_interval_s": 30
+    }
+  ],
+  "matrix_blending": "not selected because transition time bases differ",
+  "capacity_reserve_fraction": 0.05,
+  "capacity_reserve_status": "conservative baseline candidate; scan retained for sensitivity",
+  "tracking_tolerance_kw": 5.5
+}
