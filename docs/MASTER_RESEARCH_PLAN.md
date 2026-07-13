@@ -6,6 +6,7 @@
 本文档是项目当前范围、优先级、阶段门槛和决策状态的唯一持续维护入口。
 `CODEX_CLI_HANDOFF_2026-07-12.md`保留为一次性交接快照，
 `project_execution_tracker.md`保留详细历史和实验日志；二者不再决定当前优先级。
+快速状态和图表计划见`docs/PROJECT_STATUS_BOARD.md`。
 
 ## 1. 当前研究问题
 
