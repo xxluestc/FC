@@ -1,0 +1,83 @@
+{
+  "method": "robust_endpoints_isotonic_components_median_aggregation",
+  "row_count": 6104,
+  "endpoint_window": 50,
+  "key_columns": [
+    "event_id",
+    "canonical_row_6104",
+    "original_index"
+  ],
+  "components": {
+    "i0_A_per_cm2": {
+      "direction": "decreasing",
+      "direction_sign": -1,
+      "start_endpoint": 1.907e-07,
+      "end_endpoint": 1.80405e-07,
+      "signed_endpoint_span": 1.0295e-08,
+      "spearman_vs_row": -0.9999951697550832,
+      "spearman_vs_h": -0.9999780359387802,
+      "degradation_aligned_spearman_vs_row": 0.9999951697550832,
+      "degradation_aligned_spearman_vs_h": 0.9999780359387802,
+      "reconstruction": {
+        "rmse": 1.0157950064363608e-11,
+        "mae": 3.866364688397743e-12,
+        "max_abs_error": 1.0579999999997703e-10,
+        "normalized_rmse": 0.0009866877187337162
+      }
+    },
+    "ih_A_per_cm2": {
+      "direction": "increasing",
+      "direction_sign": 1,
+      "start_endpoint": 0.002,
+      "end_endpoint": 0.00366,
+      "signed_endpoint_span": 0.00166,
+      "spearman_vs_row": 0.9986025131615712,
+      "spearman_vs_h": 0.9985834919373824,
+      "degradation_aligned_spearman_vs_row": 0.9986025131615712,
+      "degradation_aligned_spearman_vs_h": 0.9985834919373824,
+      "reconstruction": {
+        "rmse": 6.2489990668591265e-06,
+        "mae": 2.6338320620160082e-06,
+        "max_abs_error": 3.837528604118878e-05,
+        "normalized_rmse": 0.003764457269192245
+      }
+    },
+    "R_ohm_reported_ohm_cm2": {
+      "direction": "increasing",
+      "direction_sign": 1,
+      "start_endpoint": 0.0406,
+      "end_endpoint": 0.063435,
+      "signed_endpoint_span": 0.022835000000000008,
+      "spearman_vs_row": 0.9998499701250283,
+      "spearman_vs_h": 0.9999129332315265,
+      "degradation_aligned_spearman_vs_row": 0.9998499701250283,
+      "degradation_aligned_spearman_vs_h": 0.9999129332315265,
+      "reconstruction": {
+        "rmse": 2.016552788621795e-05,
+        "mae": 8.612361079256398e-06,
+        "max_abs_error": 0.0001606417112299391,
+        "normalized_rmse": 0.0008830973455755613
+      }
+    }
+  },
+  "progress": {
+    "minimum": 0.0,
+    "maximum": 1.0,
+    "is_monotone": true,
+    "terminal_value_count": 1,
+    "roundtrip_rmse": 0.0001714338278978909,
+    "roundtrip_mae": 1.2720677443786792e-05,
+    "roundtrip_max_abs_error": 0.006349901467046115
+  },
+  "interpretation": {
+    "accepted": "h is a normalized coordinate along the recorded LZW theta trajectory; theta(h) is a descriptive monotone performance manifold",
+    "prohibited": "h is not SOH, h=1 is not EOL, and the reconstruction is not an independent prediction or an action-resolved degradation law",
+    "controller_changed": false,
+    "uses_damage_proxy_D": false,
+    "uses_gamma_or_literature_action_coefficients": false
+  },
+  "source_rows": {
+    "theta": 6104,
+    "event_keys": 6104
+  }
+}

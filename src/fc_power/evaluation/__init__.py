@@ -25,9 +25,20 @@ from fc_power.evaluation.gamma_sensitivity import (
     sample_repeated_exposure,
 )
 from fc_power.evaluation.external_validation import (
+    DataExclusionInterval,
+    DataExclusionRules,
     POWER_PACKET_COLUMNS,
+    apply_data_exclusions,
     canonicalize_power_packets,
+    extract_target_events,
+    load_data_exclusions,
     select_first_operating_block,
+)
+from fc_power.evaluation.empirical_event_load import (
+    EmpiricalEventLoadModel,
+    fit_empirical_event_load,
+    fit_empirical_event_table,
+    generate_empirical_event_load,
 )
 from fc_power.evaluation.service_scheduler import (
     ServiceExposure,
@@ -69,6 +80,9 @@ from fc_power.evaluation.zuo_load_calibration import (
 __all__ = [
     "ActionExposure",
     "CalibrationWindow",
+    "DataExclusionInterval",
+    "DataExclusionRules",
+    "EmpiricalEventLoadModel",
     "EVENT_NAMES",
     "GammaExposure",
     "POWER_PACKET_COLUMNS",
@@ -87,10 +101,12 @@ __all__ = [
     "ZUO_LOAD_LEVEL_FRACTIONS",
     "ZUO_SLOW_TRANSITION",
     "append_soc_recovery_tail",
+    "apply_data_exclusions",
     "classify_power_events",
     "candidate_assignments",
     "choose_baseline_protected_assignment",
     "canonicalize_power_packets",
+    "extract_target_events",
     "clip_profile_to_feasible_envelope",
     "choose_service_assignment",
     "evaluate_service_assignment",
@@ -105,8 +121,12 @@ __all__ = [
     "exposure_from_trajectory",
     "extract_action_exposure",
     "estimate_segmented_transitions",
+    "fit_empirical_event_load",
+    "fit_empirical_event_table",
+    "generate_empirical_event_load",
     "paired_strategy_comparison",
     "materialize_calibration_window",
+    "load_data_exclusions",
     "quantize_zuo_states",
     "run_policy",
     "sample_repeated_exposure",

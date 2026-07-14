@@ -1,0 +1,7 @@
+{
+  "theta_source": "data\\upstream_lzw\\theta_event_trajectory_6104.csv",
+  "theta_sha256": "d8c441c99ccd1e0ffd0c3540a40ada705990281d49afd3c9c630bdec4b4e628c",
+  "event_source": "data\\upstream_lzw\\canonical_event_table_6104.csv",
+  "event_sha256": "310aef3b82a0583791a1f13e3334a5e2a252253a794953c8060012e476104f4e",
+  "output_scope": "cross-dataset LZW health-progress prior"
+}

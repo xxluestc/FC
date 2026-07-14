@@ -18,6 +18,12 @@ from fc_power.health.dynamic_proxy import (
     DynamicPerformanceLossProxy,
     LzwIvConditions,
 )
+from fc_power.health.lzw_health_progress import (
+    DEGRADATION_DIRECTIONS,
+    LzwHealthProgressMap,
+    fit_lzw_health_progress,
+    validate_lzw_theta_keys,
+)
 from fc_power.health.observer import (
     DegradationObservation,
     GaussianDegradationObserver,
@@ -40,6 +46,10 @@ __all__ = [
     "ghaderi_gamma_params",
     "DynamicPerformanceLossProxy",
     "LzwIvConditions",
+    "DEGRADATION_DIRECTIONS",
+    "LzwHealthProgressMap",
+    "fit_lzw_health_progress",
+    "validate_lzw_theta_keys",
     "DegradationObservation",
     "GaussianDegradationObserver",
     "HealthBelief",

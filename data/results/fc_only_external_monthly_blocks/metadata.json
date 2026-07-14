@@ -3,6 +3,9 @@
   "archive_root": "G:\\大论文\\实车数据\\21UBE0022_苏E02625F",
   "file_time_audit": "data\\results\\liu_21ube0022_identity_rating\\file_time_audit.csv",
   "file_time_audit_sha256": "a35792a455630ce92c977cde316ca095950f929c876e6586977ab81f8f32aacb",
+  "data_exclusions": "configs\\21ube0022_data_exclusions.json",
+  "data_exclusions_sha256": "93cdea763915756ca5da84e16227609c790e3251c07c06645aa58afbe3104c17",
+  "exclusions_form_hard_segment_breaks": true,
   "months": [
     "2025-06",
     "2025-07",
@@ -19,12 +22,19 @@
     "2026-06"
   ],
   "block_steps": 1800,
-  "blocks_per_month": 3,
+  "blocks_per_month": 6,
+  "minimum_blocks_per_month": 3,
+  "selected_blocks": 73,
+  "omitted_strata": 5,
+  "full_archive_target_events": 6706,
+  "full_archive_event_segments": 1530,
+  "full_archive_active_seconds": 11300202,
   "target_dt_s": 1,
   "gap_threshold_s": 10,
   "minimum_positive_share": 0.8,
   "positive_threshold_kw": 0.5,
-  "selection_rule": "split each calendar month into equal time strata, then take the first chronological one-second block in every stratum with finite power at every step and the prespecified minimum positive-power share",
+  "event_signal": "target_power_kw is forward-filled only within telemetry segments; DCDC voltage/current remain the realized-power measurement",
+  "selection_rule": "split each calendar month into equal time strata, then take the first chronological one-second block in every qualifying stratum with finite power at every step and the prespecified minimum positive-power share; empty strata remain explicit omissions and are never backfilled",
   "separation": "months 2025-06 through 2026-06 are not concatenated with the original May 2025 seven-day modelling chain; every block resets health/control state",
   "parameter_use_boundary": "the archive previously supported the scalar 40 kW operating reference, but these blocks did not tune controller weights, assignments or health parameters"
 }
