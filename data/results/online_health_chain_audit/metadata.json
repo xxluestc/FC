@@ -1,0 +1,40 @@
+{
+  "status": "diagnostic_current_implementation_not_method_validation",
+  "initial_damage_fraction": 0.4,
+  "initial_damage_pct": 3.7412114122222224,
+  "final_damage_pct": 3.7437850455554678,
+  "damage_increment_pct": 0.00257363333324534,
+  "sequence_a": [
+    0.0,
+    25.0,
+    90.0,
+    120.0,
+    160.0,
+    195.0,
+    270.0,
+    370.0,
+    0.0
+  ],
+  "block_seconds": 60,
+  "diagnostic_current_a": 270.0,
+  "steady_rate_map_pct_per_hour": {
+    "0.0": 0.00126,
+    "25.0": 0.002,
+    "90.0": 0.002,
+    "120.0": 0.002,
+    "160.0": 0.002,
+    "195.0": 0.002,
+    "270.0": 0.002,
+    "370.0": 0.00347
+  },
+  "shift_increment_pct": 5.93e-05,
+  "start_increment_pct": 0.00196,
+  "stop_increment_pct": 0.0,
+  "ramp_increment_per_amp": 0.0,
+  "stochastic_health": false,
+  "known_failures_exposed": [
+    "steady rates are identical from 25 A through 270 A",
+    "start cost dominates a short trace",
+    "stop and ramp costs are zero"
+  ]
+}

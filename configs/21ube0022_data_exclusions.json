@@ -1,0 +1,15 @@
+{
+  "vehicle_id": "21UBE0022_苏E02625F",
+  "time_basis": "上报时间（文件名日期比实际日期晚一天）",
+  "intervals": [
+    {
+      "start_inclusive": "2026-01-30T00:00:00",
+      "end_exclusive": "2026-02-07T00:00:00",
+      "reason": "匹配电流和冷却液温度后出现可恢复的异常电压低谷",
+      "status": "exclude_from_derived_load_and_health_sequences",
+      "preserve_segment_break": true
+    }
+  ],
+  "raw_files_are_immutable": true,
+  "transition_counts_must_not_cross_exclusions": true
+}

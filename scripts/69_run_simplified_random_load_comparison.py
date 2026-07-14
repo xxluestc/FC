@@ -1,4 +1,9 @@
-"""Compare simplified three-stack allocation policies on random dynamic loads."""
+"""Reproduce a rejected first-pass random-load comparison.
+
+The design is retained only for auditability. Its 40 kW system scaling, 30 s
+Markov interval, empirical zero-transition scenario, and energized-idle online
+count do not constitute a valid three-stack N+1 experiment.
+"""
 
 from __future__ import annotations
 
@@ -365,6 +370,11 @@ def plot_results(
 
 def main() -> None:
     parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--reproduce-rejected-design",
+        action="store_true",
+        help="Acknowledge that this command reproduces an invalidated experiment.",
+    )
     parser.add_argument("--length", type=int, default=180)
     parser.add_argument(
         "--pair-seeds", nargs="+", type=int, default=list(range(2026, 2036))
@@ -373,6 +383,11 @@ def main() -> None:
     parser.add_argument("--jobs", type=int, default=8)
     parser.add_argument("--out-dir", type=Path, default=OUTPUT)
     args = parser.parse_args()
+    if not args.reproduce_rejected_design:
+        raise RuntimeError(
+            "experiment rejected: see docs/CORRECTIVE_AUDIT_RANDOM_LOAD_2026-07-14.md; "
+            "pass --reproduce-rejected-design only to audit the historical output"
+        )
     if min(args.length, args.rotation_period, args.jobs) <= 0:
         raise ValueError("length, rotation period and jobs must be positive")
     if not args.pair_seeds or len(set(args.pair_seeds)) != len(args.pair_seeds):

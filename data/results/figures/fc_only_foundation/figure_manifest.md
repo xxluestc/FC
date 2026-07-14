@@ -33,6 +33,7 @@
 | `fig29_blend_weight_strong_heterogeneity` | 强同向异质性下五个Blend权重的否证筛查。单纯调权没有通过N+1第二边界非负门槛。 |
 | `fig30_rate_bounded_blend_audit` | Rate-bounded Blend在参数、物理边界和跨月模板上的三层审计。1.10门槛来自既有名义异质性包络。 |
 | `fig31_lzw_overall_exposure_screen` | LZW总体暴露退化模型停止门筛查。负载项相对运行时钟没有稳定增益，因此只保留终点与趋势，不进入动作分辨退化率。 |
-| `fig32_simplified_random_load_comparison` | 三类随机动态负载下五种功率分配策略的闭环比较，以及Instant考虑健康前后的同种子消融。当前只证明简化退化链路跑通，不作寿命结论。 |
+| `fig32_simplified_random_load_comparison` | 已删除并作废：40 kW系统尺度、30 s时间基准、零跳转经验场景和0 A在线计数均不成立。 |
+| `fig33_online_health_chain_audit` | 当前实现的动作到在线健康状态再到IV/功率的故障暴露图。确认状态写回有效，同时显示25--270 A退化率完全相同、启动事件主导且停机/爬坡代价为0；不作方法效果图。 |
 
 每张图保存为320 DPI PNG。图内`30 s*`表示工程时间基准假设，不是Zuo论文直接给定值。
