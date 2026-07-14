@@ -4,6 +4,7 @@
 分支：`codex/gamma-health-foundation`
 工作起点：`bf94f3b`
 负载与健康基础提交：`d11f027`
+相对健康机制结果提交：`d848019`
 
 ## 当前结论
 
@@ -38,6 +39,15 @@ python -m unittest tests.test_relative_health_allocator -v
 - 外部负载块：`2FA0E0519A3A338CFD89D5460E32EC6ADF156EFAE7264749461BFB7FA7AB6F45`
 - LZW `h -> theta`：`DF383817ED48D7948D61EED645F8198F6F29ADF6357365C9EE9E95F4BAA7976E`
 - IV 条件：`623B189FF62CCA6BDD88502AA1994D4993FEA17D55226B1048187EFD1AA47545`
+
+最终验证：155项单元测试、baseline轻量检查、`compileall`和`git diff --check`全部通过。
+
+工作区仍有两个未提交的 L0 经验事件负载文件：
+
+- `scripts/71_fit_empirical_event_load.py`
+- `data/results/empirical_event_load/`
+
+它们没有进入上述提交，因为 L0 的科学结论仍需独立复核；不得把其中的 `GO` 当成本轮已确认结论。
 
 ## 下一步唯一主任务
 
