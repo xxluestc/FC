@@ -1,0 +1,71 @@
+{
+  "decision": "LIMITED_GO_MECHANISM_ONLY",
+  "interpretation": "fixed-budget relative-health redistribution mechanism only; not independent method effectiveness, physical degradation-rate identification, or lifetime-extension validation",
+  "primary_reference": "performance_adaptive",
+  "source": "H:\\其他\\2026刘展玮\\FC\\data\\results\\fc_only_external_monthly_blocks\\external_monthly_power_blocks.csv",
+  "evaluation_months": [
+    "2026-02",
+    "2026-03",
+    "2026-04",
+    "2026-05",
+    "2026-06"
+  ],
+  "evaluation_role": "nested later-time development replay, not untouched final holdout",
+  "vehicle_power_field": "target_power_kw",
+  "vehicle_reference_kw_pre_2026_02_p99": 45.0,
+  "healthy_n_plus_one_capacity_kw": 87.45105687558855,
+  "mapped_capacity_kw": 78.7059511880297,
+  "system_capacity_fraction": 0.9,
+  "control_interval_s": 10,
+  "allowed_currents_a": [
+    0.0,
+    90.0,
+    120.0,
+    160.0,
+    195.0,
+    270.0,
+    370.0
+  ],
+  "max_online_stacks": 2,
+  "tracking_slack_kw": 0.5,
+  "health_lookup_points": 10001,
+  "health_lookup_max_abs_error_kw": 1.8463118088618558e-05,
+  "initial_health_levels": [
+    0.3,
+    0.36,
+    0.42
+  ],
+  "initial_order_count": 6,
+  "episode_block_count": 29,
+  "primary_fleet_progress_budget": 0.03,
+  "sensitivity_budgets": [
+    0.01,
+    0.06
+  ],
+  "primary_health_weight": 0.2,
+  "health_weight_sweep": [
+    0.1,
+    0.2,
+    0.4
+  ],
+  "example_block_selection": "prefer blocks exceeding healthy single-stack capacity, then maximum target transition count and maximum target power",
+  "example_block_id": "external_2026-04_s3",
+  "checks": {
+    "fleet_budget_is_policy_invariant": true,
+    "final_max_health_is_lower_than_performance_adaptive": true,
+    "health_weighted_loading_is_lower_than_performance_adaptive": true,
+    "useful_efficiency_loss_within_0p25_point": true,
+    "tracking_mae_increase_within_0p25_kw": true
+  },
+  "maximum_budget_conservation_error": 2.220446049250313e-16,
+  "known_limits": [
+    "fleet progress budget is a normalized scenario setting, not a rate",
+    "energy throughput only allocates relative progress; start, stop, ramp, and load-amplitude damage are not identified",
+    "three virtual stacks are positions on one LZW theta manifold, not three measured stacks",
+    "the real vehicle trace supplies demand only and is not a multi-stack control record",
+    "the online health observation is idealized in this feasibility screen",
+    "health improvement is partly mechanical because the policy directly minimizes health-weighted loading",
+    "the 0.10 health weight is worse than the health-blind controller on final maximum h, so weak weights are not uniformly robust",
+    "useful electrical efficiency excludes generation above instantaneous demand"
+  ]
+}

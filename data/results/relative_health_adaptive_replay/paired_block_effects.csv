@@ -1,0 +1,13 @@
+policy,reference,metric,block_count,mean_paired_difference,bootstrap_ci95_low,bootstrap_ci95_high
+health_reserve_0.20,frozen_health,final_max_health_progress,29,-0.009420963491395477,-0.00999466030188371,-0.008274449698622604
+health_reserve_0.20,frozen_health,final_health_range,29,-0.01483905413788326,-0.01703285841214075,-0.012721352677831158
+health_reserve_0.20,frozen_health,health_weighted_loading,29,-0.029664113672477087,-0.0338899616545857,-0.025272593246795143
+health_reserve_0.20,frozen_health,useful_electrical_efficiency_pct,29,0.01585265118061144,0.007338224781110688,0.024908334107941608
+health_reserve_0.20,frozen_health,tracking_mae_kw,29,-0.005912031272309196,-0.016131882932383892,0.00274871321557651
+health_reserve_0.20,frozen_health,switch_count,29,0.0,0.0,0.0
+health_reserve_0.20,performance_adaptive,final_max_health_progress,29,-0.012217434084990944,-0.014793473778804486,-0.00964275908772098
+health_reserve_0.20,performance_adaptive,final_health_range,29,-0.022111711488572015,-0.026270512778953644,-0.01753954595599382
+health_reserve_0.20,performance_adaptive,health_weighted_loading,29,-0.04409904318483753,-0.05248148745767571,-0.03489105323827525
+health_reserve_0.20,performance_adaptive,useful_electrical_efficiency_pct,29,0.0005721968852740168,-0.0003396027285043834,0.0017272479278522147
+health_reserve_0.20,performance_adaptive,tracking_mae_kw,29,0.02108246547521308,0.015948820374337154,0.02674427541099963
+health_reserve_0.20,performance_adaptive,switch_count,29,-0.27586206896551724,-0.5517241379310345,-0.06896551724137931
