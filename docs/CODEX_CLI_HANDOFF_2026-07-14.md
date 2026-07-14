@@ -2,6 +2,9 @@
 
 更新时间：2026-07-14
 
+> 后续已完成简化退化随机负载全链路，最新交接见
+> `docs/CODEX_CLI_HANDOFF_2026-07-14_SIMPLIFIED_DEGRADATION_CHAIN.md`。
+
 ## 1. Git与验收
 
 - 仓库：`H:/其他/2026刘展玮/FC`

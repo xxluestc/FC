@@ -78,4 +78,3 @@ Rotating介于两者之间。这个现象先原样保留，后续优化时再判
 问题都已暴露出来。下一阶段才进入效果优化，本轮不通过调权把这些问题遮住。
 
 复现入口：`scripts/69_run_simplified_random_load_comparison.py`。
-

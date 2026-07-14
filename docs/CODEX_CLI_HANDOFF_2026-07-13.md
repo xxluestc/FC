@@ -2,8 +2,9 @@
 
 更新时间：2026-07-14
 
-> 最新物理边界、强异质性权重筛查和Rate-bounded Blend交接见
-> `docs/CODEX_CLI_HANDOFF_2026-07-14.md`；本文件保留此前完整背景。
+> 最新简化退化随机负载闭环交接见
+> `docs/CODEX_CLI_HANDOFF_2026-07-14_SIMPLIFIED_DEGRADATION_CHAIN.md`；物理边界和
+> Rate-bounded Blend阶段见`docs/CODEX_CLI_HANDOFF_2026-07-14.md`。本文件保留此前完整背景。
 
 ## 1. Git检查点
 
