@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from time import perf_counter
 
 import numpy as np
@@ -12,6 +12,7 @@ from fc_power.hydrogen_model import faraday_h2_g_s
 from fc_power.power_allocation import (
     choose_average,
     choose_beam,
+    choose_daisy_chain_average,
     choose_instant,
     choose_rotating,
     choose_terminal_soc_recovery,
@@ -138,9 +139,30 @@ def run_policy(
             planned = choose_terminal_soc_recovery(model, state, current_demand)
         elif strategy == "average":
             planned = choose_average(model, state, current_demand)
+        elif strategy == "daisy_chain":
+            online_limit = model.config.max_online_stacks or model.n_stacks
+            start = (step_index // rotation_period) % model.n_stacks
+            assignment = tuple(
+                (start + offset) % model.n_stacks for offset in range(online_limit)
+            )
+            planned = choose_daisy_chain_average(
+                model, state, current_demand, assignment
+            )
         elif strategy == "rotating":
             lead = (step_index // rotation_period) % model.n_stacks
             planned = choose_rotating(model, state, current_demand, lead)
+        elif strategy == "instant_no_health":
+            health_blind_weights = replace(
+                model.config.weights,
+                degradation_increment=0.0,
+                performance_loss=0.0,
+            )
+            planned = choose_instant(
+                model,
+                state,
+                current_demand,
+                objective_weights=health_blind_weights,
+            )
         elif strategy == "instant_health":
             planned = choose_instant(
                 model,

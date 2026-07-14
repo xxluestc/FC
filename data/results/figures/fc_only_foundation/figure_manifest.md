@@ -28,5 +28,11 @@
 | `fig24_two_stage_continuity_screen` | 两阶段RUL和第二边界连续性目标的定向否证。解析投影会增加切换，并在异质性错配下牺牲N+1第二边界；该图保留为负方法证据，不作为主结果。 |
 | `fig25_protected_blend_screen` | 局部baseline-protection筛查。候选动作同时受一步最大损伤和第二大损伤约束，但长期轨迹仍在两个异质性场景出现第二边界负95%区间，因此不能作为安全保证。 |
 | `fig26_guarded_blend_cross_month` | Guarded Blend在13个月外部真实暴露下的异质性验证。参考场景保留Blend收益；强随机效应对齐场景第二边界区间跨0；强错配场景精确回退固定双堆。健康逐块重置，因子不是车辆拟合值。 |
+| `fig27_voltage_loss_boundary_mapping` | LZW损伤代理到定工况电压损失阈值的映射。LZW标定终点不等于物理EOL，5%及以上阈值只作外推压力边界。 |
+| `fig28_frozen_process_physical_boundaries` | 固定退化过程后改变停止边界的压力测试，用于区分边界选择和退化过程缩放。 |
+| `fig29_blend_weight_strong_heterogeneity` | 强同向异质性下五个Blend权重的否证筛查。单纯调权没有通过N+1第二边界非负门槛。 |
+| `fig30_rate_bounded_blend_audit` | Rate-bounded Blend在参数、物理边界和跨月模板上的三层审计。1.10门槛来自既有名义异质性包络。 |
+| `fig31_lzw_overall_exposure_screen` | LZW总体暴露退化模型停止门筛查。负载项相对运行时钟没有稳定增益，因此只保留终点与趋势，不进入动作分辨退化率。 |
+| `fig32_simplified_random_load_comparison` | 三类随机动态负载下五种功率分配策略的闭环比较，以及Instant考虑健康前后的同种子消融。当前只证明简化退化链路跑通，不作寿命结论。 |
 
 每张图保存为320 DPI PNG。图内`30 s*`表示工程时间基准假设，不是Zuo论文直接给定值。

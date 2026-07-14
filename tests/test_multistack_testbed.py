@@ -135,6 +135,47 @@ class MultiStackTestbedTest(unittest.TestCase):
         self.assertIn("stack_2_final_damage_pct", run.metrics)
         self.assertEqual(run.metrics["constraint_violation_steps"], 0)
 
+    def test_daisy_chain_rotates_equal_load_pairs(self):
+        model = load_lzw_multistack_world_model(
+            ROOT,
+            n_stacks=3,
+            config=WorldModelConfig(
+                min_online_stacks=2,
+                max_online_stacks=2,
+                power_interface="fc_only",
+                fc_power_tracking_tolerance_kw=5.5,
+            ),
+        )
+        scenario = TestScenario(
+            "daisy_chain",
+            self.demand(31, 40.0),
+            (0.1, 0.4, 0.8),
+            stochastic_health=False,
+        )
+        run = run_policy(model, scenario, "daisy_chain", rotation_period=30)
+        first = run.trajectory.iloc[0]
+        last = run.trajectory.iloc[-1]
+        self.assertEqual(
+            tuple(first[f"stack_{index}_current_a"] > 0 for index in range(3)),
+            (True, True, False),
+        )
+        self.assertEqual(
+            tuple(last[f"stack_{index}_current_a"] > 0 for index in range(3)),
+            (False, True, True),
+        )
+        self.assertEqual(run.metrics["constraint_violation_steps"], 0)
+
+    def test_no_health_planner_still_executes_health_updates(self):
+        scenario = TestScenario(
+            "no_health_objective",
+            self.demand(20, 40.0),
+            (0.1, 0.7),
+            stochastic_health=False,
+        )
+        run = run_policy(self.model, scenario, "instant_no_health")
+        self.assertGreater(run.metrics["health_changed_steps"], 0)
+        self.assertGreater(run.metrics["main_expected_damage_increment_pct"], 0)
+
     def test_fc_only_runner_reports_tracking_and_no_battery_metrics(self):
         model = load_lzw_multistack_world_model(
             ROOT,

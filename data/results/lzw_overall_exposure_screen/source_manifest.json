@@ -1,0 +1,20 @@
+{
+  "events": {
+    "path": "H:\\\u5176\u4ed6\\2026\u5218\u5c55\u73ae\\FC\\data\\upstream_lzw\\canonical_event_table_6104.csv",
+    "sha256": "310aef3b82a0583791a1f13e3334a5e2a252253a794953c8060012e476104f4e"
+  },
+  "conditions": {
+    "path": "H:\\\u5176\u4ed6\\2026\u5218\u5c55\u73ae\\FC\\data\\upstream_lzw\\current_point_cost_conditions.json",
+    "sha256": "623b189ff62cca6bdd88502aa1994d4993fea17d55226b1048187efd1aa47545"
+  },
+  "raw_data": {
+    "path": "H:\\\u5176\u4ed6\\2026\u5218\u5c55\u73ae\\converted_data\\raw\\data_full.npy",
+    "bytes": 1048999808,
+    "sha256": "2fb00f674bd0c02a3c46137fc621c4a8a1b6dcf7b311feb588ad6e122f0749d3"
+  },
+  "reference_current_A": 370.0,
+  "health_baseline_events": 50,
+  "sampling_unit": "raw samples; seconds are not asserted",
+  "future_demand_used": false,
+  "zuo_degradation_parameters_used": false
+}

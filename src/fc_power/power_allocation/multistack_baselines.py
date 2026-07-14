@@ -37,6 +37,43 @@ def choose_average(
     return PlanningResult(best[2], best[3], best[0], expanded, len(candidates))
 
 
+def choose_daisy_chain_average(
+    model: MechanisticMultiStackWorldModel,
+    state: MultiStackState,
+    demand_power_kw: float,
+    online_assignment,
+    *,
+    soc_feedback_kw_per_soc: float = 1200.0,
+) -> PlanningResult:
+    """Use a prescribed sequential stack group and split its load equally."""
+
+    assignment = frozenset(int(index) for index in online_assignment)
+    online_limit = model.config.max_online_stacks or model.n_stacks
+    if (
+        len(assignment) != online_limit
+        or min(assignment, default=-1) < 0
+        or max(assignment, default=model.n_stacks) >= model.n_stacks
+    ):
+        raise ValueError("online_assignment must contain one valid online group")
+    target = _target_stack_power(model, state, demand_power_kw, soc_feedback_kw_per_soc)
+
+    def selected_equal_group(action):
+        active = frozenset(index for index, is_on in enumerate(action.is_on) if is_on)
+        return active == assignment and _is_average_action(model, action)
+
+    candidates, expanded = _rule_candidates(
+        model,
+        state,
+        demand_power_kw,
+        selected_equal_group,
+        lambda step, action: _tracking_score(model, step, target),
+    )
+    if not candidates:
+        raise RuntimeError("no feasible daisy-chain average action")
+    best = min(candidates)
+    return PlanningResult(best[2], best[3], best[0], expanded, len(candidates))
+
+
 def choose_rotating(
     model: MechanisticMultiStackWorldModel,
     state: MultiStackState,

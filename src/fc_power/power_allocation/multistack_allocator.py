@@ -11,6 +11,7 @@ from fc_power.world_model.mechanistic import (
     MechanisticMultiStackWorldModel,
     MultiStackAction,
     MultiStackState,
+    WorldCostWeights,
     WorldStep,
 )
 
@@ -98,6 +99,7 @@ def choose_instant(
     allow_dwell_override: bool = True,
     online_assignment=None,
     prune_fc_tracking: bool = True,
+    objective_weights: WorldCostWeights | None = None,
 ) -> PlanningResult:
     """Choose the minimum-cost feasible one-step action."""
 
@@ -133,7 +135,15 @@ def choose_instant(
             if not step.constraints.feasible:
                 continue
             feasible += 1
-            key = (step.cost.total, _action_tiebreak(action))
+            objective = (
+                step.cost.total
+                if objective_weights is None
+                else sum(
+                    getattr(objective_weights, name) * getattr(step.cost, name)
+                    for name in objective_weights.__dict__
+                )
+            )
+            key = (objective, _action_tiebreak(action))
             if best is None or key < best[0]:
                 best = (key, action, step)
         if best is not None:

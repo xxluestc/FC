@@ -1,0 +1,5 @@
+split,train_fraction,best_time_model,best_load_model,load_vs_time_rmse_improvement
+rolling_train60_next10,0.6,stack_on_clock,stack_on_plus_charge,0.0
+rolling_train70_next10,0.7,stack_on_clock,stack_on_plus_charge,0.0
+rolling_train80_next10,0.8,stack_on_clock,stack_on_plus_charge,0.0
+rolling_train90_next10,0.9,stack_on_clock,stack_on_plus_charge,0.0

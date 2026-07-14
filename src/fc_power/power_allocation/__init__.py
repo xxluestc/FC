@@ -11,6 +11,7 @@ from fc_power.power_allocation.multistack_allocator import (
 )
 from fc_power.power_allocation.multistack_baselines import (
     choose_average,
+    choose_daisy_chain_average,
     choose_rotating,
 )
 
@@ -18,6 +19,7 @@ __all__ = [
     "PlanningResult",
     "choose_beam",
     "choose_average",
+    "choose_daisy_chain_average",
     "choose_instant",
     "choose_rotating",
     "choose_terminal_soc_recovery",

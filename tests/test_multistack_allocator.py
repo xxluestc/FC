@@ -1,4 +1,5 @@
 import unittest
+from dataclasses import replace
 from pathlib import Path
 
 from fc_power.power_allocation.multistack_allocator import (
@@ -53,6 +54,27 @@ class MultiStackAllocatorTest(unittest.TestCase):
             + result.step.constraints.battery_power_kw,
             55.0,
         )
+
+    def test_instant_objective_override_does_not_change_world_cost(self):
+        state = self.model.initial_state()
+        weights = replace(
+            self.model.config.weights,
+            degradation_increment=0.0,
+            performance_loss=0.0,
+        )
+        result = choose_instant(
+            self.model,
+            state,
+            demand_power_kw=55.0,
+            objective_weights=weights,
+        )
+        expected = sum(
+            getattr(weights, name) * getattr(result.step.cost, name)
+            for name in weights.__dict__
+        )
+        self.assertAlmostEqual(result.objective, expected)
+        self.assertLess(result.objective, result.step.cost.total)
+        self.assertGreater(result.step.cost.degradation_increment, 0.0)
 
     def test_fc_only_instant_tracks_without_changing_soc(self):
         model = load_lzw_multistack_world_model(

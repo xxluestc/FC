@@ -1,0 +1,45 @@
+{
+  "status": "rejected_for_action_resolved_degradation",
+  "trend_only_pass": true,
+  "action_model_pass": false,
+  "selection_on_validation": {
+    "best_time_model": "stack_on_clock",
+    "best_load_model": "stack_on_plus_charge",
+    "best_physical_model": "stack_on_clock"
+  },
+  "gates": {
+    "physical_trend_improves_zero_by_10pct": true,
+    "load_improves_time_by_10pct": false,
+    "charge_coefficient_retained": false,
+    "load_beats_time_in_three_of_four_rolling_windows": false,
+    "event_count_control_not_better_than_physical": false,
+    "stack_on_charge_correlation_below_0_95": false,
+    "sampling_period_verified": false
+  },
+  "diagnostics": {
+    "eligible_segment_transitions": 618,
+    "excluded_deleted_gap_transitions": 1,
+    "positive_target_increment_share": 0.8851132686084142,
+    "stack_on_charge_train_correlation": 0.9645516333929653,
+    "load_beats_time_rolling_windows": 0,
+    "load_vs_time_test": {
+      "observed": 0.0,
+      "ci95_low": 0.0,
+      "ci95_high": 0.0,
+      "block_length": 10,
+      "resamples": 5000
+    },
+    "best_physical_vs_zero_test": {
+      "observed": 0.19516889147305916,
+      "ci95_low": 0.1585767983812168,
+      "ci95_high": 0.23677506372506538,
+      "block_length": 10,
+      "resamples": 5000
+    },
+    "event_count_test_rmse": 9.016878790391592e-05,
+    "best_physical_test_rmse": 9.66043390733885e-05
+  },
+  "allowed_role": "normalized endpoint/trend sensitivity only; not an online rate law",
+  "zuo_role": "system topology and random-load generation only",
+  "controller_changed": false
+}
