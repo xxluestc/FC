@@ -11,6 +11,8 @@ HYDROGEN_MOLAR_MASS_KG_PER_MOL = 2.02e-3
 LHV_J_PER_KG = 120.0e6
 LHV_KJ_PER_MOL = 241.98
 HHV_KJ_PER_MOL = 286.02
+CHEN_REFERENCE_CELL_COUNT = 340
+CHEN_REFERENCE_RATED_GROSS_POWER_KW = 120.0
 
 SOURCE_COLUMNS = (
     "stack_id",
@@ -91,6 +93,11 @@ def summarize_chen_efficiency_curves(frame: pd.DataFrame) -> list[dict[str, floa
                 "stack_id": str(stack_id),
                 "cell_count": int(group["cell_count"].iloc[0]),
                 "samples": int(len(group)),
+                "inferred_nameplate_gross_power_kw": float(
+                    CHEN_REFERENCE_RATED_GROSS_POWER_KW
+                    * group["cell_count"].iloc[0]
+                    / CHEN_REFERENCE_CELL_COUNT
+                ),
                 "gross_power_min_kw": float(group["gross_stack_power_kw"].min()),
                 "gross_power_max_kw": float(group["gross_stack_power_kw"].max()),
                 "net_power_min_kw": float(group["net_system_power_kw"].min()),
@@ -105,6 +112,10 @@ def summarize_chen_efficiency_curves(frame: pd.DataFrame) -> list[dict[str, floa
                     peak["gross_stack_power_kw"]
                 ),
                 "peak_efficiency_net_power_kw": float(peak["net_system_power_kw"]),
+                "active_min_fraction_of_data_net_max": float(
+                    group["net_system_power_kw"].min()
+                    / group["net_system_power_kw"].max()
+                ),
             }
         )
     return summaries

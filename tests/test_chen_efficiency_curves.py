@@ -55,9 +55,9 @@ class ChenEfficiencyCurvesTest(unittest.TestCase):
             for item in summarize_chen_efficiency_curves(self.audited)
         }
         expected = {
-            "stack_1": (8.74272975786213, 62.0845703704172, 54.26316959281429, 48.0744215565514),
-            "stack_2": (9.71414417540237, 69.9589562898091, 60.07886747049697, 48.6350697365138),
-            "stack_3": (10.6855585929426, 78.4564989822725, 65.80652950667101, 49.1578989353604),
+            "stack_1": (8.74272975786213, 62.0845703704172, 54.26316959281429, 48.0744215565514, 95.29411764705883),
+            "stack_2": (9.71414417540237, 69.9589562898091, 60.07886747049697, 48.6350697365138, 105.88235294117646),
+            "stack_3": (10.6855585929426, 78.4564989822725, 65.80652950667101, 49.1578989353604, 116.47058823529412),
         }
         for stack_id, values in expected.items():
             item = summaries[stack_id]
@@ -65,6 +65,9 @@ class ChenEfficiencyCurvesTest(unittest.TestCase):
             self.assertAlmostEqual(item["gross_power_max_kw"], values[1])
             self.assertAlmostEqual(item["net_power_max_kw"], values[2])
             self.assertAlmostEqual(item["peak_efficiency_lhv_pct"], values[3])
+            self.assertAlmostEqual(
+                item["inferred_nameplate_gross_power_kw"], values[4]
+            )
 
     def test_duplicate_stack_sample_is_rejected(self):
         duplicate = pd.concat([self.source, self.source.iloc[[0]]], ignore_index=True)

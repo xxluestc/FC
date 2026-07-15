@@ -14,6 +14,8 @@ import pandas as pd
 
 from fc_power.power_allocation.chen_efficiency_curves import (
     ACTIVE_AREA_CM2,
+    CHEN_REFERENCE_CELL_COUNT,
+    CHEN_REFERENCE_RATED_GROSS_POWER_KW,
     FARADAY_CONSTANT_C_PER_MOL,
     HHV_KJ_PER_MOL,
     HYDROGEN_MOLAR_MASS_KG_PER_MOL,
@@ -118,6 +120,8 @@ def main() -> None:
             "efficiency_basis": "LHV",
             "off_state_is_separate": True,
             "sampled_domains_are_physical_limits": False,
+            "dispatch_limit": "audited net-power interpolation domain",
+            "nameplate_inference_used_for_dispatch": False,
         },
         "constants_reproducing_chen_matlab": {
             "active_area_cm2": ACTIVE_AREA_CM2,
@@ -126,6 +130,16 @@ def main() -> None:
             "lhv_j_per_kg": LHV_J_PER_KG,
             "lhv_kj_per_mol": LHV_KJ_PER_MOL,
             "hhv_kj_per_mol": HHV_KJ_PER_MOL,
+        },
+        "nameplate_inference": {
+            "reference_cell_count": CHEN_REFERENCE_CELL_COUNT,
+            "reference_rated_gross_power_kw": (
+                CHEN_REFERENCE_RATED_GROSS_POWER_KW
+            ),
+            "assumption": (
+                "linear cell-count scaling at the same 406 cm2 active area; "
+                "reported for context only and never used to extrapolate dispatch curves"
+            ),
         },
         "source": {
             "repository_snapshot": str(SOURCE.relative_to(ROOT)),

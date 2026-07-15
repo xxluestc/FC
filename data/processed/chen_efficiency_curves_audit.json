@@ -3,7 +3,9 @@
     "allocation_power_axis": "net_system_power_kw",
     "efficiency_basis": "LHV",
     "off_state_is_separate": true,
-    "sampled_domains_are_physical_limits": false
+    "sampled_domains_are_physical_limits": false,
+    "dispatch_limit": "audited net-power interpolation domain",
+    "nameplate_inference_used_for_dispatch": false
   },
   "constants_reproducing_chen_matlab": {
     "active_area_cm2": 406.0,
@@ -12,6 +14,11 @@
     "lhv_j_per_kg": 120000000.0,
     "lhv_kj_per_mol": 241.98,
     "hhv_kj_per_mol": 286.02
+  },
+  "nameplate_inference": {
+    "reference_cell_count": 340,
+    "reference_rated_gross_power_kw": 120.0,
+    "assumption": "linear cell-count scaling at the same 406 cm2 active area; reported for context only and never used to extrapolate dispatch curves"
   },
   "source": {
     "repository_snapshot": "data\\upstream_chen\\chen_efficiency_curves_origin_sheet5.csv",
@@ -26,6 +33,7 @@
       "stack_id": "stack_1",
       "cell_count": 270,
       "samples": 23,
+      "inferred_nameplate_gross_power_kw": 95.29411764705883,
       "gross_power_min_kw": 8.74272975786213,
       "gross_power_max_kw": 62.0845703704172,
       "net_power_min_kw": 5.663981334683802,
@@ -35,12 +43,14 @@
       "peak_efficiency_lhv_pct": 48.0744215565514,
       "peak_efficiency_current_density_a_cm2": 0.35,
       "peak_efficiency_gross_power_kw": 25.8983399649704,
-      "peak_efficiency_net_power_kw": 23.169396841110757
+      "peak_efficiency_net_power_kw": 23.169396841110757,
+      "active_min_fraction_of_data_net_max": 0.1043798469051068
     },
     {
       "stack_id": "stack_2",
       "cell_count": 300,
       "samples": 23,
+      "inferred_nameplate_gross_power_kw": 105.88235294117646,
       "gross_power_min_kw": 9.71414417540237,
       "gross_power_max_kw": 69.9589562898091,
       "net_power_min_kw": 6.635395752224039,
@@ -50,12 +60,14 @@
       "peak_efficiency_lhv_pct": 48.6350697365138,
       "peak_efficiency_current_density_a_cm2": 0.35,
       "peak_efficiency_gross_power_kw": 28.7729435769406,
-      "peak_efficiency_net_power_kw": 26.0440004530809
+      "peak_efficiency_net_power_kw": 26.0440004530809,
+      "active_min_fraction_of_data_net_max": 0.1104447542304704
     },
     {
       "stack_id": "stack_3",
       "cell_count": 330,
       "samples": 23,
+      "inferred_nameplate_gross_power_kw": 116.47058823529412,
       "gross_power_min_kw": 10.6855585929426,
       "gross_power_max_kw": 78.4564989822725,
       "net_power_min_kw": 7.6068101697642865,
@@ -65,7 +77,8 @@
       "peak_efficiency_lhv_pct": 49.1578989353604,
       "peak_efficiency_current_density_a_cm2": 0.3,
       "peak_efficiency_gross_power_kw": 27.6186516972969,
-      "peak_efficiency_net_power_kw": 24.819747513573567
+      "peak_efficiency_net_power_kw": 24.819747513573567,
+      "active_min_fraction_of_data_net_max": 0.11559354712655318
     }
   ]
 }
