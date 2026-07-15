@@ -6,8 +6,9 @@
 
 ```text
 分支：codex/gamma-health-foundation
-代码与结果检查点：60d1495
-测试：172 项 unittest 全部通过
+原始动态基础检查点：60d1495（N+1容量口径已被后续提交纠正）
+容量纠错与故障结果检查点：46ec207
+测试：174 项 unittest 全部通过
 baseline：轻量检查通过
 compileall：通过
 git diff --check：通过，仅有 Windows LF/CRLF 提示
