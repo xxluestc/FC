@@ -2,6 +2,24 @@
 
 更新时间：2026-07-15
 
+## 仓库状态
+
+```text
+分支：codex/gamma-health-foundation
+代码与结果检查点：60d1495
+测试：172 项 unittest 全部通过
+baseline：轻量检查通过
+compileall：通过
+git diff --check：通过，仅有 Windows LF/CRLF 提示
+```
+
+以下是用户原有未跟踪内容，本轮没有修改、删除或纳入提交：
+
+```text
+data/results/empirical_event_load/
+scripts/71_fit_empirical_event_load.py
+```
+
 ## 当前结论
 
 陈鹏三条曲线已统一为净功率横轴和 LHV 效率。三堆正常最多两堆运行，组合内采用分段线性断点枚举得到全局最优分配，组合外比较 Average、Daisy、Instantaneous、Sticky、One-step greedy、Break-even hysteresis 和 Offline DP。
