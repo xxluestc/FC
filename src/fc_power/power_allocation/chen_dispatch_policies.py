@@ -25,11 +25,22 @@ class ChenPolicyRun:
 def precompute_chen_solution_tables(
     model: ChenDispatchModel,
     demand_net_power_kw,
+    *,
+    available_stack_ids_by_step=None,
 ) -> list[dict[tuple[str, ...], ChenDispatchSolution]]:
     demand = np.asarray(demand_net_power_kw, dtype=float)
     if demand.ndim != 1 or len(demand) == 0 or np.any(~np.isfinite(demand)):
         raise ValueError("demand_net_power_kw must be a finite non-empty vector")
-    tables = [model.solve_all_modes(value) for value in demand]
+    if available_stack_ids_by_step is None:
+        availability = [None] * len(demand)
+    else:
+        availability = list(available_stack_ids_by_step)
+        if len(availability) != len(demand):
+            raise ValueError("availability schedule must match the demand vector")
+    tables = [
+        model.solve_all_modes(value, available_stack_ids=available)
+        for value, available in zip(demand, availability)
+    ]
     if any(not table for table in tables):
         first = next(index for index, table in enumerate(tables) if not table)
         raise ValueError(f"demand at step {first} has no feasible N+1 dispatch")
@@ -103,13 +114,24 @@ def run_chen_policy(
         selected = []
         previous_mode: tuple[str, ...] = ()
         cumulative_advantage_g: dict[tuple[str, ...], float] = {}
-        average_pair = _strongest_pair(model)
-        daisy_order = _efficiency_order(model)
         for value, solutions in zip(demand, solution_tables):
+            available = tuple(
+                stack_id
+                for stack_id in model.stack_ids
+                if any(stack_id in mode for mode in solutions)
+            )
             if strategy == "average":
-                solution = _average_solution(model, float(value), average_pair)
+                solution = _average_solution(
+                    model,
+                    float(value),
+                    _strongest_pair(model, available),
+                )
             elif strategy == "daisy_chain":
-                solution = _daisy_solution(model, float(value), daisy_order)
+                solution = _daisy_solution(
+                    model,
+                    float(value),
+                    _efficiency_order(model, available),
+                )
             elif strategy == "instantaneous":
                 solution = _minimum_hydrogen_solution(solutions)
             elif strategy == "sticky" and previous_mode in solutions:
@@ -155,26 +177,29 @@ def run_chen_policy(
                         for mode, alternative in solutions.items()
                         if mode != previous_mode
                     ]
-                    best_surplus, best_alternative = max(
-                        eligible,
-                        key=lambda item: (
-                            item[0],
-                            -item[1].total_chemical_input_lhv_kw,
-                            item[1].mode,
-                        ),
-                    )[:2]
-                    if (
-                        best_surplus >= -1e-12
-                        and cumulative_advantage_g.get(
-                            best_alternative.mode,
-                            0.0,
-                        )
-                        > 1e-12
-                    ):
-                        solution = best_alternative
-                        cumulative_advantage_g = {}
-                    else:
+                    if not eligible:
                         solution = current
+                    else:
+                        best_surplus, best_alternative = max(
+                            eligible,
+                            key=lambda item: (
+                                item[0],
+                                -item[1].total_chemical_input_lhv_kw,
+                                item[1].mode,
+                            ),
+                        )[:2]
+                        if (
+                            best_surplus >= -1e-12
+                            and cumulative_advantage_g.get(
+                                best_alternative.mode,
+                                0.0,
+                            )
+                            > 1e-12
+                        ):
+                            solution = best_alternative
+                            cumulative_advantage_g = {}
+                        else:
+                            solution = current
             else:
                 solution = min(
                     solutions.values(),
@@ -274,9 +299,13 @@ def _minimum_hydrogen_solution(
     )
 
 
-def _strongest_pair(model: ChenDispatchModel) -> tuple[str, str]:
+def _strongest_pair(
+    model: ChenDispatchModel,
+    available_stack_ids: tuple[str, ...] | None = None,
+) -> tuple[str, ...]:
+    available = available_stack_ids or model.stack_ids
     ranked = sorted(
-        model.stack_ids,
+        available,
         key=lambda stack_id: (
             model.curves[stack_id].maximum_net_power_kw,
             float(model.curves[stack_id].efficiency_lhv_pct.max()),
@@ -286,10 +315,14 @@ def _strongest_pair(model: ChenDispatchModel) -> tuple[str, str]:
     return tuple(sorted(ranked[:2]))
 
 
-def _efficiency_order(model: ChenDispatchModel) -> tuple[str, ...]:
+def _efficiency_order(
+    model: ChenDispatchModel,
+    available_stack_ids: tuple[str, ...] | None = None,
+) -> tuple[str, ...]:
+    available = available_stack_ids or model.stack_ids
     return tuple(
         sorted(
-            model.stack_ids,
+            available,
             key=lambda stack_id: float(
                 model.curves[stack_id].efficiency_lhv_pct.max()
             ),
@@ -301,10 +334,15 @@ def _efficiency_order(model: ChenDispatchModel) -> tuple[str, ...]:
 def _average_solution(
     model: ChenDispatchModel,
     demand: float,
-    pair: tuple[str, str],
+    pair: tuple[str, ...],
 ) -> ChenDispatchSolution:
     if np.isclose(demand, 0.0):
         return model.evaluate_allocation(demand, {})
+    if len(pair) == 1:
+        solution = model.solve_mode(demand, pair)
+        if solution is None:
+            raise ValueError(f"single available stack cannot supply {demand:.6g} kW")
+        return solution
     first, second = (model.curves[stack_id] for stack_id in pair)
     lower = max(first.minimum_net_power_kw, demand - second.maximum_net_power_kw)
     upper = min(first.maximum_net_power_kw, demand - second.minimum_net_power_kw)

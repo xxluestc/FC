@@ -121,13 +121,19 @@ class ChenDispatchModel:
             )
         self.curves = curves
 
-    def modes(self, max_active_stacks: int = 2) -> tuple[tuple[str, ...], ...]:
+    def modes(
+        self,
+        max_active_stacks: int = 2,
+        *,
+        available_stack_ids: Iterable[str] | None = None,
+    ) -> tuple[tuple[str, ...], ...]:
         if not 1 <= max_active_stacks <= len(self.stack_ids):
             raise ValueError("max_active_stacks is outside the stack count")
+        available = self._canonical_available_stack_ids(available_stack_ids)
         return tuple(
             mode
-            for size in range(1, max_active_stacks + 1)
-            for mode in combinations(self.stack_ids, size)
+            for size in range(1, min(max_active_stacks, len(available)) + 1)
+            for mode in combinations(available, size)
         )
 
     def solve_mode(
@@ -250,6 +256,7 @@ class ChenDispatchModel:
         demand_net_power_kw: float,
         *,
         max_active_stacks: int = 2,
+        available_stack_ids: Iterable[str] | None = None,
     ) -> dict[tuple[str, ...], ChenDispatchSolution]:
         solutions = {}
         if np.isclose(demand_net_power_kw, 0.0):
@@ -257,7 +264,10 @@ class ChenDispatchModel:
             if off is not None:
                 solutions[()] = off
             return solutions
-        for mode in self.modes(max_active_stacks):
+        for mode in self.modes(
+            max_active_stacks,
+            available_stack_ids=available_stack_ids,
+        ):
             solution = self.solve_mode(demand_net_power_kw, mode)
             if solution is not None:
                 solutions[mode] = solution
@@ -268,10 +278,12 @@ class ChenDispatchModel:
         demand_net_power_kw: float,
         *,
         max_active_stacks: int = 2,
+        available_stack_ids: Iterable[str] | None = None,
     ) -> ChenDispatchSolution:
         solutions = self.solve_all_modes(
             demand_net_power_kw,
             max_active_stacks=max_active_stacks,
+            available_stack_ids=available_stack_ids,
         )
         if not solutions:
             raise ValueError(
@@ -286,6 +298,20 @@ class ChenDispatchModel:
         requested = tuple(mode)
         if len(set(requested)) != len(requested):
             raise ValueError("mode contains a duplicate stack")
+        unknown = set(requested).difference(self.stack_ids)
+        if unknown:
+            raise ValueError(f"unknown Chen stacks: {sorted(unknown)}")
+        return tuple(stack_id for stack_id in self.stack_ids if stack_id in requested)
+
+    def _canonical_available_stack_ids(
+        self,
+        available_stack_ids: Iterable[str] | None,
+    ) -> tuple[str, ...]:
+        if available_stack_ids is None:
+            return self.stack_ids
+        requested = tuple(available_stack_ids)
+        if len(set(requested)) != len(requested):
+            raise ValueError("available_stack_ids contains a duplicate stack")
         unknown = set(requested).difference(self.stack_ids)
         if unknown:
             raise ValueError(f"unknown Chen stacks: {sorted(unknown)}")

@@ -271,7 +271,10 @@ def main() -> None:
             "dual_peak_kw": levels.dual_peak_kw,
             "high_load_kw": levels.high_load_kw,
             "reserve_peak_kw": levels.reserve_peak_kw,
-            "n_plus_one_max_kw": levels.n_plus_one_max_kw,
+            "maximum_two_stack_power_kw": levels.maximum_two_stack_power_kw,
+            "guaranteed_n_plus_one_power_kw": (
+                levels.guaranteed_n_plus_one_power_kw
+            ),
         },
         "random_load": {
             "transition_matrix_role": "Zuo fast matrix controls event order only",

@@ -1,0 +1,35 @@
+{
+  "scope": "permanent single-stack fault with immediate perfect isolation",
+  "fault_timing": "one step after the first high-load event boundary at or after the configured onset, so online high-load allocation is active first",
+  "fault_after_step": 300,
+  "failed_stack_identities": [
+    "stack_1",
+    "stack_2",
+    "stack_3"
+  ],
+  "guaranteed_n_plus_one_power_kw": 114.34203706331125,
+  "maximum_two_stack_power_kw": 125.88539697716796,
+  "maximum_fault_injection_demand_kw": 104.36533502451285,
+  "controller_fault_information": "available in the fault step",
+  "fault_detection_delay_modeled": false,
+  "fault_recovery_modeled": false,
+  "future_demand_used_by_online_strategies": false,
+  "switch_penalty_g_per_change": 0.1191379965684705,
+  "seeds": [
+    3026,
+    3027,
+    3028,
+    3029,
+    3030,
+    3031,
+    3032,
+    3033,
+    3034,
+    3035
+  ],
+  "representative": {
+    "failed_stack": "stack_3",
+    "seed": 3030,
+    "selection": "closest to median post-fault hydrogen increment"
+  }
+}

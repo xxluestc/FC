@@ -5,7 +5,10 @@ import numpy as np
 import pandas as pd
 
 from fc_power.power_allocation.chen_dispatch import ChenDispatchModel
-from fc_power.power_allocation.chen_dispatch_policies import run_chen_policy
+from fc_power.power_allocation.chen_dispatch_policies import (
+    precompute_chen_solution_tables,
+    run_chen_policy,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -118,6 +121,30 @@ class ChenDispatchPoliciesTest(unittest.TestCase):
             average.trajectory.loc[0, "mode"],
             daisy.trajectory.loc[0, "mode"],
         )
+
+    def test_failed_active_stack_is_removed_in_the_same_step(self):
+        demand = np.full(4, 100.0)
+        availability = [
+            self.model.stack_ids,
+            self.model.stack_ids,
+            ("stack_1", "stack_2"),
+            ("stack_1", "stack_2"),
+        ]
+        tables = precompute_chen_solution_tables(
+            self.model,
+            demand,
+            available_stack_ids_by_step=availability,
+        )
+        run = run_chen_policy(
+            self.model,
+            demand,
+            "break_even_hysteresis",
+            switch_penalty_g_per_change=0.1,
+            solution_tables=tables,
+        )
+        self.assertGreater(run.trajectory.loc[1, "stack_3_net_power_kw"], 0.0)
+        self.assertEqual(run.trajectory.loc[2, "stack_3_net_power_kw"], 0.0)
+        self.assertLess(run.metrics["power_balance_max_abs_kw"], 1e-8)
 
 
 if __name__ == "__main__":

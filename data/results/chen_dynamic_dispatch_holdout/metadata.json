@@ -4,9 +4,10 @@
   "load_amplitude_source": {
     "single_peak_kw": 24.819747513573567,
     "dual_peak_kw": 50.86374796665447,
-    "high_load_kw": 94.41404773287597,
-    "reserve_peak_kw": 113.29685727945116,
-    "n_plus_one_max_kw": 125.88539697716796
+    "high_load_kw": 85.75652779748344,
+    "reserve_peak_kw": 102.90783335698013,
+    "maximum_two_stack_power_kw": 125.88539697716796,
+    "guaranteed_n_plus_one_power_kw": 114.34203706331125
   },
   "random_load": {
     "transition_matrix_role": "Zuo fast matrix controls event order only",

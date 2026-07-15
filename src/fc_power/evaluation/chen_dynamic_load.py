@@ -14,7 +14,8 @@ class ChenLoadLevels:
     dual_peak_kw: float
     high_load_kw: float
     reserve_peak_kw: float
-    n_plus_one_max_kw: float
+    maximum_two_stack_power_kw: float
+    guaranteed_n_plus_one_power_kw: float
 
     def as_array(self) -> np.ndarray:
         return np.asarray(
@@ -52,9 +53,10 @@ def derive_chen_load_levels(audited_curves: pd.DataFrame) -> ChenLoadLevels:
 
     single_peak = float(np.median(peaks))
     dual_peak = float(sum(sorted(peaks, reverse=True)[:2]))
-    n_plus_one_max = float(sum(sorted(maxima, reverse=True)[:2]))
-    high_load = 0.75 * n_plus_one_max
-    reserve_peak = 0.90 * n_plus_one_max
+    maximum_two_stack_power = float(sum(sorted(maxima, reverse=True)[:2]))
+    guaranteed_n_plus_one_power = float(sum(sorted(maxima)[:2]))
+    high_load = 0.75 * guaranteed_n_plus_one_power
+    reserve_peak = 0.90 * guaranteed_n_plus_one_power
     levels = np.asarray(
         [single_peak, dual_peak, high_load, reserve_peak],
         dtype=float,
@@ -66,7 +68,8 @@ def derive_chen_load_levels(audited_curves: pd.DataFrame) -> ChenLoadLevels:
         dual_peak_kw=dual_peak,
         high_load_kw=high_load,
         reserve_peak_kw=reserve_peak,
-        n_plus_one_max_kw=n_plus_one_max,
+        maximum_two_stack_power_kw=maximum_two_stack_power,
+        guaranteed_n_plus_one_power_kw=guaranteed_n_plus_one_power,
     )
 
 
@@ -123,7 +126,7 @@ def generate_chen_random_dynamic_load(
                 1.0 + target_variation_fraction,
             )
         )
-        target = min(target, 0.95 * levels.n_plus_one_max_kw)
+        target = min(target, 0.95 * levels.guaranteed_n_plus_one_power_kw)
         take = min(dwell, length_s - len(rows))
         for within_event in range(take):
             rows.append(

@@ -41,6 +41,19 @@ class ChenDispatchTest(unittest.TestCase):
                 ("stack_1", "stack_2", "stack_3"),
             )
 
+    def test_available_stack_filter_removes_failed_stack(self):
+        solutions = self.model.solve_all_modes(
+            100.0,
+            available_stack_ids=("stack_1", "stack_2"),
+        )
+        self.assertTrue(solutions)
+        self.assertTrue(all("stack_3" not in mode for mode in solutions))
+        selected = self.model.solve_instantaneous(
+            100.0,
+            available_stack_ids=("stack_1", "stack_2"),
+        )
+        self.assertEqual(selected.mode, ("stack_1", "stack_2"))
+
     def test_two_stack_breakpoint_search_matches_dense_global_search(self):
         demand = 75.0
         solution = self.model.solve_mode(demand, ("stack_2", "stack_3"))

@@ -23,12 +23,32 @@ class ChenDynamicLoadTest(unittest.TestCase):
     def test_levels_come_from_curve_peaks_and_n_plus_one_capacity(self):
         self.assertAlmostEqual(self.levels.single_peak_kw, 24.819747513573567)
         self.assertAlmostEqual(self.levels.dual_peak_kw, 50.86374796665447)
-        self.assertAlmostEqual(self.levels.n_plus_one_max_kw, 125.88539697716798)
+        self.assertAlmostEqual(
+            self.levels.maximum_two_stack_power_kw,
+            125.88539697716798,
+        )
+        self.assertAlmostEqual(
+            self.levels.guaranteed_n_plus_one_power_kw,
+            114.34203706331125,
+        )
         self.assertAlmostEqual(
             self.levels.reserve_peak_kw,
-            0.9 * self.levels.n_plus_one_max_kw,
+            0.9 * self.levels.guaranteed_n_plus_one_power_kw,
         )
         self.assertTrue(np.all(np.diff(self.levels.as_array()) > 0))
+        maxima = (
+            pd.read_csv(CURVES)
+            .groupby("stack_id")["net_system_power_kw"]
+            .max()
+        )
+        remaining_capacities = [
+            float(maxima.drop(failed_stack).sum())
+            for failed_stack in maxima.index
+        ]
+        self.assertAlmostEqual(
+            min(remaining_capacities),
+            self.levels.guaranteed_n_plus_one_power_kw,
+        )
 
     def test_random_dynamic_load_is_reproducible_and_actually_changes(self):
         first = generate_chen_random_dynamic_load(
@@ -51,7 +71,7 @@ class ChenDynamicLoadTest(unittest.TestCase):
         self.assertGreater(first.event_boundary.sum(), 20)
         self.assertLessEqual(
             first.demand_net_power_kw.max(),
-            0.95 * self.levels.n_plus_one_max_kw,
+            0.95 * self.levels.guaranteed_n_plus_one_power_kw,
         )
 
     def test_invalid_transition_matrix_is_rejected(self):
