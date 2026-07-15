@@ -14,6 +14,7 @@ data/external/
 # Generated/large results
 data/processed/*.csv
 !data/processed/current_point_degradation_h2.csv
+!data/processed/chen_efficiency_curves_audited.csv
 data/results/*.csv
 !data/results/prediction_metrics.csv
 data/results/**/allocation_trajectory.csv
